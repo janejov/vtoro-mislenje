@@ -334,7 +334,7 @@
         <div id="loginScreen">
             <div class="hero">
                 <h1>🏥 Второ мислење</h1>
-                <p>Платформа за добивање професионални медицински совети од лиценцирани лекари</p>
+                <p>Moderna платформа за добивање професионални медицински совети од лиценцирани лекари</p>
             </div>
 
             <div class="login-wrapper">
@@ -495,7 +495,23 @@
                 </div>
 
                 <div class="glass-card" style="padding: 32px;">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">💬 Мои прашања</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h3 style="font-size: 24px; font-weight: 700; margin: 0;">💬 Мои прашања</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-modern" id="selectAllBtn" style="display: none; background: var(--neutral-200); color: var(--neutral-700);" onclick="selectAllQuestions()">
+                                <span id="selectAllText">Означи сè</span>
+                            </button>
+                            <button class="btn-modern" id="deleteModeBtn" style="background: var(--danger); color: white;" onclick="toggleDeleteMode()">
+                                🗑️ Избриши прашања
+                            </button>
+                            <button class="btn-modern btn-primary" id="confirmDeleteBtn" style="display: none;" onclick="deleteSelectedQuestions()">
+                                Потврди бришење
+                            </button>
+                            <button class="btn-modern btn-secondary" id="cancelDeleteBtn" style="display: none;" onclick="cancelDeleteMode()">
+                                Откажи
+                            </button>
+                        </div>
+                    </div>
                     <div id="userQuestions"></div>
                 </div>
             </div>
@@ -503,8 +519,40 @@
             <!-- Expert Dashboard -->
             <div id="expertDashboard" class="hidden" style="margin-top: 24px;">
                 <div class="glass-card" style="padding: 32px;">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">📋 Прашања за одговор</h3>
-                    <div id="expertQuestions"></div>
+                    <div style="display: flex; gap: 12px; margin-bottom: 32px; background: var(--neutral-100); padding: 6px; border-radius: 16px;">
+                        <button class="btn-modern" id="expertTabPending" onclick="switchExpertTab('pending')" style="flex: 1; background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
+                            Прашања за одговор
+                        </button>
+                        <button class="btn-modern" id="expertTabAnswered" onclick="switchExpertTab('answered')" style="flex: 1; background: transparent; color: var(--neutral-600);">
+                            Мои одговори
+                        </button>
+                    </div>
+                    
+                    <div id="expertPendingSection">
+                        <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">📋 Прашања за одговор</h3>
+                        <div id="expertQuestions"></div>
+                    </div>
+
+                    <div id="expertAnsweredSection" class="hidden">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                            <h3 style="font-size: 24px; font-weight: 700; margin: 0;">✅ Мои одговори</h3>
+                            <button class="btn-modern" id="expertDeleteModeBtn" style="background: var(--danger); color: white;" onclick="toggleExpertDeleteMode()">
+                                🗑️ Избриши прашања
+                            </button>
+                            <div id="expertDeleteControls" class="hidden" style="display: flex; gap: 10px;">
+                                <button class="btn-modern" style="background: var(--neutral-200); color: var(--neutral-700);" onclick="selectAllExpertQuestions()">
+                                    <span id="expertSelectAllText">Означи сè</span>
+                                </button>
+                                <button class="btn-modern btn-primary" onclick="deleteSelectedExpertQuestions()">
+                                    Потврди бришење
+                                </button>
+                                <button class="btn-modern btn-secondary" onclick="cancelExpertDeleteMode()">
+                                    Откажи
+                                </button>
+                            </div>
+                        </div>
+                        <div id="expertAnsweredQuestions"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -555,6 +603,8 @@
         
         let currentUser = null;
         let registerRole = 'user';
+        let deleteMode = false;
+        let expertDeleteMode = false;
 
         // UI Functions
         function showRegister() {
@@ -659,6 +709,179 @@
             }
         }
 
+        // Expert Tab Switching
+        function switchExpertTab(tab) {
+            const pendingBtn = document.getElementById('expertTabPending');
+            const answeredBtn = document.getElementById('expertTabAnswered');
+            const pendingSection = document.getElementById('expertPendingSection');
+            const answeredSection = document.getElementById('expertAnsweredSection');
+
+            if (tab === 'pending') {
+                pendingBtn.style.background = 'white';
+                pendingBtn.style.color = 'var(--primary)';
+                pendingBtn.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
+                answeredBtn.style.background = 'transparent';
+                answeredBtn.style.color = 'var(--neutral-600)';
+                answeredBtn.style.boxShadow = 'none';
+                pendingSection.classList.remove('hidden');
+                answeredSection.classList.add('hidden');
+            } else {
+                answeredBtn.style.background = 'white';
+                answeredBtn.style.color = 'var(--primary)';
+                answeredBtn.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
+                pendingBtn.style.background = 'transparent';
+                pendingBtn.style.color = 'var(--neutral-600)';
+                pendingBtn.style.boxShadow = 'none';
+                answeredSection.classList.remove('hidden');
+                pendingSection.classList.add('hidden');
+            }
+        }
+
+        // Load Expert's Answered Questions
+        async function loadExpertAnsweredQuestions() {
+            try {
+                // Get questions that this expert answered
+                const { data: answers, error: answersError } = await supabaseClient
+                    .from('answers')
+                    .select('question_id')
+                    .eq('expert_id', currentUser.id);
+
+                if (answersError) throw answersError;
+
+                if (!answers || answers.length === 0) {
+                    const container = document.getElementById('expertAnsweredQuestions');
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: var(--neutral-500);">
+                            <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
+                            <h3 style="font-size: 20px; margin-bottom: 8px;">Нема одговорени прашања</h3>
+                            <p>Сè уште немате одговорено на прашања.</p>
+                        </div>
+                    `;
+                    document.getElementById('expertDeleteModeBtn').style.display = 'none';
+                    return;
+                }
+
+                const questionIds = answers.map(a => a.question_id);
+
+                const { data: questions, error: questionsError } = await supabaseClient
+                    .from('questions')
+                    .select('*')
+                    .in('id', questionIds)
+                    .order('created_at', { ascending: false });
+
+                if (questionsError) throw questionsError;
+
+                // Get user data and answers for each question
+                const questionsWithDetails = await Promise.all(
+                    questions.map(async (q) => {
+                        const { data: userData } = await supabaseClient
+                            .from('users')
+                            .select('full_name')
+                            .eq('id', q.user_id)
+                            .single();
+
+                        const { data: answerData } = await supabaseClient
+                            .from('answers')
+                            .select('answer_text, created_at')
+                            .eq('question_id', q.id)
+                            .eq('expert_id', currentUser.id)
+                            .single();
+                        
+                        return {
+                            ...q,
+                            user_name: userData?.full_name || 'Непознат корисник',
+                            answer: answerData
+                        };
+                    })
+                );
+
+                document.getElementById('expertDeleteModeBtn').style.display = 'inline-flex';
+
+                const container = document.getElementById('expertAnsweredQuestions');
+                container.innerHTML = questionsWithDetails.map(q => `
+                    <div class="question-card-modern">
+                        ${expertDeleteMode ? `
+                            <div style="display: flex; align-items: start; gap: 15px;">
+                                <input type="checkbox" class="expert-question-checkbox" data-question-id="${q.id}" style="margin-top: 5px; width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary);">
+                                <div style="flex: 1;">
+                        ` : '<div>'}
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
+                                <div style="font-size: 14px; color: var(--neutral-500);">
+                                    🏥 ${q.specialty_name} • Од ${q.user_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
+                                </div>
+                            </div>
+                            <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 16px;"><strong>Прашање:</strong> ${q.question_text}</p>
+                            <div style="background: #D1FAE5; padding: 16px; border-radius: 12px; border-left: 4px solid #10B981;">
+                                <div style="font-weight: 600; color: #059669; margin-bottom: 8px; font-size: 14px;">
+                                    ✓ Ваш одговор:
+                                </div>
+                                <p style="color: var(--neutral-700); line-height: 1.6;">${q.answer.answer_text}</p>
+                                <p style="font-size: 12px; color: var(--neutral-500); margin-top: 8px;">
+                                    Одговорено на: ${new Date(q.answer.created_at).toLocaleDateString('mk-MK')}
+                                </p>
+                            </div>
+                        ${expertDeleteMode ? '</div></div>' : '</div>'}
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('Грешка при вчитување на одговори: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function toggleExpertDeleteMode() {
+            expertDeleteMode = true;
+            document.getElementById('expertDeleteModeBtn').style.display = 'none';
+            document.getElementById('expertDeleteControls').classList.remove('hidden');
+            document.getElementById('expertDeleteControls').style.display = 'flex';
+            loadExpertAnsweredQuestions();
+        }
+
+        function cancelExpertDeleteMode() {
+            expertDeleteMode = false;
+            document.getElementById('expertDeleteModeBtn').style.display = 'inline-flex';
+            document.getElementById('expertDeleteControls').classList.add('hidden');
+            loadExpertAnsweredQuestions();
+        }
+
+        function selectAllExpertQuestions() {
+            const checkboxes = document.querySelectorAll('.expert-question-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+            document.getElementById('expertSelectAllText').textContent = allChecked ? 'Означи сè' : 'Одзначи сè';
+        }
+
+        async function deleteSelectedExpertQuestions() {
+            const checkboxes = document.querySelectorAll('.expert-question-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                showToast('Ве молиме изберете прашања за бришење');
+                return;
+            }
+            
+            const confirmDelete = confirm(`Дали сте сигурни дека сакате да избришете ${checkboxes.length} прашање(ња) со вашите одговори? Оваа акција не може да се врати.`);
+            
+            if (!confirmDelete) return;
+
+            try {
+                const idsToDelete = Array.from(checkboxes).map(cb => cb.dataset.questionId);
+                
+                const { error } = await supabaseClient
+                    .from('questions')
+                    .delete()
+                    .in('id', idsToDelete);
+
+                if (error) throw error;
+
+                showToast(`Успешно избришани ${idsToDelete.length} прашање(ња) ✓`);
+                cancelExpertDeleteMode();
+            } catch (error) {
+                showToast('Грешка: ' + error.message);
+                console.error(error);
+            }
+        }
+
         async function login() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -701,6 +924,7 @@
                 } else {
                     document.getElementById('expertDashboard').classList.remove('hidden');
                     loadExpertQuestions();
+                    loadExpertAnsweredQuestions();
                 }
 
                 showToast('Успешна најава! 🎉');
@@ -786,40 +1010,104 @@
                             <p>Сè уште немате поставено прашање.</p>
                         </div>
                     `;
+                    document.getElementById('deleteModeBtn').style.display = 'none';
                     return;
                 }
+
+                document.getElementById('deleteModeBtn').style.display = 'inline-flex';
 
                 container.innerHTML = questions.map(q => {
                     const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
                     return `
                         <div class="question-card-modern">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                <div>
-                                    <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
-                                    <div style="font-size: 14px; color: var(--neutral-500);">
-                                        🏥 ${q.specialty_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
+                            ${deleteMode ? `
+                                <div style="display: flex; align-items: start; gap: 15px;">
+                                    <input type="checkbox" class="user-question-checkbox" data-question-id="${q.id}" style="margin-top: 5px; width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary);">
+                                    <div style="flex: 1;">
+                            ` : '<div>'}
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                    <div>
+                                        <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
+                                        <div style="font-size: 14px; color: var(--neutral-500);">
+                                            🏥 ${q.specialty_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
+                                        </div>
                                     </div>
+                                    <span style="padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; ${answer ? 'background: #D1FAE5; color: #059669;' : 'background: #FEF3C7; color: #D97706;'}">
+                                        ${answer ? 'Одговорено' : 'Се чека одговор'}
+                                    </span>
                                 </div>
-                                <span style="padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; ${answer ? 'background: #D1FAE5; color: #059669;' : 'background: #FEF3C7; color: #D97706;'}">
-                                    ${answer ? 'Одговорено' : 'Се чека одговор'}
-                                </span>
-                            </div>
-                            <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 12px;">${q.question_text}</p>
-                            ${answer ? `
-                                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--neutral-100);">
-                                    <div style="font-weight: 600; color: var(--success); margin-bottom: 8px; font-size: 14px;">
-                                        ✓ Одговор од ${answer.expert.full_name}:
+                                <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 12px;">${q.question_text}</p>
+                                ${answer ? `
+                                    <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--neutral-100);">
+                                        <div style="font-weight: 600; color: var(--success); margin-bottom: 8px; font-size: 14px;">
+                                            ✓ Одговор од ${answer.expert.full_name}:
+                                        </div>
+                                        <div style="background: var(--neutral-50); padding: 14px; border-radius: 10px; color: var(--neutral-700); line-height: 1.6;">
+                                            ${answer.answer_text}
+                                        </div>
                                     </div>
-                                    <div style="background: var(--neutral-50); padding: 14px; border-radius: 10px; color: var(--neutral-700); line-height: 1.6;">
-                                        ${answer.answer_text}
-                                    </div>
-                                </div>
-                            ` : ''}
+                                ` : ''}
+                            ${deleteMode ? '</div></div>' : '</div>'}
                         </div>
                     `;
                 }).join('');
             } catch (error) {
                 showToast('Грешка при вчитување на прашања: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function toggleDeleteMode() {
+            deleteMode = true;
+            document.getElementById('deleteModeBtn').style.display = 'none';
+            document.getElementById('selectAllBtn').style.display = 'inline-flex';
+            document.getElementById('confirmDeleteBtn').style.display = 'inline-flex';
+            document.getElementById('cancelDeleteBtn').style.display = 'inline-flex';
+            loadUserQuestions();
+        }
+
+        function cancelDeleteMode() {
+            deleteMode = false;
+            document.getElementById('deleteModeBtn').style.display = 'inline-flex';
+            document.getElementById('selectAllBtn').style.display = 'none';
+            document.getElementById('confirmDeleteBtn').style.display = 'none';
+            document.getElementById('cancelDeleteBtn').style.display = 'none';
+            loadUserQuestions();
+        }
+
+        function selectAllQuestions() {
+            const checkboxes = document.querySelectorAll('.user-question-checkbox');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+            document.getElementById('selectAllText').textContent = allChecked ? 'Означи сè' : 'Одзначи сè';
+        }
+
+        async function deleteSelectedQuestions() {
+            const checkboxes = document.querySelectorAll('.user-question-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                showToast('Ве молиме изберете прашања за бришење');
+                return;
+            }
+            
+            const confirmDelete = confirm(`Дали сте сигурни дека сакате да избришете ${checkboxes.length} прашање(ња)? Оваа акција не може да се врати.`);
+            
+            if (!confirmDelete) return;
+
+            try {
+                const idsToDelete = Array.from(checkboxes).map(cb => cb.dataset.questionId);
+                
+                const { error } = await supabaseClient
+                    .from('questions')
+                    .delete()
+                    .in('id', idsToDelete);
+
+                if (error) throw error;
+
+                showToast(`Успешно избришани ${idsToDelete.length} прашање(ња) ✓`);
+                cancelDeleteMode();
+            } catch (error) {
+                showToast('Грешка: ' + error.message);
                 console.error(error);
             }
         }
@@ -993,6 +1281,7 @@
                     } else {
                         document.getElementById('expertDashboard').classList.remove('hidden');
                         loadExpertQuestions();
+                        loadExpertAnsweredQuestions();
                     }
                 }
             }
