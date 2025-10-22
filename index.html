@@ -268,6 +268,58 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+        
+        /* Answer Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-close {
+            background: var(--neutral-200);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            background: var(--danger);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -460,6 +512,37 @@
 
     <div class="toast" id="toast">
         <div id="toastMessage"></div>
+    </div>
+
+    <!-- Answer Modal -->
+    <div id="answerModal" class="modal-overlay hidden" onclick="closeAnswerModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 style="font-size: 24px; font-weight: 700; margin: 0;">Одговори на прашањето</h2>
+                <button class="modal-close" onclick="closeAnswerModal()">×</button>
+            </div>
+            
+            <div style="background: var(--neutral-50); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+                <h3 style="font-size: 16px; font-weight: 600; color: var(--neutral-700); margin-bottom: 8px;">Прашање:</h3>
+                <p id="modalQuestionTitle" style="font-size: 18px; font-weight: 600; margin-bottom: 12px;"></p>
+                <p id="modalQuestionText" style="color: var(--neutral-600); line-height: 1.6;"></p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Ваш одговор *</label>
+                <textarea class="form-input" id="answerText" rows="8" placeholder="Внесете го вашиот професионален одговор..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button class="btn-modern btn-primary" onclick="submitAnswer()" style="flex: 1;">
+                    <span id="answerBtnText">Испрати одговор</span>
+                    <span id="answerBtnLoader" class="loading hidden"></span>
+                </button>
+                <button class="btn-modern btn-secondary" onclick="closeAnswerModal()">
+                    Откажи
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -812,16 +895,58 @@
         }
 
         async function answerQuestion(questionId) {
-            const answer = prompt('Внесете го вашиот одговор:');
-            if (!answer || !answer.trim()) return;
+            // Store the question ID for later use
+            window.currentQuestionId = questionId;
+            
+            // Get question details
+            const { data: question, error } = await supabaseClient
+                .from('questions')
+                .select('title, question_text')
+                .eq('id', questionId)
+                .single();
+            
+            if (error) {
+                showToast('Грешка: ' + error.message);
+                return;
+            }
+            
+            // Populate modal
+            document.getElementById('modalQuestionTitle').textContent = question.title;
+            document.getElementById('modalQuestionText').textContent = question.question_text;
+            document.getElementById('answerText').value = '';
+            
+            // Show modal
+            document.getElementById('answerModal').classList.remove('hidden');
+        }
+
+        function closeAnswerModal(event) {
+            // Close only if clicked on overlay or close button
+            if (!event || event.target.id === 'answerModal' || event.target.classList.contains('modal-close')) {
+                document.getElementById('answerModal').classList.add('hidden');
+                document.getElementById('answerText').value = '';
+            }
+        }
+
+        async function submitAnswer() {
+            const answer = document.getElementById('answerText').value.trim();
+            
+            if (!answer) {
+                showToast('Ве молиме внесете одговор');
+                return;
+            }
+
+            const btn = document.getElementById('answerBtnText');
+            const loader = document.getElementById('answerBtnLoader');
+            btn.classList.add('hidden');
+            loader.classList.remove('hidden');
 
             try {
                 const { error: answerError } = await supabaseClient
                     .from('answers')
                     .insert([{
-                        question_id: questionId,
+                        question_id: window.currentQuestionId,
                         expert_id: currentUser.id,
-                        answer_text: answer.trim()
+                        answer_text: answer
                     }]);
 
                 if (answerError) throw answerError;
@@ -829,15 +954,19 @@
                 const { error: updateError } = await supabaseClient
                     .from('questions')
                     .update({ status: 'answered' })
-                    .eq('id', questionId);
+                    .eq('id', window.currentQuestionId);
 
                 if (updateError) throw updateError;
 
                 showToast('Одговорот е успешно испратен! ✔');
+                closeAnswerModal();
                 loadExpertQuestions();
             } catch (error) {
                 showToast('Грешка: ' + error.message);
                 console.error(error);
+            } finally {
+                btn.classList.remove('hidden');
+                loader.classList.add('hidden');
             }
         }
 
