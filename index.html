@@ -282,7 +282,7 @@
         <div id="loginScreen">
             <div class="hero">
                 <h1>🏥 Второ мислење</h1>
-                <p>Платформа за добивање професионални медицински совети од лиценцирани лекари</p>
+                <p>Moderna платформа за добивање професионални медицински совети од лиценцирани лекари</p>
             </div>
 
             <div class="login-wrapper">
@@ -295,7 +295,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Лозинка</label>
+                        <label class="form-label">Шифра</label>
                         <input type="password" class="form-input" id="loginPassword" placeholder="••••••••">
                     </div>
 
@@ -352,12 +352,12 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Лозинка *</label>
+                        <label class="form-label">Шифра *</label>
                         <input type="password" class="form-input" id="regPassword" placeholder="Минимум 8 знаци">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Потврди лозинка *</label>
+                        <label class="form-label">Потврди шифра *</label>
                         <input type="password" class="form-input" id="regPasswordConfirm" placeholder="Повторете ја шифрата">
                     </div>
 
@@ -743,24 +743,34 @@
 
         async function loadExpertQuestions() {
             try {
-                const { data: questions, error } = await supabaseClient
+                // First get all questions
+                const { data: questions, error: questionsError } = await supabaseClient
                     .from('questions')
-                    .select(`
-                        *,
-                        user:user_id (full_name),
-                        answers (
-                            answer_text,
-                            expert:expert_id (full_name)
-                        )
-                    `)
+                    .select('*')
                     .eq('status', 'pending')
                     .order('created_at', { ascending: false });
 
-                if (error) throw error;
+                if (questionsError) throw questionsError;
+
+                // Then get user data for each question
+                const questionsWithUsers = await Promise.all(
+                    questions.map(async (q) => {
+                        const { data: userData } = await supabaseClient
+                            .from('users')
+                            .select('full_name')
+                            .eq('id', q.user_id)
+                            .single();
+                        
+                        return {
+                            ...q,
+                            user_name: userData?.full_name || 'Непознат корисник'
+                        };
+                    })
+                );
 
                 const container = document.getElementById('expertQuestions');
 
-                if (questions.length === 0) {
+                if (questionsWithUsers.length === 0) {
                     container.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; color: var(--neutral-500);">
                             <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
@@ -771,12 +781,12 @@
                     return;
                 }
 
-                container.innerHTML = questions.map(q => `
+                container.innerHTML = questionsWithUsers.map(q => `
                     <div class="question-card-modern">
                         <div style="margin-bottom: 12px;">
                             <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
                             <div style="font-size: 14px; color: var(--neutral-500);">
-                                🏥 ${q.specialty_name} • Од ${q.user.full_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
+                                🏥 ${q.specialty_name} • Од ${q.user_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
                             </div>
                         </div>
                         <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 16px;">${q.question_text}</p>
