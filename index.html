@@ -282,7 +282,7 @@
         <div id="loginScreen">
             <div class="hero">
                 <h1>🏥 Второ мислење</h1>
-                <p>Платформа за добивање професионални медицински совети од лиценцирани лекари</p>
+                <p>Moderna платформа за добивање професионални медицински совети од лиценцирани лекари</p>
             </div>
 
             <div class="login-wrapper">
@@ -743,7 +743,7 @@
 
         async function loadExpertQuestions() {
             try {
-                // First get all questions
+                // Get all pending questions
                 const { data: questions, error: questionsError } = await supabaseClient
                     .from('questions')
                     .select('*')
@@ -752,25 +752,8 @@
 
                 if (questionsError) throw questionsError;
 
-                // Then get user data for each question
-                const questionsWithUsers = await Promise.all(
-                    questions.map(async (q) => {
-                        const { data: userData } = await supabaseClient
-                            .from('users')
-                            .select('full_name')
-                            .eq('id', q.user_id)
-                            .single();
-                        
-                        return {
-                            ...q,
-                            user_name: userData?.full_name || 'Непознат корисник'
-                        };
-                    })
-                );
-
-                const container = document.getElementById('expertQuestions');
-
-                if (questionsWithUsers.length === 0) {
+                if (!questions || questions.length === 0) {
+                    const container = document.getElementById('expertQuestions');
                     container.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; color: var(--neutral-500);">
                             <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
@@ -781,12 +764,39 @@
                     return;
                 }
 
+                // Get user data for each question
+                const questionsWithUsers = await Promise.all(
+                    questions.map(async (q) => {
+                        const { data: userData, error: userError } = await supabaseClient
+                            .from('users')
+                            .select('full_name, email, phone')
+                            .eq('id', q.user_id)
+                            .single();
+                        
+                        if (userError) {
+                            console.error('Error fetching user:', userError);
+                        }
+                        
+                        return {
+                            ...q,
+                            user_name: userData?.full_name || 'Непознат корисник',
+                            user_email: userData?.email || '',
+                            user_phone: userData?.phone || ''
+                        };
+                    })
+                );
+
+                const container = document.getElementById('expertQuestions');
                 container.innerHTML = questionsWithUsers.map(q => `
                     <div class="question-card-modern">
                         <div style="margin-bottom: 12px;">
                             <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
-                            <div style="font-size: 14px; color: var(--neutral-500);">
-                                🏥 ${q.specialty_name} • Од ${q.user_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
+                            <div style="font-size: 14px; color: var(--neutral-500); display: flex; flex-wrap: wrap; gap: 12px;">
+                                <span>🏥 ${q.specialty_name}</span>
+                                <span>👤 ${q.user_name}</span>
+                                ${q.user_email ? `<span>📧 ${q.user_email}</span>` : ''}
+                                ${q.user_phone ? `<span>📞 ${q.user_phone}</span>` : ''}
+                                <span>📅 ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
                             </div>
                         </div>
                         <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 16px;">${q.question_text}</p>
@@ -797,7 +807,7 @@
                 `).join('');
             } catch (error) {
                 showToast('Грешка при вчитување на прашања: ' + error.message);
-                console.error(error);
+                console.error('Full error:', error);
             }
         }
 
