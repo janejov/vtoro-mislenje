@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Второ мислење - Cloud Platform</title>
+    <title>Второ мислење - Медицински консултации онлајн</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
@@ -13,263 +13,435 @@
         }
         
         :root {
-            --primary: #3B82F6;
-            --primary-dark: #2563EB;
-            --primary-light: #60A5FA;
+            --primary: #0066CC;
+            --primary-dark: #0052A3;
+            --primary-light: #3399FF;
             --success: #10B981;
             --warning: #F59E0B;
             --danger: #EF4444;
-            --neutral-50: #F9FAFB;
-            --neutral-100: #F3F4F6;
-            --neutral-200: #E5E7EB;
-            --neutral-300: #D1D5DB;
-            --neutral-400: #9CA3AF;
-            --neutral-500: #6B7280;
-            --neutral-600: #4B5563;
-            --neutral-700: #374151;
-            --neutral-800: #1F2937;
-            --neutral-900: #111827;
+            --text-dark: #1A202C;
+            --text-light: #718096;
+            --bg-light: #F7FAFC;
+            --bg-white: #FFFFFF;
+            --border: #E2E8F0;
         }
         
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: var(--neutral-900);
-            overflow-x: hidden;
-            position: relative;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif;
+            color: var(--text-dark);
+            line-height: 1.6;
+            background: var(--bg-white);
         }
-        
-        .particles {
+
+        /* Navigation */
+        .navbar {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            padding: 20px 0;
         }
-        
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 20s infinite ease-in-out;
-        }
-        
-        .particle:nth-child(1) { width: 80px; height: 80px; left: 10%; top: 20%; animation-delay: 0s; }
-        .particle:nth-child(2) { width: 60px; height: 60px; right: 15%; top: 40%; animation-delay: 2s; }
-        .particle:nth-child(3) { width: 100px; height: 100px; left: 60%; top: 70%; animation-delay: 4s; }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
-            25% { transform: translateY(-30px) translateX(20px) scale(1.1); opacity: 0.5; }
-            50% { transform: translateY(-60px) translateX(-20px) scale(0.9); opacity: 0.7; }
-            75% { transform: translateY(-30px) translateX(20px) scale(1.05); opacity: 0.4; }
-        }
-        
-        .container {
-            max-width: 1400px;
+
+        .nav-container {
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .hero {
-            text-align: center;
-            padding: 60px 20px;
-            margin-bottom: 40px;
-        }
-        
-        .hero h1 {
-            font-size: 56px;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .hero p {
-            font-size: 20px;
-            color: rgba(255, 255, 255, 0.95);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        
-        .btn-modern {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 32px;
-            border-radius: 16px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-        
-        .login-wrapper {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 40px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .login-form {
-            padding: 48px;
-        }
-        
-        .role-toggle {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-bottom: 32px;
-            padding: 6px;
-            background: var(--neutral-100);
-            border-radius: 16px;
-        }
-        
-        .role-option {
-            padding: 16px;
-            border-radius: 12px;
-            border: 2px solid transparent;
-            background: transparent;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--neutral-600);
-        }
-        
-        .role-option.active {
-            background: white;
-            color: var(--primary);
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-        }
-        
-        .form-group {
-            margin-bottom: 24px;
-        }
-        
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--neutral-700);
-            margin-bottom: 8px;
-        }
-        
-        .form-input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid var(--neutral-200);
-            border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s;
-            background: white;
-        }
-        
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-        }
-        
-        .dashboard-header {
-            padding: 32px;
+            padding: 0 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
-        .question-card-modern {
-            padding: 28px;
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 8px;
+            background: var(--bg-light);
+            padding: 8px 12px;
+            border-radius: 8px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 102, 204, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            padding: 100px 40px;
+            background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: 52px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            color: var(--text-dark);
+        }
+
+        .hero-content h1 span {
+            color: var(--primary);
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            color: var(--text-light);
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
             border-radius: 20px;
-            background: white;
-            border: 2px solid var(--neutral-100);
-            margin-bottom: 16px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
         }
-        
-        .question-card-modern:hover {
-            transform: translateX(4px);
-            border-color: var(--primary-light);
-            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.12);
-        }
-        
-        .toast {
-            position: fixed;
-            bottom: 32px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
+
+        /* Features Section */
+        .features {
+            padding: 100px 40px;
             background: white;
-            padding: 16px 24px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 60px;
+            color: var(--text-dark);
+        }
+
+        .features-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .feature-card {
+            padding: 40px;
+            background: var(--bg-light);
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
         }
-        
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
         }
-        
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 40px;
+            background: var(--bg-light);
+        }
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+            align-items: start;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .step-content h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .step-content p {
+            color: var(--text-light);
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 40px;
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--primary);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 60px 40px;
+            background: var(--text-dark);
+            color: white;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Dashboard styles (from previous version) */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 100px auto 40px;
+            padding: 0 40px;
+        }
+
+        .glass-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
+
+        .question-card {
+            padding: 24px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary);
+        }
+
         .hidden {
             display: none !important;
         }
-        
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--text-dark);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s;
         }
-        
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
         }
-        
-        /* Answer Modal */
+
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -283,201 +455,237 @@
             z-index: 2000;
             padding: 20px;
         }
-        
+
         .modal-content {
             background: white;
-            border-radius: 24px;
-            padding: 32px;
+            border-radius: 20px;
+            padding: 40px;
             max-width: 600px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 30px;
         }
-        
+
         .modal-close {
-            background: var(--neutral-200);
+            background: var(--bg-light);
             border: none;
             width: 36px;
             height: 36px;
             border-radius: 50%;
             cursor: pointer;
             font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             transition: all 0.3s;
         }
-        
+
         .modal-close:hover {
             background: var(--danger);
             color: white;
         }
+
+        @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="particles">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span>🏥</span>
+                <span data-i18n="siteName">Второ мислење</span>
+            </div>
+            <div class="nav-links">
+                <a href="#how" class="nav-link" data-i18n="navHow">Како работи</a>
+                <a href="#features" class="nav-link" data-i18n="navFeatures">Предности</a>
+                <div class="language-switcher">
+                    <button class="lang-btn active" onclick="switchLanguage('mk')">МК</button>
+                    <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
+                    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+                </div>
+                <button class="btn btn-primary" onclick="showLoginModal()" data-i18n="navLogin">Најава</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Landing Page -->
+    <div id="landingPage">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1>
+                        <span data-i18n="heroTitle1">Добијте</span><br>
+                        <span data-i18n="heroTitle2">професионално</span><br>
+                        <span data-i18n="heroTitle3">второ мислење</span>
+                    </h1>
+                    <p data-i18n="heroSubtitle">
+                        Поврзете се со лиценцирани лекари онлајн и добијте професионални медицински совети брзо и безбедно.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="showRegisterModal('user')" data-i18n="heroButton1">Започни сега</button>
+                        <button class="btn btn-outline" onclick="showRegisterModal('expert')" data-i18n="heroButton2">Регистрирај се како лекар</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <svg viewBox="0 0 500 400" style="width: 100%;">
+                        <rect x="50" y="50" width="400" height="300" rx="20" fill="#E6F2FF"/>
+                        <circle cx="150" cy="150" r="40" fill="#0066CC"/>
+                        <rect x="220" y="120" width="200" height="15" rx="7" fill="#3399FF"/>
+                        <rect x="220" y="150" width="150" height="15" rx="7" fill="#3399FF" opacity="0.5"/>
+                        <circle cx="350" cy="280" r="40" fill="#10B981"/>
+                        <rect x="100" y="250" width="200" height="15" rx="7" fill="#66BB6A"/>
+                        <rect x="100" y="280" width="180" height="15" rx="7" fill="#66BB6A" opacity="0.5"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title" data-i18n="featuresTitle">Зошто нè избираат</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍⚕️</div>
+                    <h3 data-i18n="feature1Title">Лиценцирани лекари</h3>
+                    <p data-i18n="feature1Text">Сите наши лекари се целосно лиценцирани и верификувани специјалисти со години искуство.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 data-i18n="feature2Title">Брзи одговори</h3>
+                    <p data-i18n="feature2Text">Добијте одговор на вашите прашања во најкратко можно време, обично во рок од неколку часа.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 data-i18n="feature3Title">Приватност</h3>
+                    <p data-i18n="feature3Text">Вашите медицински податоци се целосно заштитени и confidential според GDPR стандардите.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works" id="how">
+            <h2 class="section-title" data-i18n="howTitle">Како работи</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 data-i18n="step1Title">Регистрирајте се</h3>
+                        <p data-i18n="step1Text">Креирајте бесплатен профил во неколку едноставни чекори. Треба ви само email адреса и основни информации.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 data-i18n="step2Title">Поставете прашање</h3>
+                        <p data-i18n="step2Text">Опишете го вашето здравствено прашање детално. Изберете соодветна медицинска област за најдобар одговор.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 data-i18n="step3Title">Добијте одговор</h3>
+                        <p data-i18n="step3Text">Лиценциран лекар од соодветната област ќе ви одговори брзо и професионално. Добивате и email нотификација.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2 data-i18n="ctaTitle">Подготвени да започнете?</h2>
+            <p data-i18n="ctaText">Придружете се на илјадници корисници кои веќе ги користат нашите услуги.</p>
+            <button class="btn btn-white" onclick="showRegisterModal('user')" data-i18n="ctaButton">Регистрирајте се бесплатно</button>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div>
+                    <h4 data-i18n="siteName">Второ мислење</h4>
+                    <p style="opacity: 0.7; margin-top: 12px;" data-i18n="footerDesc">
+                        Професионални медицински консултации онлајн од лиценцирани специјалисти.
+                    </p>
+                </div>
+                <div>
+                    <h4 data-i18n="footerLinks">Линкови</h4>
+                    <ul class="footer-links">
+                        <li><a href="#how" data-i18n="navHow">Како работи</a></li>
+                        <li><a href="#features" data-i18n="navFeatures">Предности</a></li>
+                        <li><a href="#" onclick="showLoginModal(); return false;" data-i18n="navLogin">Најава</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 data-i18n="footerLegal">Правни</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" data-i18n="footerPrivacy">Приватност</a></li>
+                        <li><a href="#" data-i18n="footerTerms">Услови</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 data-i18n="footerContact">Контакт</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:janejovanov@gmail.com">janejovanov@gmail.com</a></li>
+                        <li><a href="tel:+420776595387">+420 776 595 387</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 Второ мислење. <span data-i18n="footerRights">Сите права задржани.</span></p>
+            </div>
+        </footer>
     </div>
 
-    <div class="container">
-        <!-- Login Screen -->
-        <div id="loginScreen">
-            <div class="hero">
-                <h1>🏥 Второ мислење</h1>
-                <p>Платформа за добивање професионални медицински совети од лиценцирани лекари</p>
-            </div>
-
-            <div class="login-wrapper">
-                <div class="glass-card login-form">
-                    <h3 style="font-size: 32px; font-weight: 700; margin-bottom: 32px;">Најавете се</h3>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Email адреса</label>
-                        <input type="email" class="form-input" id="loginEmail" placeholder="име@example.com">
+    <!-- Dashboard (Hidden initially) -->
+    <div id="dashboardPage" class="hidden">
+        <div class="dashboard-container">
+            <div class="glass-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" data-i18n="dashboardWelcome">Добредојдовте назад!</h2>
+                        <p id="userDisplay" style="color: var(--text-light);"></p>
                     </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Шифра</label>
-                        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••">
-                    </div>
-
-                    <button class="btn-modern btn-primary" style="width: 100%; justify-content: center;" onclick="login()">
-                        <span id="loginBtnText">Продолжи →</span>
-                        <span id="loginBtnLoader" class="loading hidden"></span>
-                    </button>
-
-                    <p style="text-align: center; margin-top: 24px; color: var(--neutral-500);">
-                        Немате профил? <a href="#" onclick="showRegister(); return false;" style="color: var(--primary); text-decoration: none; font-weight: 600;">Регистрирајте се</a>
-                    </p>
+                    <button class="btn btn-outline" onclick="logout()" data-i18n="dashboardLogout">Одјави се</button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Register Screen -->
-        <div id="registerScreen" class="hidden">
-            <div class="hero">
-                <h1>📝 Регистрација</h1>
-                <p>Придружете се на нашата платформа за медицински консултации</p>
-            </div>
-
-            <div class="login-wrapper">
-                <div class="glass-card login-form" style="max-height: 600px; overflow-y: auto;">
-                    <h3 style="font-size: 32px; font-weight: 700; margin-bottom: 32px;">Креирајте нов профил</h3>
-                    
-                    <div class="role-toggle">
-                        <button class="role-option active" onclick="selectRegisterRole('user')">
-                            👤 Корисник
-                        </button>
-                        <button class="role-option" onclick="selectRegisterRole('expert')">
-                            🎓 Лекар
-                        </button>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Име и презиме *</label>
-                        <input type="text" class="form-input" id="regName" placeholder="Внесете го вашето целосно име">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Email адреса *</label>
-                        <input type="email" class="form-input" id="regEmail" placeholder="име@example.com">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Телефонски број *</label>
-                        <input type="tel" class="form-input" id="regPhone" placeholder="+389 XX XXX XXX">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Датум на раѓање *</label>
-                        <input type="date" class="form-input" id="regBirthdate">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Шифра *</label>
-                        <input type="password" class="form-input" id="regPassword" placeholder="Минимум 8 знаци">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">Потврди шифра *</label>
-                        <input type="password" class="form-input" id="regPasswordConfirm" placeholder="Повторете ја шифрата">
-                    </div>
-
-                    <div id="doctorFields" class="hidden">
-                        <div class="form-group">
-                            <label class="form-label">Специјализација *</label>
-                            <select class="form-input" id="regSpecialization">
-                                <option value="">Изберете специјализација</option>
-                                <option value="general">Општа медицина</option>
-                                <option value="cardiology">Кардиологија</option>
-                                <option value="dermatology">Дерматологија</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Број на лиценца *</label>
-                            <input type="text" class="form-input" id="regLicense" placeholder="Внесете го бројот на вашата лиценца">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Болница/Клиника *</label>
-                            <input type="text" class="form-input" id="regHospital" placeholder="Име на установа каде работите">
-                        </div>
-
-                        <div class="form-group">
-                            <label class="form-label">Години искуство *</label>
-                            <input type="number" class="form-input" id="regExperience" placeholder="0" min="0">
-                        </div>
-                    </div>
-
-                    <button class="btn-modern btn-primary" style="width: 100%; justify-content: center;" onclick="register()">
-                        <span id="registerBtnText">Регистрирај се</span>
-                        <span id="registerBtnLoader" class="loading hidden"></span>
-                    </button>
-
-                    <p style="text-align: center; margin-top: 24px; color: var(--neutral-500);">
-                        Веќе имате профил? <a href="#" onclick="showLogin(); return false;" style="color: var(--primary); text-decoration: none; font-weight: 600;">Најавете се</a>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Dashboard -->
-        <div id="dashboardScreen" class="hidden">
-            <div class="glass-card dashboard-header">
-                <div>
-                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Добредојдовте назад! 👋</h2>
-                    <p style="color: var(--neutral-500);" id="userDisplay"></p>
-                </div>
-                <button class="btn-modern btn-secondary" onclick="logout()">
-                    Одјави се
-                </button>
             </div>
 
             <!-- User Dashboard -->
-            <div id="userDashboard" class="hidden" style="margin-top: 24px;">
-                <div class="glass-card" style="padding: 32px; margin-bottom: 24px;">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">📝 Постави ново прашање</h3>
+            <div id="userDashboard" class="hidden">
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashboardAskQuestion">Постави ново прашање</h3>
                     
                     <div class="form-group">
-                        <label class="form-label">Наслов</label>
-                        <input type="text" class="form-input" id="questionTitle" placeholder="Кратко опишете го вашиот проблем">
+                        <label class="form-label" data-i18n="questionTitleLabel">Наслов</label>
+                        <input type="text" class="form-input" id="questionTitle" data-i18n-placeholder="questionTitlePlaceholder">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Медицинска област</label>
+                        <label class="form-label" data-i18n="questionSpecialtyLabel">Медицинска област</label>
                         <select class="form-input" id="questionSpecialty">
-                            <option value="">Изберете медицинска област</option>
+                            <option value="" data-i18n="questionSpecialtyPlaceholder">Изберете медицинска област</option>
                             <option value="general">Општа медицина</option>
                             <option value="cardiology">Кардиологија</option>
                             <option value="dermatology">Дерматологија</option>
@@ -485,112 +693,155 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Детали</label>
-                        <textarea class="form-input" id="questionText" rows="4" placeholder="Опишете ги вашите симптоми..."></textarea>
+                        <label class="form-label" data-i18n="questionTextLabel">Детали</label>
+                        <textarea class="form-input" id="questionText" rows="4" data-i18n-placeholder="questionTextPlaceholder"></textarea>
                     </div>
 
-                    <button class="btn-modern btn-primary" onclick="submitQuestion()">
-                        Испрати прашање
-                    </button>
+                    <button class="btn btn-primary" onclick="submitQuestion()" data-i18n="questionSubmit">Испрати прашање</button>
                 </div>
 
-                <div class="glass-card" style="padding: 32px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                        <h3 style="font-size: 24px; font-weight: 700; margin: 0;">💬 Мои прашања</h3>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn-modern" id="selectAllBtn" style="display: none; background: var(--neutral-200); color: var(--neutral-700);" onclick="selectAllQuestions()">
-                                <span id="selectAllText">Означи сè</span>
-                            </button>
-                            <button class="btn-modern" id="deleteModeBtn" style="background: var(--danger); color: white;" onclick="toggleDeleteMode()">
-                                🗑️ Избриши прашања
-                            </button>
-                            <button class="btn-modern btn-primary" id="confirmDeleteBtn" style="display: none;" onclick="deleteSelectedQuestions()">
-                                Потврди бришење
-                            </button>
-                            <button class="btn-modern btn-secondary" id="cancelDeleteBtn" style="display: none;" onclick="cancelDeleteMode()">
-                                Откажи
-                            </button>
-                        </div>
-                    </div>
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashboardMyQuestions">Мои прашања</h3>
                     <div id="userQuestions"></div>
                 </div>
             </div>
 
             <!-- Expert Dashboard -->
-            <div id="expertDashboard" class="hidden" style="margin-top: 24px;">
-                <div class="glass-card" style="padding: 32px;">
-                    <div style="display: flex; gap: 12px; margin-bottom: 32px; background: var(--neutral-100); padding: 6px; border-radius: 16px;">
-                        <button class="btn-modern" id="expertTabPending" onclick="switchExpertTab('pending')" style="flex: 1; background: white; color: var(--primary); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);">
-                            Прашања за одговор
-                        </button>
-                        <button class="btn-modern" id="expertTabAnswered" onclick="switchExpertTab('answered')" style="flex: 1; background: transparent; color: var(--neutral-600);">
-                            Мои одговори
-                        </button>
-                    </div>
-                    
-                    <div id="expertPendingSection">
-                        <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">📋 Прашања за одговор</h3>
-                        <div id="expertQuestions"></div>
-                    </div>
-
-                    <div id="expertAnsweredSection" class="hidden">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-                            <h3 style="font-size: 24px; font-weight: 700; margin: 0;">✅ Мои одговори</h3>
-                            <button class="btn-modern" id="expertDeleteModeBtn" style="background: var(--danger); color: white;" onclick="toggleExpertDeleteMode()">
-                                🗑️ Избриши прашања
-                            </button>
-                            <div id="expertDeleteControls" class="hidden" style="display: flex; gap: 10px;">
-                                <button class="btn-modern" style="background: var(--neutral-200); color: var(--neutral-700);" onclick="selectAllExpertQuestions()">
-                                    <span id="expertSelectAllText">Означи сè</span>
-                                </button>
-                                <button class="btn-modern btn-primary" onclick="deleteSelectedExpertQuestions()">
-                                    Потврди бришење
-                                </button>
-                                <button class="btn-modern btn-secondary" onclick="cancelExpertDeleteMode()">
-                                    Откажи
-                                </button>
-                            </div>
-                        </div>
-                        <div id="expertAnsweredQuestions"></div>
-                    </div>
+            <div id="expertDashboard" class="hidden">
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashboardQuestionsToAnswer">Прашања за одговор</h3>
+                    <div id="expertQuestions"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="toast" id="toast">
-        <div id="toastMessage"></div>
+    <!-- Login/Register Modal -->
+    <div id="authModal" class="modal-overlay hidden" onclick="closeAuthModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modalTitle">Најава</h2>
+                <button class="modal-close" onclick="closeAuthModal()">×</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" data-i18n="loginEmail">Email адреса</label>
+                    <input type="email" class="form-input" id="loginEmail" data-i18n-placeholder="loginEmailPlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="loginPassword">Шифра</label>
+                    <input type="password" class="form-input" id="loginPassword" data-i18n-placeholder="loginPasswordPlaceholder">
+                </div>
+
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;" data-i18n="loginButton">Најави се</button>
+
+                <p style="text-align: center; margin-top: 20px; color: var(--text-light);">
+                    <span data-i18n="loginNoAccount">Немате профил?</span>
+                    <a href="#" onclick="showRegisterFromLogin(); return false;" style="color: var(--primary); font-weight: 600;" data-i18n="loginRegister">Регистрирајте се</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerName">Име и презиме</label>
+                    <input type="text" class="form-input" id="regName" data-i18n-placeholder="registerNamePlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerEmail">Email адреса</label>
+                    <input type="email" class="form-input" id="regEmail" data-i18n-placeholder="registerEmailPlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerPhone">Телефонски број</label>
+                    <input type="tel" class="form-input" id="regPhone" data-i18n-placeholder="registerPhonePlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerBirthdate">Датум на раѓање</label>
+                    <input type="date" class="form-input" id="regBirthdate">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerPassword">Шифра</label>
+                    <input type="password" class="form-input" id="regPassword" data-i18n-placeholder="registerPasswordPlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerPasswordConfirm">Потврди шифра</label>
+                    <input type="password" class="form-input" id="regPasswordConfirm" data-i18n-placeholder="registerPasswordConfirmPlaceholder">
+                </div>
+
+                <div id="doctorFields" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerSpecialization">Специјализација</label>
+                        <select class="form-input" id="regSpecialization">
+                            <option value="">Изберете специјализација</option>
+                            <option value="general">Општа медицина</option>
+                            <option value="cardiology">Кардиологија</option>
+                            <option value="dermatology">Дерматологија</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerLicense">Број на лиценца</label>
+                        <input type="text" class="form-input" id="regLicense" data-i18n-placeholder="registerLicensePlaceholder">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerHospital">Болница/Клиника</label>
+                        <input type="text" class="form-input" id="regHospital" data-i18n-placeholder="registerHospitalPlaceholder">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerExperience">Години искуство</label>
+                        <input type="number" class="form-input" id="regExperience" placeholder="0" min="0">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="register()" style="width: 100%;" data-i18n="registerButton">Регистрирај се</button>
+
+                <p style="text-align: center; margin-top: 20px; color: var(--text-light);">
+                    <span data-i18n="registerHaveAccount">Веќе имате профил?</span>
+                    <a href="#" onclick="showLoginFromRegister(); return false;" style="color: var(--primary); font-weight: 600;" data-i18n="registerLogin">Најавете се</a>
+                </p>
+            </div>
+        </div>
     </div>
 
     <!-- Answer Modal -->
     <div id="answerModal" class="modal-overlay hidden" onclick="closeAnswerModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2 style="font-size: 24px; font-weight: 700; margin: 0;">Одговори на прашањето</h2>
+                <h2 data-i18n="answerModalTitle">Одговори на прашањето</h2>
                 <button class="modal-close" onclick="closeAnswerModal()">×</button>
             </div>
             
-            <div style="background: var(--neutral-50); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
-                <h3 style="font-size: 16px; font-weight: 600; color: var(--neutral-700); margin-bottom: 8px;">Прашање:</h3>
+            <div style="background: var(--bg-light); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+                <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;" data-i18n="answerModalQuestionLabel">Прашање:</h3>
                 <p id="modalQuestionTitle" style="font-size: 18px; font-weight: 600; margin-bottom: 12px;"></p>
-                <p id="modalQuestionText" style="color: var(--neutral-600); line-height: 1.6;"></p>
+                <p id="modalQuestionText" style="color: var(--text-light); line-height: 1.6;"></p>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Ваш одговор *</label>
-                <textarea class="form-input" id="answerText" rows="8" placeholder="Внесете го вашиот професионален одговор..."></textarea>
+                <label class="form-label" data-i18n="answerModalAnswerLabel">Ваш одговор</label>
+                <textarea class="form-input" id="answerText" rows="8" data-i18n-placeholder="answerModalPlaceholder"></textarea>
             </div>
 
             <div style="display: flex; gap: 12px;">
-                <button class="btn-modern btn-primary" onclick="submitAnswer()" style="flex: 1;">
-                    <span id="answerBtnText">Испрати одговор</span>
-                    <span id="answerBtnLoader" class="loading hidden"></span>
-                </button>
-                <button class="btn-modern btn-secondary" onclick="closeAnswerModal()">
-                    Откажи
-                </button>
+                <button class="btn btn-primary" onclick="submitAnswer()" style="flex: 1;" data-i18n="answerModalSubmit">Испрати одговор</button>
+                <button class="btn btn-outline" onclick="closeAnswerModal()" data-i18n="answerModalCancel">Откажи</button>
             </div>
         </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <div id="toastMessage"></div>
     </div>
 
     <script>
@@ -603,26 +854,217 @@
         
         let currentUser = null;
         let registerRole = 'user';
-        let deleteMode = false;
-        let expertDeleteMode = false;
+        let currentLanguage = 'mk';
 
-        // UI Functions
-        function showRegister() {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('registerScreen').classList.remove('hidden');
-        }
+        // Translations
+        const translations = {
+            mk: {
+                siteName: 'Второ мислење',
+                navHow: 'Како работи',
+                navFeatures: 'Предности',
+                navLogin: 'Најава',
+                heroTitle1: 'Добијте',
+                heroTitle2: 'професионално',
+                heroTitle3: 'второ мислење',
+                heroSubtitle: 'Поврзете се со лиценцирани лекари онлајн и добијте професионални медицински совети брзо и безбедно.',
+                heroButton1: 'Започни сега',
+                heroButton2: 'Регистрирај се како лекар',
+                featuresTitle: 'Зошто нè избираат',
+                feature1Title: 'Лиценцирани лекари',
+                feature1Text: 'Сите наши лекари се целосно лиценцирани и верификувани специјалисти со години искуство.',
+                feature2Title: 'Брзи одговори',
+                feature2Text: 'Добијте одговор на вашите прашања во најкратко можно време, обично во рок од неколку часа.',
+                feature3Title: 'Приватност',
+                feature3Text: 'Вашите медицински податоци се целосно заштитени и confidential според GDPR стандардите.',
+                howTitle: 'Како работи',
+                step1Title: 'Регистрирајте се',
+                step1Text: 'Креирајте бесплатен профил во неколку едноставни чекори. Треба ви само email адреса и основни информации.',
+                step2Title: 'Поставете прашање',
+                step2Text: 'Опишете го вашето здравствено прашање детално. Изберете соодветна медицинска област за најдобар одговор.',
+                step3Title: 'Добијте одговор',
+                step3Text: 'Лиценциран лекар од соодветната област ќе ви одговори брзо и професионално. Добивате и email нотификација.',
+                ctaTitle: 'Подготвени да започнете?',
+                ctaText: 'Придружете се на илјадници корисници кои веќе ги користат нашите услуги.',
+                ctaButton: 'Регистрирајте се бесплатно',
+                footerDesc: 'Професионални медицински консултации онлајн од лиценцирани специјалисти.',
+                footerLinks: 'Линкови',
+                footerLegal: 'Правни',
+                footerContact: 'Контакт',
+                footerPrivacy: 'Приватност',
+                footerTerms: 'Услови',
+                footerRights: 'Сите права задржани.',
+                loginEmail: 'Email адреса',
+                loginPassword: 'Шифра',
+                loginButton: 'Најави се',
+                loginNoAccount: 'Немате профил?',
+                loginRegister: 'Регистрирајте се',
+                registerName: 'Име и презиме',
+                registerEmail: 'Email адреса',
+                registerPhone: 'Телефонски број',
+                registerBirthdate: 'Датум на раѓање',
+                registerPassword: 'Шифра',
+                registerPasswordConfirm: 'Потврди шифра',
+                registerButton: 'Регистрирај се',
+                registerHaveAccount: 'Веќе имате профил?',
+                registerLogin: 'Најавете се',
+                dashboardWelcome: 'Добредојдовте назад!',
+                dashboardLogout: 'Одјави се',
+                dashboardAskQuestion: 'Постави ново прашање',
+                dashboardMyQuestions: 'Мои прашања',
+                dashboardQuestionsToAnswer: 'Прашања за одговор'
+            },
+            sq: {
+                siteName: 'Mendimi i dytë',
+                navHow: 'Si funksionon',
+                navFeatures: 'Përparësitë',
+                navLogin: 'Hyrje',
+                heroTitle1: 'Merrni',
+                heroTitle2: 'profesionale',
+                heroTitle3: 'mendim të dytë',
+                heroSubtitle: 'Lidhuni me mjekë të licensuar online dhe merrni këshilla mjekësore profesionale shpejt dhe në mënyrë të sigurt.',
+                heroButton1: 'Filloni tani',
+                heroButton2: 'Regjistrohuni si mjek',
+                featuresTitle: 'Pse na zgjedhin',
+                feature1Title: 'Mjekë të licensuar',
+                feature1Text: 'Të gjithë mjekët tanë janë plotësisht të licensuar dhe specialistë të verifikuar me vite përvojë.',
+                feature2Title: 'Përgjigje të shpejta',
+                feature2Text: 'Merrni përgjigje për pyetjet tuaja sa më shpejt të jetë e mundur, zakonisht brenda disa orëve.',
+                feature3Title: 'Privatësia',
+                feature3Text: 'Të dhënat tuaja mjekësore janë plotësisht të mbrojtura dhe konfidenciale sipas standardeve GDPR.',
+                howTitle: 'Si funksionon',
+                step1Title: 'Regjistrohuni',
+                step1Text: 'Krijoni një profil falas në disa hapa të thjeshtë. Ju nevojitet vetëm një adresë emaili dhe informacione bazë.',
+                step2Title: 'Bëni një pyetje',
+                step2Text: 'Përshkruani pyetjen tuaj shëndetësore në detaje. Zgjidhni fushën e duhur mjekësore për përgjigjen më të mirë.',
+                step3Title: 'Merrni përgjigje',
+                step3Text: 'Një mjek i licensuar nga fusha përkatëse do t\'ju përgjigjet shpejt dhe profesionalisht. Gjithashtu merrni njoftim me email.',
+                ctaTitle: 'Gati për të filluar?',
+                ctaText: 'Bashkohuni me mijëra përdorues që tashmë përdorin shërbimet tona.',
+                ctaButton: 'Regjistrohuni falas',
+                footerDesc: 'Konsultime mjekësore profesionale online nga specialistë të licensuar.',
+                footerLinks: 'Lidhjet',
+                footerLegal: 'Ligjore',
+                footerContact: 'Kontakti',
+                footerPrivacy: 'Privatësia',
+                footerTerms: 'Kushtet',
+                footerRights: 'Të gjitha të drejtat e rezervuara.',
+                loginEmail: 'Adresa email',
+                loginPassword: 'Fjalëkalimi',
+                loginButton: 'Hyrje',
+                loginNoAccount: 'Nuk keni profil?',
+                loginRegister: 'Regjistrohuni',
+                registerName: 'Emri dhe mbiemri',
+                registerEmail: 'Adresa email',
+                registerPhone: 'Numri i telefonit',
+                registerBirthdate: 'Data e lindjes',
+                registerPassword: 'Fjalëkalimi',
+                registerPasswordConfirm: 'Konfirmoni fjalëkalimin',
+                registerButton: 'Regjistrohu',
+                registerHaveAccount: 'Keni tashmë profil?',
+                registerLogin: 'Hyni',
+                dashboardWelcome: 'Mirë se vini përsëri!',
+                dashboardLogout: 'Dilni',
+                dashboardAskQuestion: 'Bëni një pyetje të re',
+                dashboardMyQuestions: 'Pyetjet e mia',
+                dashboardQuestionsToAnswer: 'Pyetje për t\'u përgjigjur'
+            },
+            en: {
+                siteName: 'Second Opinion',
+                navHow: 'How it works',
+                navFeatures: 'Features',
+                navLogin: 'Login',
+                heroTitle1: 'Get a',
+                heroTitle2: 'professional',
+                heroTitle3: 'second opinion',
+                heroSubtitle: 'Connect with licensed doctors online and get professional medical advice quickly and securely.',
+                heroButton1: 'Get started',
+                heroButton2: 'Register as a doctor',
+                featuresTitle: 'Why choose us',
+                feature1Title: 'Licensed doctors',
+                feature1Text: 'All our doctors are fully licensed and verified specialists with years of experience.',
+                feature2Title: 'Fast responses',
+                feature2Text: 'Get answers to your questions as quickly as possible, usually within a few hours.',
+                feature3Title: 'Privacy',
+                feature3Text: 'Your medical data is fully protected and confidential according to GDPR standards.',
+                howTitle: 'How it works',
+                step1Title: 'Register',
+                step1Text: 'Create a free profile in a few simple steps. You only need an email address and basic information.',
+                step2Title: 'Ask a question',
+                step2Text: 'Describe your health question in detail. Choose the appropriate medical field for the best answer.',
+                step3Title: 'Get an answer',
+                step3Text: 'A licensed doctor from the appropriate field will respond quickly and professionally. You also receive an email notification.',
+                ctaTitle: 'Ready to get started?',
+                ctaText: 'Join thousands of users who already use our services.',
+                ctaButton: 'Register for free',
+                footerDesc: 'Professional medical consultations online from licensed specialists.',
+                footerLinks: 'Links',
+                footerLegal: 'Legal',
+                footerContact: 'Contact',
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerRights: 'All rights reserved.',
+                loginEmail: 'Email address',
+                loginPassword: 'Password',
+                loginButton: 'Login',
+                loginNoAccount: 'Don\'t have an account?',
+                loginRegister: 'Register',
+                registerName: 'Full name',
+                registerEmail: 'Email address',
+                registerPhone: 'Phone number',
+                registerBirthdate: 'Date of birth',
+                registerPassword: 'Password',
+                registerPasswordConfirm: 'Confirm password',
+                registerButton: 'Register',
+                registerHaveAccount: 'Already have an account?',
+                registerLogin: 'Login',
+                dashboardWelcome: 'Welcome back!',
+                dashboardLogout: 'Logout',
+                dashboardAskQuestion: 'Ask a new question',
+                dashboardMyQuestions: 'My questions',
+                dashboardQuestionsToAnswer: 'Questions to answer'
+            }
+        };
 
-        function showLogin() {
-            document.getElementById('registerScreen').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-        }
-
-        function selectRegisterRole(role) {
-            registerRole = role;
-            document.querySelectorAll('#registerScreen .role-option').forEach(btn => {
-                btn.classList.remove('active');
-            });
+        // Language Switching
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            
+            // Update all translated elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+
+        // Modal Functions
+        function showLoginModal() {
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].navLogin;
+        }
+
+        function showRegisterModal(role) {
+            registerRole = role;
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].registerButton;
             
             if (role === 'expert') {
                 document.getElementById('doctorFields').classList.remove('hidden');
@@ -631,12 +1073,28 @@
             }
         }
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toastMessage');
-            toastMessage.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+        function showRegisterFromLogin() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].registerButton;
+        }
+
+        function showLoginFromRegister() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].navLogin;
+        }
+
+        function closeAuthModal(event) {
+            if (!event || event.target.id === 'authModal' || event.target.classList.contains('modal-close')) {
+                document.getElementById('authModal').classList.add('hidden');
+            }
+        }
+
+        function closeAnswerModal(event) {
+            if (!event || event.target.id === 'answerModal' || event.target.classList.contains('modal-close')) {
+                document.getElementById('answerModal').classList.add('hidden');
+            }
         }
 
         // Auth Functions
@@ -649,32 +1107,38 @@
             const birthdate = document.getElementById('regBirthdate').value;
 
             if (!email || !password || !name || !phone || !birthdate) {
-                showToast('Ве молам пополнете ги сите задолжителни полиња');
+                showToast('Please fill all required fields');
                 return;
             }
 
             if (password !== passwordConfirm) {
-                showToast('Шифрите не се совпаѓаат!');
+                showToast('Passwords do not match!');
                 return;
             }
 
             if (password.length < 8) {
-                showToast('Шифрата мора да содржи најмалку 8 знаци');
+                showToast('Password must be at least 8 characters');
                 return;
             }
 
-            const btn = document.getElementById('registerBtnText');
-            const loader = document.getElementById('registerBtnLoader');
-            btn.classList.add('hidden');
-            loader.classList.remove('hidden');
-
             try {
+                console.log('Attempting to register with:', { email, name, role: registerRole });
+                
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
                 });
 
-                if (authError) throw authError;
+                console.log('Auth response:', { authData, authError });
+
+                if (authError) {
+                    console.error('Auth error details:', authError);
+                    throw authError;
+                }
+
+                if (!authData.user) {
+                    throw new Error('No user data returned from registration');
+                }
 
                 const userData = {
                     id: authData.user.id,
@@ -686,199 +1150,57 @@
                 };
 
                 if (registerRole === 'expert') {
-                    userData.specialization = document.getElementById('regSpecialization').value;
-                    userData.license_number = document.getElementById('regLicense').value.trim();
-                    userData.hospital = document.getElementById('regHospital').value.trim();
-                    userData.experience = parseInt(document.getElementById('regExperience').value);
+                    const specialization = document.getElementById('regSpecialization').value;
+                    const license = document.getElementById('regLicense').value.trim();
+                    const hospital = document.getElementById('regHospital').value.trim();
+                    const experience = document.getElementById('regExperience').value;
+
+                    if (!specialization || !license || !hospital || !experience) {
+                        showToast('Please fill all doctor fields');
+                        return;
+                    }
+
+                    userData.specialization = specialization;
+                    userData.license_number = license;
+                    userData.hospital = hospital;
+                    userData.experience = parseInt(experience);
                 }
+
+                console.log('Inserting user data:', userData);
 
                 const { error: userError } = await supabaseClient
                     .from('users')
                     .insert([userData]);
 
-                if (userError) throw userError;
+                console.log('User insert response:', { userError });
 
-                showToast('Регистрацијата е успешна! Проверете го вашиот email за верификација. ✔');
-                showLogin();
-            } catch (error) {
-                showToast('Грешка: ' + error.message);
-                console.error(error);
-            } finally {
-                btn.classList.remove('hidden');
-                loader.classList.add('hidden');
-            }
-        }
-
-        // Expert Tab Switching
-        function switchExpertTab(tab) {
-            const pendingBtn = document.getElementById('expertTabPending');
-            const answeredBtn = document.getElementById('expertTabAnswered');
-            const pendingSection = document.getElementById('expertPendingSection');
-            const answeredSection = document.getElementById('expertAnsweredSection');
-
-            if (tab === 'pending') {
-                pendingBtn.style.background = 'white';
-                pendingBtn.style.color = 'var(--primary)';
-                pendingBtn.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
-                answeredBtn.style.background = 'transparent';
-                answeredBtn.style.color = 'var(--neutral-600)';
-                answeredBtn.style.boxShadow = 'none';
-                pendingSection.classList.remove('hidden');
-                answeredSection.classList.add('hidden');
-            } else {
-                answeredBtn.style.background = 'white';
-                answeredBtn.style.color = 'var(--primary)';
-                answeredBtn.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.08)';
-                pendingBtn.style.background = 'transparent';
-                pendingBtn.style.color = 'var(--neutral-600)';
-                pendingBtn.style.boxShadow = 'none';
-                answeredSection.classList.remove('hidden');
-                pendingSection.classList.add('hidden');
-            }
-        }
-
-        // Load Expert's Answered Questions
-        async function loadExpertAnsweredQuestions() {
-            try {
-                // Get questions that this expert answered
-                const { data: answers, error: answersError } = await supabaseClient
-                    .from('answers')
-                    .select('question_id')
-                    .eq('expert_id', currentUser.id);
-
-                if (answersError) throw answersError;
-
-                if (!answers || answers.length === 0) {
-                    const container = document.getElementById('expertAnsweredQuestions');
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px; color: var(--neutral-500);">
-                            <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
-                            <h3 style="font-size: 20px; margin-bottom: 8px;">Нема одговорени прашања</h3>
-                            <p>Сè уште немате одговорено на прашања.</p>
-                        </div>
-                    `;
-                    document.getElementById('expertDeleteModeBtn').style.display = 'none';
-                    return;
+                if (userError) {
+                    console.error('User insert error details:', userError);
+                    throw userError;
                 }
 
-                const questionIds = answers.map(a => a.question_id);
-
-                const { data: questions, error: questionsError } = await supabaseClient
-                    .from('questions')
-                    .select('*')
-                    .in('id', questionIds)
-                    .order('created_at', { ascending: false });
-
-                if (questionsError) throw questionsError;
-
-                // Get user data and answers for each question
-                const questionsWithDetails = await Promise.all(
-                    questions.map(async (q) => {
-                        const { data: userData } = await supabaseClient
-                            .from('users')
-                            .select('full_name')
-                            .eq('id', q.user_id)
-                            .single();
-
-                        const { data: answerData } = await supabaseClient
-                            .from('answers')
-                            .select('answer_text, created_at')
-                            .eq('question_id', q.id)
-                            .eq('expert_id', currentUser.id)
-                            .single();
-                        
-                        return {
-                            ...q,
-                            user_name: userData?.full_name || 'Непознат корисник',
-                            answer: answerData
-                        };
-                    })
-                );
-
-                document.getElementById('expertDeleteModeBtn').style.display = 'inline-flex';
-
-                const container = document.getElementById('expertAnsweredQuestions');
-                container.innerHTML = questionsWithDetails.map(q => `
-                    <div class="question-card-modern">
-                        ${expertDeleteMode ? `
-                            <div style="display: flex; align-items: start; gap: 15px;">
-                                <input type="checkbox" class="expert-question-checkbox" data-question-id="${q.id}" style="margin-top: 5px; width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary);">
-                                <div style="flex: 1;">
-                        ` : '<div>'}
-                            <div style="margin-bottom: 12px;">
-                                <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
-                                <div style="font-size: 14px; color: var(--neutral-500);">
-                                    🏥 ${q.specialty_name} • Од ${q.user_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
-                                </div>
-                            </div>
-                            <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 16px;"><strong>Прашање:</strong> ${q.question_text}</p>
-                            <div style="background: #D1FAE5; padding: 16px; border-radius: 12px; border-left: 4px solid #10B981;">
-                                <div style="font-weight: 600; color: #059669; margin-bottom: 8px; font-size: 14px;">
-                                    ✓ Ваш одговор:
-                                </div>
-                                <p style="color: var(--neutral-700); line-height: 1.6;">${q.answer.answer_text}</p>
-                                <p style="font-size: 12px; color: var(--neutral-500); margin-top: 8px;">
-                                    Одговорено на: ${new Date(q.answer.created_at).toLocaleDateString('mk-MK')}
-                                </p>
-                            </div>
-                        ${expertDeleteMode ? '</div></div>' : '</div>'}
-                    </div>
-                `).join('');
-            } catch (error) {
-                showToast('Грешка при вчитување на одговори: ' + error.message);
-                console.error(error);
-            }
-        }
-
-        function toggleExpertDeleteMode() {
-            expertDeleteMode = true;
-            document.getElementById('expertDeleteModeBtn').style.display = 'none';
-            document.getElementById('expertDeleteControls').classList.remove('hidden');
-            document.getElementById('expertDeleteControls').style.display = 'flex';
-            loadExpertAnsweredQuestions();
-        }
-
-        function cancelExpertDeleteMode() {
-            expertDeleteMode = false;
-            document.getElementById('expertDeleteModeBtn').style.display = 'inline-flex';
-            document.getElementById('expertDeleteControls').classList.add('hidden');
-            loadExpertAnsweredQuestions();
-        }
-
-        function selectAllExpertQuestions() {
-            const checkboxes = document.querySelectorAll('.expert-question-checkbox');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            checkboxes.forEach(cb => cb.checked = !allChecked);
-            document.getElementById('expertSelectAllText').textContent = allChecked ? 'Означи сè' : 'Одзначи сè';
-        }
-
-        async function deleteSelectedExpertQuestions() {
-            const checkboxes = document.querySelectorAll('.expert-question-checkbox:checked');
-            
-            if (checkboxes.length === 0) {
-                showToast('Ве молиме изберете прашања за бришење');
-                return;
-            }
-            
-            const confirmDelete = confirm(`Дали сте сигурни дека сакате да избришете ${checkboxes.length} прашање(ња) со вашите одговори? Оваа акција не може да се врати.`);
-            
-            if (!confirmDelete) return;
-
-            try {
-                const idsToDelete = Array.from(checkboxes).map(cb => cb.dataset.questionId);
+                showToast('Registration successful! Check your email for verification. ✔');
+                closeAuthModal();
                 
-                const { error } = await supabaseClient
-                    .from('questions')
-                    .delete()
-                    .in('id', idsToDelete);
-
-                if (error) throw error;
-
-                showToast(`Успешно избришани ${idsToDelete.length} прашање(ња) ✓`);
-                cancelExpertDeleteMode();
+                // Clear form
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regPasswordConfirm').value = '';
+                document.getElementById('regName').value = '';
+                document.getElementById('regPhone').value = '';
+                document.getElementById('regBirthdate').value = '';
+                
             } catch (error) {
-                showToast('Грешка: ' + error.message);
-                console.error(error);
+                console.error('Full registration error:', error);
+                showToast('Registration error: ' + (error.message || 'Unknown error'));
+                
+                // Show more detailed error in console
+                if (error.status) {
+                    console.error('HTTP Status:', error.status);
+                }
+                if (error.details) {
+                    console.error('Error details:', error.details);
+                }
             }
         }
 
@@ -887,14 +1209,9 @@
             const password = document.getElementById('loginPassword').value;
 
             if (!email || !password) {
-                showToast('Ве молиме внесете email и шифра');
+                showToast('Please enter email and password');
                 return;
             }
-
-            const btn = document.getElementById('loginBtnText');
-            const loader = document.getElementById('loginBtnLoader');
-            btn.classList.add('hidden');
-            loader.classList.remove('hidden');
 
             try {
                 const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
@@ -914,9 +1231,9 @@
 
                 currentUser = userData;
                 
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('dashboardScreen').classList.remove('hidden');
-                document.getElementById('userDisplay').textContent = `${userData.full_name} (${userData.role === 'user' ? 'корисник' : 'лекар'})`;
+                document.getElementById('landingPage').classList.add('hidden');
+                document.getElementById('dashboardPage').classList.remove('hidden');
+                document.getElementById('userDisplay').textContent = `${userData.full_name} (${userData.role === 'user' ? 'User' : 'Doctor'})`;
 
                 if (userData.role === 'user') {
                     document.getElementById('userDashboard').classList.remove('hidden');
@@ -924,27 +1241,24 @@
                 } else {
                     document.getElementById('expertDashboard').classList.remove('hidden');
                     loadExpertQuestions();
-                    loadExpertAnsweredQuestions();
                 }
 
-                showToast('Успешна најава! 🎉');
+                closeAuthModal();
+                showToast('Login successful! 🎉');
             } catch (error) {
-                showToast('Грешка при најава: ' + error.message);
+                showToast('Login error: ' + error.message);
                 console.error(error);
-            } finally {
-                btn.classList.remove('hidden');
-                loader.classList.add('hidden');
             }
         }
 
         async function logout() {
             await supabaseClient.auth.signOut();
             currentUser = null;
-            document.getElementById('dashboardScreen').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('landingPage').classList.remove('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
             document.getElementById('userDashboard').classList.add('hidden');
             document.getElementById('expertDashboard').classList.add('hidden');
-            showToast('Одјавени сте');
+            showToast('Logged out');
         }
 
         // Question Functions
@@ -954,7 +1268,7 @@
             const text = document.getElementById('questionText').value.trim();
 
             if (!title || !specialty || !text) {
-                showToast('Ве молиме пополнете ги сите полиња');
+                showToast('Please fill all fields');
                 return;
             }
 
@@ -975,10 +1289,10 @@
                 document.getElementById('questionSpecialty').value = '';
                 document.getElementById('questionText').value = '';
 
-                showToast('Прашањето е успешно испратено! ✔');
+                showToast('Question submitted successfully! ✔');
                 loadUserQuestions();
             } catch (error) {
-                showToast('Грешка: ' + error.message);
+                showToast('Error: ' + error.message);
                 console.error(error);
             }
         }
@@ -1004,117 +1318,45 @@
 
                 if (questions.length === 0) {
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px; color: var(--neutral-500);">
+                        <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
                             <div style="font-size: 48px; margin-bottom: 16px;">🔭</div>
-                            <h3 style="font-size: 20px; margin-bottom: 8px;">Нема прашања</h3>
-                            <p>Сè уште немате поставено прашање.</p>
+                            <h3>No questions yet</h3>
+                            <p>You haven't asked any questions yet.</p>
                         </div>
                     `;
-                    document.getElementById('deleteModeBtn').style.display = 'none';
                     return;
                 }
-
-                document.getElementById('deleteModeBtn').style.display = 'inline-flex';
 
                 container.innerHTML = questions.map(q => {
                     const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
                     return `
-                        <div class="question-card-modern">
-                            ${deleteMode ? `
-                                <div style="display: flex; align-items: start; gap: 15px;">
-                                    <input type="checkbox" class="user-question-checkbox" data-question-id="${q.id}" style="margin-top: 5px; width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary);">
-                                    <div style="flex: 1;">
-                            ` : '<div>'}
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <div>
-                                        <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
-                                        <div style="font-size: 14px; color: var(--neutral-500);">
-                                            🏥 ${q.specialty_name} • ${new Date(q.created_at).toLocaleDateString('mk-MK')}
-                                        </div>
-                                    </div>
-                                    <span style="padding: 6px 14px; border-radius: 12px; font-size: 13px; font-weight: 600; ${answer ? 'background: #D1FAE5; color: #059669;' : 'background: #FEF3C7; color: #D97706;'}">
-                                        ${answer ? 'Одговорено' : 'Се чека одговор'}
-                                    </span>
+                        <div class="question-card">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <h4 style="font-size: 18px; font-weight: 600;">${q.title}</h4>
+                                <span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; ${answer ? 'background: #D1FAE5; color: #059669;' : 'background: #FEF3C7; color: #D97706;'}">
+                                    ${answer ? 'Answered' : 'Pending'}
+                                </span>
+                            </div>
+                            <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
+                            ${answer ? `
+                                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
+                                    <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">
+                                        ✓ Answer from ${answer.expert.full_name}:
+                                    </p>
+                                    <p style="color: var(--text-light);">${answer.answer_text}</p>
                                 </div>
-                                <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 12px;">${q.question_text}</p>
-                                ${answer ? `
-                                    <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--neutral-100);">
-                                        <div style="font-weight: 600; color: var(--success); margin-bottom: 8px; font-size: 14px;">
-                                            ✓ Одговор од ${answer.expert.full_name}:
-                                        </div>
-                                        <div style="background: var(--neutral-50); padding: 14px; border-radius: 10px; color: var(--neutral-700); line-height: 1.6;">
-                                            ${answer.answer_text}
-                                        </div>
-                                    </div>
-                                ` : ''}
-                            ${deleteMode ? '</div></div>' : '</div>'}
+                            ` : ''}
                         </div>
                     `;
                 }).join('');
             } catch (error) {
-                showToast('Грешка при вчитување на прашања: ' + error.message);
-                console.error(error);
-            }
-        }
-
-        function toggleDeleteMode() {
-            deleteMode = true;
-            document.getElementById('deleteModeBtn').style.display = 'none';
-            document.getElementById('selectAllBtn').style.display = 'inline-flex';
-            document.getElementById('confirmDeleteBtn').style.display = 'inline-flex';
-            document.getElementById('cancelDeleteBtn').style.display = 'inline-flex';
-            loadUserQuestions();
-        }
-
-        function cancelDeleteMode() {
-            deleteMode = false;
-            document.getElementById('deleteModeBtn').style.display = 'inline-flex';
-            document.getElementById('selectAllBtn').style.display = 'none';
-            document.getElementById('confirmDeleteBtn').style.display = 'none';
-            document.getElementById('cancelDeleteBtn').style.display = 'none';
-            loadUserQuestions();
-        }
-
-        function selectAllQuestions() {
-            const checkboxes = document.querySelectorAll('.user-question-checkbox');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            checkboxes.forEach(cb => cb.checked = !allChecked);
-            document.getElementById('selectAllText').textContent = allChecked ? 'Означи сè' : 'Одзначи сè';
-        }
-
-        async function deleteSelectedQuestions() {
-            const checkboxes = document.querySelectorAll('.user-question-checkbox:checked');
-            
-            if (checkboxes.length === 0) {
-                showToast('Ве молиме изберете прашања за бришење');
-                return;
-            }
-            
-            const confirmDelete = confirm(`Дали сте сигурни дека сакате да избришете ${checkboxes.length} прашање(ња)? Оваа акција не може да се врати.`);
-            
-            if (!confirmDelete) return;
-
-            try {
-                const idsToDelete = Array.from(checkboxes).map(cb => cb.dataset.questionId);
-                
-                const { error } = await supabaseClient
-                    .from('questions')
-                    .delete()
-                    .in('id', idsToDelete);
-
-                if (error) throw error;
-
-                showToast(`Успешно избришани ${idsToDelete.length} прашање(ња) ✓`);
-                cancelDeleteMode();
-            } catch (error) {
-                showToast('Грешка: ' + error.message);
+                showToast('Error loading questions: ' + error.message);
                 console.error(error);
             }
         }
 
         async function loadExpertQuestions() {
             try {
-                // Get all pending questions
                 const { data: questions, error: questionsError } = await supabaseClient
                     .from('questions')
                     .select('*')
@@ -1126,21 +1368,20 @@
                 if (!questions || questions.length === 0) {
                     const container = document.getElementById('expertQuestions');
                     container.innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px; color: var(--neutral-500);">
+                        <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
                             <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
-                            <h3 style="font-size: 20px; margin-bottom: 8px;">Одлична работа!</h3>
-                            <p>Моментално нема прашања на чекање.</p>
+                            <h3>Great work!</h3>
+                            <p>No pending questions at the moment.</p>
                         </div>
                     `;
                     return;
                 }
 
-                // Get user data for each question
                 const questionsWithUsers = await Promise.all(
                     questions.map(async (q) => {
                         const { data: userData, error: userError } = await supabaseClient
                             .from('users')
-                            .select('full_name, email, phone')
+                            .select('full_name')
                             .eq('id', q.user_id)
                             .single();
                         
@@ -1150,43 +1391,33 @@
                         
                         return {
                             ...q,
-                            user_name: userData?.full_name || 'Непознат корисник',
-                            user_email: userData?.email || '',
-                            user_phone: userData?.phone || ''
+                            user_name: userData?.full_name || 'Unknown user'
                         };
                     })
                 );
 
                 const container = document.getElementById('expertQuestions');
                 container.innerHTML = questionsWithUsers.map(q => `
-                    <div class="question-card-modern">
-                        <div style="margin-bottom: 12px;">
-                            <div style="font-size: 18px; font-weight: 600; color: var(--neutral-900); margin-bottom: 8px;">${q.title}</div>
-                            <div style="font-size: 14px; color: var(--neutral-500); display: flex; flex-wrap: wrap; gap: 12px;">
-                                <span>🏥 ${q.specialty_name}</span>
-                                <span>👤 ${q.user_name}</span>
-                                ${q.user_email ? `<span>📧 ${q.user_email}</span>` : ''}
-                                ${q.user_phone ? `<span>📞 ${q.user_phone}</span>` : ''}
-                                <span>📅 ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
-                            </div>
-                        </div>
-                        <p style="color: var(--neutral-600); line-height: 1.6; margin-bottom: 16px;">${q.question_text}</p>
-                        <button class="btn-modern btn-primary" onclick="answerQuestion('${q.id}')">
-                            Одговори на прашањето
+                    <div class="question-card">
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${q.title}</h4>
+                        <p style="font-size: 14px; color: var(--text-light); margin-bottom: 12px;">
+                            From ${q.user_name} • ${new Date(q.created_at).toLocaleDateString()}
+                        </p>
+                        <p style="color: var(--text-light); margin-bottom: 16px;">${q.question_text}</p>
+                        <button class="btn btn-primary" onclick="answerQuestion('${q.id}')">
+                            Answer Question
                         </button>
                     </div>
                 `).join('');
             } catch (error) {
-                showToast('Грешка при вчитување на прашања: ' + error.message);
+                showToast('Error loading questions: ' + error.message);
                 console.error('Full error:', error);
             }
         }
 
         async function answerQuestion(questionId) {
-            // Store the question ID for later use
             window.currentQuestionId = questionId;
             
-            // Get question details
             const { data: question, error } = await supabaseClient
                 .from('questions')
                 .select('title, question_text')
@@ -1194,39 +1425,24 @@
                 .single();
             
             if (error) {
-                showToast('Грешка: ' + error.message);
+                showToast('Error: ' + error.message);
                 return;
             }
             
-            // Populate modal
             document.getElementById('modalQuestionTitle').textContent = question.title;
             document.getElementById('modalQuestionText').textContent = question.question_text;
             document.getElementById('answerText').value = '';
             
-            // Show modal
             document.getElementById('answerModal').classList.remove('hidden');
-        }
-
-        function closeAnswerModal(event) {
-            // Close only if clicked on overlay or close button
-            if (!event || event.target.id === 'answerModal' || event.target.classList.contains('modal-close')) {
-                document.getElementById('answerModal').classList.add('hidden');
-                document.getElementById('answerText').value = '';
-            }
         }
 
         async function submitAnswer() {
             const answer = document.getElementById('answerText').value.trim();
             
             if (!answer) {
-                showToast('Ве молиме внесете одговор');
+                showToast('Please enter an answer');
                 return;
             }
-
-            const btn = document.getElementById('answerBtnText');
-            const loader = document.getElementById('answerBtnLoader');
-            btn.classList.add('hidden');
-            loader.classList.remove('hidden');
 
             try {
                 const { error: answerError } = await supabaseClient
@@ -1246,16 +1462,21 @@
 
                 if (updateError) throw updateError;
 
-                showToast('Одговорот е успешно испратен! ✔');
+                showToast('Answer submitted successfully! ✔');
                 closeAnswerModal();
                 loadExpertQuestions();
             } catch (error) {
-                showToast('Грешка: ' + error.message);
+                showToast('Error: ' + error.message);
                 console.error(error);
-            } finally {
-                btn.classList.remove('hidden');
-                loader.classList.add('hidden');
             }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // Check if user is already logged in
@@ -1271,9 +1492,9 @@
 
                 if (!error && userData) {
                     currentUser = userData;
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('dashboardScreen').classList.remove('hidden');
-                    document.getElementById('userDisplay').textContent = `${userData.full_name} (${userData.role === 'user' ? 'корисник' : 'лекар'})`;
+                    document.getElementById('landingPage').classList.add('hidden');
+                    document.getElementById('dashboardPage').classList.remove('hidden');
+                    document.getElementById('userDisplay').textContent = `${userData.full_name} (${userData.role === 'user' ? 'User' : 'Doctor'})`;
 
                     if (userData.role === 'user') {
                         document.getElementById('userDashboard').classList.remove('hidden');
@@ -1281,7 +1502,6 @@
                     } else {
                         document.getElementById('expertDashboard').classList.remove('hidden');
                         loadExpertQuestions();
-                        loadExpertAnsweredQuestions();
                     }
                 }
             }
@@ -1291,4 +1511,4 @@
         checkAuth();
     </script>
 </body>
-</html>
+</html>                
