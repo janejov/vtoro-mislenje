@@ -581,7 +581,7 @@
                 <div class="feature-card">
                     <div class="feature-icon">🔒</div>
                     <h3 data-i18n="feature3Title">Приватност</h3>
-                    <p data-i18n="feature3Text">Вашите медицински податоци се целосно заштитени и confidential според GDPR стандардите.</p>
+                    <p data-i18n="feature3Text">Вашите медицински податоци се целосно заштитени според GDPR стандардите.</p>
                 </div>
             </div>
         </section>
@@ -648,8 +648,8 @@
                 <div>
                     <h4 data-i18n="footerContact">Контакт</h4>
                     <ul class="footer-links">
-                        <li><a href="mailto:janejovanov@gmail.com">janejovanov@gmail.com</a></li>
-                        <li><a href="tel:+420776595387">+420 776 595 387</a></li>
+                        <li><a href="mailto:info@vtoromislenje.com">info@vtoromislenje.com</a></li>
+                        <li><a href="tel:+38970123456">+389 70 123 456</a></li>
                     </ul>
                 </div>
             </div>
@@ -846,8 +846,16 @@
 
     <script>
         // Supabase Configuration
+        // IMPORTANT: Verify these values in Supabase Dashboard → Settings → API
         const SUPABASE_URL = 'https://goplfstrsnnssxmunqkx.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvcGxmc3Ryc25uc3N4bXVucWt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDIyMzIsImV4cCI6MjA3NjIxODIzMn0.ai4OED2Y7F9rrqoiBTyV6nka-2O80gxAinFZNrOuupA';
+        
+        // Debug: Log configuration on page load
+        console.log('Supabase Config:', {
+            url: SUPABASE_URL,
+            keyPrefix: SUPABASE_ANON_KEY.substring(0, 20) + '...',
+            timestamp: new Date().toISOString()
+        });
         
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -875,7 +883,7 @@
                 feature2Title: 'Брзи одговори',
                 feature2Text: 'Добијте одговор на вашите прашања во најкратко можно време, обично во рок од неколку часа.',
                 feature3Title: 'Приватност',
-                feature3Text: 'Вашите медицински податоци се целосно заштитени и confidential според GDPR стандардите.',
+                feature3Text: 'Вашите медицински податоци се целосно заштитени според GDPR стандардите.',
                 howTitle: 'Како работи',
                 step1Title: 'Регистрирајте се',
                 step1Text: 'Креирајте бесплатен профил во неколку едноставни чекори. Треба ви само email адреса и основни информации.',
@@ -930,7 +938,7 @@
                 feature2Title: 'Përgjigje të shpejta',
                 feature2Text: 'Merrni përgjigje për pyetjet tuaja sa më shpejt të jetë e mundur, zakonisht brenda disa orëve.',
                 feature3Title: 'Privatësia',
-                feature3Text: 'Të dhënat tuaja mjekësore janë plotësisht të mbrojtura dhe konfidenciale sipas standardeve GDPR.',
+                feature3Text: 'Të dhënat tuaja mjekësore janë plotësisht të mbrojtura sipas standardeve GDPR.',
                 howTitle: 'Si funksionon',
                 step1Title: 'Regjistrohuni',
                 step1Text: 'Krijoni një profil falas në disa hapa të thjeshtë. Ju nevojitet vetëm një adresë emaili dhe informacione bazë.',
@@ -985,7 +993,7 @@
                 feature2Title: 'Fast responses',
                 feature2Text: 'Get answers to your questions as quickly as possible, usually within a few hours.',
                 feature3Title: 'Privacy',
-                feature3Text: 'Your medical data is fully protected and confidential according to GDPR standards.',
+                feature3Text: 'Your medical data is fully protected according to GDPR standards.',
                 howTitle: 'How it works',
                 step1Title: 'Register',
                 step1Text: 'Create a free profile in a few simple steps. You only need an email address and basic information.',
@@ -1175,8 +1183,27 @@
                 console.log('User insert response:', { userError });
 
                 if (userError) {
-                    console.error('User insert error details:', userError);
-                    throw userError;
+                    // If user already exists in users table, it means auth was created but users insert failed before
+                    // In this case, update the existing user record instead
+                    if (userError.code === '23505' && userError.message.includes('users_email_key')) {
+                        console.log('User already exists, attempting to update...');
+                        
+                        const { error: updateError } = await supabaseClient
+                            .from('users')
+                            .update(userData)
+                            .eq('id', authData.user.id);
+                        
+                        if (updateError) {
+                            console.error('Update error:', updateError);
+                            showToast('Email already registered. Please login instead.');
+                            closeAuthModal();
+                            setTimeout(() => showLoginModal(), 500);
+                            return;
+                        }
+                    } else {
+                        console.error('User insert error details:', userError);
+                        throw userError;
+                    }
                 }
 
                 showToast('Registration successful! Check your email for verification. ✔');
@@ -1214,12 +1241,37 @@
             }
 
             try {
+                console.log('Attempting to login with:', email);
+                
                 const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
 
-                if (authError) throw authError;
+                console.log('Login auth response:', { authData, authError });
+
+                if (authError) {
+                    console.error('Login error details:', authError);
+                    
+                    // Provide user-friendly error messages
+                    if (authError.message.includes('Invalid login credentials')) {
+                        showToast('Invalid email or password');
+                    } else if (authError.message.includes('Email not confirmed')) {
+                        showToast('Please verify your email first. Check your inbox.');
+                    } else if (authError.message.includes('Failed to fetch')) {
+                        showToast('Connection error. Please check your internet connection and try again.');
+                        console.error('Network error - possible causes:', {
+                            'CORS': 'Check Supabase URL Configuration',
+                            'API Key': 'Verify anon key is correct',
+                            'Network': 'Check internet connection'
+                        });
+                    } else {
+                        showToast('Login error: ' + authError.message);
+                    }
+                    return;
+                }
+
+                console.log('Fetching user data for:', authData.user.id);
 
                 const { data: userData, error: userError } = await supabaseClient
                     .from('users')
@@ -1227,13 +1279,29 @@
                     .eq('id', authData.user.id)
                     .single();
 
-                if (userError) throw userError;
+                console.log('User data response:', { userData, userError });
+
+                if (userError) {
+                    console.error('User fetch error:', userError);
+                    showToast('Error loading user profile: ' + userError.message);
+                    return;
+                }
+
+                if (!userData) {
+                    showToast('User profile not found. Please contact support.');
+                    return;
+                }
 
                 currentUser = userData;
                 
                 document.getElementById('landingPage').classList.add('hidden');
                 document.getElementById('dashboardPage').classList.remove('hidden');
-                document.getElementById('userDisplay').textContent = `${userData.full_name} (${userData.role === 'user' ? 'User' : 'Doctor'})`;
+                
+                const roleText = userData.role === 'user' ? 
+                    (currentLanguage === 'mk' ? 'Корисник' : currentLanguage === 'sq' ? 'Përdorues' : 'User') :
+                    (currentLanguage === 'mk' ? 'Лекар' : currentLanguage === 'sq' ? 'Mjek' : 'Doctor');
+                    
+                document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
 
                 if (userData.role === 'user') {
                     document.getElementById('userDashboard').classList.remove('hidden');
@@ -1246,8 +1314,15 @@
                 closeAuthModal();
                 showToast('Login successful! 🎉');
             } catch (error) {
-                showToast('Login error: ' + error.message);
-                console.error(error);
+                console.error('Unexpected login error:', error);
+                showToast('Login error: ' + (error.message || 'Unknown error'));
+                
+                // Additional debugging info
+                console.error('Error details:', {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                });
             }
         }
 
