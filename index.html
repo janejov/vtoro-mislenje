@@ -1277,7 +1277,7 @@
                     .from('users')
                     .select('*')
                     .eq('id', authData.user.id)
-                    .single();
+                    .maybeSingle();
 
                 console.log('User data response:', { userData, userError });
 
@@ -1288,7 +1288,11 @@
                 }
 
                 if (!userData) {
-                    showToast('User profile not found. Please contact support.');
+                    console.error('No user profile found for auth user:', authData.user.id);
+                    showToast('User profile not found. Please register again or contact support.');
+                    
+                    // Auto-logout if profile doesn't exist
+                    await supabaseClient.auth.signOut();
                     return;
                 }
 
@@ -1585,5 +1589,11 @@
         // Initialize
         checkAuth();
     </script>
+    
+    <!-- Vercel Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>                
