@@ -1,4 +1,348 @@
-<!DOCTYPE html>
+        </div>
+    </div>
+
+    <!-- Terms of Service Modal -->
+    <div id="termsModal" class="modal-overlay hidden" onclick="closeTermsModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 800px; max-height: 85vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2 data-i18n="termsTitle">Услови за користење</h2>
+                <button class="modal-close" onclick="closeTermsModal()">×</button>
+            </div>
+            
+            <div id="termsContentMK" style="line-height: 1.8; color: var(--text-light);">
+                <p style="margin-bottom: 20px;"><strong>Последна ажурирање:</strong> Јануари 2025</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">1. Прифаќање на условите</h3>
+                <p style="margin-bottom: 16px;">Со пристап и користење на платформата "Второ мислење" (vtoromislenje.com), Вие се согласувате да ги почитувате и да бидете обврзани со овие Услови за користење.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">2. Опис на услугата</h3>
+                <p style="margin-bottom: 16px;">Второ мислење е онлајн платформа која овозможува:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Корисниците да поставуваат медицински прашања</li>
+                    <li>Лиценцирани лекари да одговараат на прашања</li>
+                    <li>Размена на медицински информации и совети</li>
+                    <li>Добивање на второ медицинско мислење</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">3. Регистрација и профил</h3>
+                <p style="margin-bottom: 16px;"><strong>3.1 Право на користење:</strong> Платформата е достапна за лица постари од 18 години. Малолетни лица можат да ја користат само со согласност на родител или старател.</p>
+                <p style="margin-bottom: 16px;"><strong>3.2 Точност на информации:</strong> Се обврзувате да обезбедите точни и целосни информации при регистрација и да ги ажурирате кога е потребно.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">4. Обврски на корисниците</h3>
+                <p style="margin-bottom: 16px;">Се обврзувате да НЕ:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Поставувате лажни или измислени прашања</li>
+                    <li>Користите навредлив или несоодветен јазик</li>
+                    <li>Споделувате туѓи лични или медицински податоци без согласност</li>
+                    <li>Се претставувате како друго лице</li>
+                    <li>Користите платформата за незаконски цели</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">5. Обврски на лекарите</h3>
+                <p style="margin-bottom: 16px;">Лекарите се обврзуваат да:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Обезбедат точни и професионални одговори</li>
+                    <li>Почитуваат медицинска тајна и доверливост</li>
+                    <li>Одговараат само на прашања од нивната специјализација</li>
+                    <li>Не даваат дијагнози или прескрипции без физички преглед</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">6. Медицински совети - Ограничувања</h3>
+                <div style="background: #FEF3C7; padding: 20px; border-radius: 12px; border-left: 4px solid #F59E0B; margin: 20px 0;">
+                    <p style="color: #92400E; font-weight: 600; margin-bottom: 8px;">⚠️ ВАЖНО ПРЕДУПРЕДУВАЊЕ</p>
+                    <p style="color: #78350F; line-height: 1.6;">Платформата Второ мислење обезбедува информативни медицински совети, но НЕ е замена за:</p>
+                    <ul style="margin-left: 20px; margin-top: 12px; color: #78350F;">
+                        <li>Директен лекарски преглед</li>
+                        <li>Итна медицинска помош</li>
+                        <li>Дијагноза и третман</li>
+                        <li>Прескрипција на лекови</li>
+                    </ul>
+                </div>
+                <p style="margin-bottom: 16px;"><strong>Во случај на итност:</strong> Веднаш контактирајте:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Телефон за итни случаи: <strong>194</strong> (Република Северна Македонија)</li>
+                    <li>Најблиската итна помош</li>
+                    <li>Вашиот семеен лекар</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">7. Интелектуална сопственост</h3>
+                <p style="margin-bottom: 16px;">Сите содржини на платформата (дизајн, текст, логоа) се заштитени со авторски права и се сопственост на Второ мислење.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">8. Одговорност</h3>
+                <p style="margin-bottom: 16px;">Платформата се обезбедува "како што е" без гаранции од каков било вид. Не одговараме за:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Точност или целосност на медицинските совети</li>
+                    <li>Резултати од следење на совети добиени на платформата</li>
+                    <li>Технички проблеми или прекини во услугата</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">9. Измени на условите</h3>
+                <p style="margin-bottom: 16px;">Задржуваме право да ги изменуваме овие услови во секое време. Промените стапуваат на сила веднаш по објавување.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">10. Контакт</h3>
+                <p style="margin-bottom: 16px;">
+                    <strong>Email:</strong> info@vtoromislenje.com<br>
+                    <strong>Телефон:</strong> +389 70 123 456
+                </p>
+                
+                <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid var(--border);">
+                    <p style="color: var(--text-light);">Со креирање на профил и користење на платформата "Второ мислење", Вие потврдувате дека ги имате прочитано, разбрано и прифатено овие Услови за користење.</p>
+                </div>
+            </div>
+
+            <div id="termsContentSQ" class="hidden" style="line-height: 1.8; color: var(--text-light);">
+                <p style="margin-bottom: 20px;"><strong>Përditësimi i fundit:</strong> Janar 2025</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">1. Pranimi i kushteve</h3>
+                <p style="margin-bottom: 16px;">Duke hyrë dhe përdorur platformën "Mendimi i dytë" (vtoromislenje.com), ju pranoni të respektoni dhe të jeni të detyruar nga këto Kushte të Përdorimit.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">2. Përshkrimi i shërbimit</h3>
+                <p style="margin-bottom: 16px;">Mendimi i dytë është një platformë online që mundëson:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Përdoruesit të bëjnë pyetje mjekësore</li>
+                    <li>Mjekët e licensuar të përgjigjen në pyetje</li>
+                    <li>Shkëmbim informacionesh dhe këshillash mjekësore</li>
+                    <li>Marrjen e mendimit të dytë mjekësor</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">3. Regjistrimi dhe profili</h3>
+                <p style="margin-bottom: 16px;"><strong>3.1 E drejta e përdorimit:</strong> Platforma është e disponueshme për persona mbi 18 vjeç. Të mitur mund ta përdorin vetëm me pëlqimin e prindit ose kujdestarit.</p>
+                <p style="margin-bottom: 16px;"><strong>3.2 Saktësia e informacionit:</strong> Jeni të detyruar të siguroni informacion të saktë dhe të plotë gjatë regjistrimit dhe ta përditësoni atë kur është e nevojshme.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">4. Detyrimet e përdoruesve</h3>
+                <p style="margin-bottom: 16px;">Jeni të detyruar të MOS:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Bëni pyetje të rreme ose të shpikura</li>
+                    <li>Përdorni gjuhë ofenduese ose të papërshtatshme</li>
+                    <li>Ndani të dhëna personale ose mjekësore të të tjerëve pa pëlqim</li>
+                    <li>Pretendoni të jeni dikush tjetër</li>
+                    <li>Përdorni platformën për qëllime të paligjshme</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">5. Detyrimet e mjekëve</h3>
+                <p style="margin-bottom: 16px;">Mjekët janë të detyruar:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Të japin përgjigje të sakta dhe profesionale</li>
+                    <li>Të respektojnë fshehtësinë mjekësore dhe konfidencialitetin</li>
+                    <li>Të përgjigjen vetëm në pyetje nga specializimi i tyre</li>
+                    <li>Të mos japin diagnoza ose receta pa kontroll fizik</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">6. Këshilla mjekësore - Kufizimet</h3>
+                <div style="background: #FEF3C7; padding: 20px; border-radius: 12px; border-left: 4px solid #F59E0B; margin: 20px 0;">
+                    <p style="color: #92400E; font-weight: 600; margin-bottom: 8px;">⚠️ PARALAJMËRIM I RËNDËSISHËM</p>
+                    <p style="color: #78350F; line-height: 1.6;">Platforma Mendimi i dytë ofron këshilla informative mjekësore, por NUK është zëvendësim për:</p>
+                    <ul style="margin-left: 20px; margin-top: 12px; color: #78350F;">
+                        <li>Kontroll të drejtpërdrejtë mjekësor</li>
+                        <li>Ndihmë mjekësore urgjente</li>
+                        <li>Diagnozë dhe trajtim</li>
+                        <li>Receta mjekësore</li>
+                    </ul>
+                </div>
+                <p style="margin-bottom: 16px;"><strong>Në rast urgjence:</strong> Kontaktoni menjëherë:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Telefoni për raste urgjente: <strong>194</strong> (Republika e Maqedonisë së Veriut)</li>
+                    <li>Ndihmën më të afërt urgjente</li>
+                    <li>Mjekun tuaj familjar</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">7. Kontakt</h3>
+                <p style="margin-bottom: 16px;">
+                    <strong>Email:</strong> info@vtoromislenje.com<br>
+                    <strong>Telefon:</strong> +389 70 123 456
+                </p>
+            </div>
+
+            <div id="termsContentEN" class="hidden" style="line-height: 1.8; color: var(--text-light);">
+                <p style="margin-bottom: 20px;"><strong>Last updated:</strong> January 2025</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">1. Acceptance of Terms</h3>
+                <p style="margin-bottom: 16px;">By accessing and using the "Second Opinion" platform (vtoromislenje.com), you agree to be bound by these Terms of Service.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">2. Service Description</h3>
+                <p style="margin-bottom: 16px;">Second Opinion is an online platform that enables:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Users to ask medical questions</li>
+                    <li>Licensed doctors to answer questions</li>
+                    <li>Exchange of medical information and advice</li>
+                    <li>Obtaining a second medical opinion</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">3. Registration and Profile</h3>
+                <p style="margin-bottom: 16px;"><strong>3.1 Right to use:</strong> The platform is available for persons over 18 years old. Minors may use it only with parental or guardian consent.</p>
+                <p style="margin-bottom: 16px;"><strong>3.2 Accuracy of information:</strong> You are obliged to provide accurate and complete information during registration and update it when necessary.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">4. User Obligations</h3>
+                <p style="margin-bottom: 16px;">You are obliged NOT to:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Post false or fabricated questions</li>
+                    <li>Use offensive or inappropriate language</li>
+                    <li>Share others' personal or medical data without consent</li>
+                    <li>Impersonate another person</li>
+                    <li>Use the platform for illegal purposes</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">5. Doctor Obligations</h3>
+                <p style="margin-bottom: 16px;">Doctors are obliged to:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Provide accurate and professional answers</li>
+                    <li>Respect medical confidentiality</li>
+                    <li>Answer only questions from their specialization</li>
+                    <li>Not provide diagnoses or prescriptions without physical examination</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">6. Medical Advice - Limitations</h3>
+                <div style="background: #FEF3C7; padding: 20px; border-radius: 12px; border-left: 4px solid #F59E0B; margin: 20px 0;">
+                    <p style="color: #92400E; font-weight: 600; margin-bottom: 8px;">⚠️ IMPORTANT WARNING</p>
+                    <p style="color: #78350F; line-height: 1.6;">The Second Opinion platform provides informative medical advice but is NOT a substitute for:</p>
+                    <ul style="margin-left: 20px; margin-top: 12px; color: #78350F;">
+                        <li>Direct medical examination</li>
+                        <li>Emergency medical care</li>
+                        <li>Diagnosis and treatment</li>
+                        <li>Medical prescriptions</li>
+                    </ul>
+                </div>
+                <p style="margin-bottom: 16px;"><strong>In case of emergency:</strong> Immediately contact:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Emergency number: <strong>194</strong> (North Macedonia)</li>
+                    <li>Nearest emergency care</li>
+                    <li>Your family doctor</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">7. Contact</h3>
+                <p style="margin-bottom: 16px;">
+                    <strong>Email:</strong> info@vtoromislenje.com<br>
+                    <strong>Phone:</strong> +389 70 123 456
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div id="privacyModal" class="modal-overlay hidden" onclick="closePrivacyModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 800px; max-height: 85vh; overflow-y: auto;">
+            <div class="modal-header">
+                <h2 data-i18n="privacyTitle">Политика за приватност</h2>
+                <button class="modal-close" onclick="closePrivacyModal()">×</button>
+            </div>
+            
+            <div id="privacyContentMK" style="line-height: 1.8; color: var(--text-light);">
+                <p style="margin-bottom: 20px;"><strong>Последна ажурирање:</strong> Јануари 2025</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">1. Вовед</h3>
+                <p style="margin-bottom: 16px;">Второ мислење ја почитува вашата приватност и се обврзува да ги заштити вашите лични и медицински податоци во согласност со Законот за заштита на лични податоци на Република Северна Македонија и EU GDPR.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">2. Кои податоци собираме</h3>
+                <p style="margin-bottom: 12px;"><strong>Основни лични податоци:</strong></p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Име и презиме</li>
+                    <li>Email адреса</li>
+                    <li>Телефонски број</li>
+                    <li>Датум на раѓање</li>
+                </ul>
+                
+                <p style="margin-bottom: 12px;"><strong>Медицински податоци:</strong></p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Прашања за здравствени состојби</li>
+                    <li>Симптоми и медицинска историја</li>
+                    <li>Прикачени медицински документи (ако се достапни)</li>
+                </ul>
+                
+                <p style="margin-bottom: 12px;"><strong>За лекари (дополнително):</strong></p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Специјализација</li>
+                    <li>Број на лиценца</li>
+                    <li>Болница/клиника</li>
+                    <li>Години искуство</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">3. Како ги користиме податоците</h3>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>За да ви овозможиме пристап до платформата</li>
+                    <li>За да ги поврземе вашите прашања со соодветни лекари</li>
+                    <li>За да ви испраќаме нотификации за одговори</li>
+                    <li>За подобрување на квалитетот на услугите</li>
+                    <li>За комуникација поврзана со услугата</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">4. Заштита на медицински податоци</h3>
+                <p style="margin-bottom: 16px;">Медицинските податоци се <strong>посебно заштитени</strong> и се третираат со највисоко ниво на доверливост:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Криптирани при пренос и складирање</li>
+                    <li>Достапни само на соодветни лекари</li>
+                    <li>Никогаш не се продаваат или споделуваат со трети страни за маркетинг</li>
+                    <li>Чуваме само што е неопходно за услугата</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">5. Ваши права</h3>
+                <p style="margin-bottom: 16px;">Имате право да:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>✓ Пристапите до вашите податоци</li>
+                    <li>✓ Поправите нетучни податоци</li>
+                    <li>✓ Избришете ваш профил и податоци</li>
+                    <li>✓ Повлечете согласност за обработка</li>
+                    <li>✓ Преносливост на податоци</li>
+                    <li>✓ Приговор против обработка</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">6. Колачиња (Cookies)</h3>
+                <p style="margin-bottom: 16px;">Користиме само есенцијални колачиња за функционирање на платформата. Не користиме tracking или рекламни колачиња.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">7. Споделување со трети страни</h3>
+                <p style="margin-bottom: 16px;">Вашите податоци НЕ се споделуваат со трети страни, освен:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Supabase (за база на податоци) - со GDPR compliance</li>
+                    <li>Vercel (за hosting) - со GDPR compliance</li>
+                    <li>Resend (за email нотификации) - само email адреса</li>
+                    <li>Кога е законски задолжително</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">8. Чување на податоци</h3>
+                <p style="margin-bottom: 16px;">Податоците се чуваат само додека користите услугата. По бришење на профил, сите податоци се перманентно избришани во рок од 30 дена.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">9. Безбедност</h3>
+                <p style="margin-bottom: 16px;">Применуваме:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>SSL/TLS енкрипција</li>
+                    <li>Двофакторска автентикација (опционално)</li>
+                    <li>Редовни безбедносни ревизии</li>
+                    <li>Ограничен пристап до податоци</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">10. Измени на политиката</h3>
+                <p style="margin-bottom: 16px;">Задржуваме право да ја изменуваме оваа политика. За значајни промени ќе бидете известени по email.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">11. Контакт</h3>
+                <p style="margin-bottom: 16px;">За прашања за приватност:</p>
+                <p style="margin-bottom: 16px;">
+                    <strong>Email:</strong> info@vtoromislenje.com<br>
+                    <strong>Телефон:</strong> +389 70 123 456
+                </p>
+            </div>
+
+            <div id="privacyContentSQ" class="hidden" style="line-height: 1.8; color: var(--text-light);">
+                <p style="margin-bottom: 20px;"><strong>Përditësimi i fundit:</strong> Janar 2025</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">1. Hyrje</h3>
+                <p style="margin-bottom: 16px;">Mendimi i dytë respekton privatësinë tuaj dhe angazhohet të mbrojë të dhënat tuaja personale dhe mjekësore në përputhje me Ligjin për Mbrojtjen e të Dhënave Personale të Republikës së Maqedonisë së Veriut dhe EU GDPR.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">2. Cilat të dhëna mblidhen</h3>
+                <p style="margin-bottom: 12px;"><strong>Të dhëna personale bazë:</strong></p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Emri dhe mbiemri</li>
+                    <li>Adresa email</li>
+                    <li>Numri i telefonit</li>
+                    <li>Data e lindjes</li>
+                </ul>
+                
+                <p style="margin-bottom: 12px;"><strong>Të dhëna mjekësore:</strong></p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Pyetje për gjendjen shëndetësore</li>
+                    <li>Simptomat dhe historia mjekësore</li>
+                    <li>Dokumente mjekësore të bashkangjitura (nëse disponohen)</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top:<!DOCTYPE html>
 <html lang="mk">
 <head>
     <meta charset="UTF-8">
@@ -56,12 +400,22 @@
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo-icon {
+            font-size: 32px;
         }
 
         .nav-links {
@@ -514,10 +868,10 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
-                <span>🏥</span>
+            <a href="#" onclick="goToHome(); return false;" class="logo">
+                <span class="logo-icon">⚕️</span>
                 <span data-i18n="siteName">Второ мислење</span>
-            </div>
+            </a>
             <div class="nav-links">
                 <a href="#how" class="nav-link" data-i18n="navHow">Како работи</a>
                 <a href="#features" class="nav-link" data-i18n="navFeatures">Предности</a>
@@ -803,6 +1157,24 @@
                     </div>
                 </div>
 
+                <div style="margin-top: 24px; padding-top: 24px; border-top: 2px solid var(--border);">
+                    <div style="display: flex; align-items: start; gap: 10px; margin-bottom: 16px;">
+                        <input type="checkbox" id="agreeTerms" style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);">
+                        <label for="agreeTerms" style="cursor: pointer; color: var(--text-light); font-size: 14px;">
+                            <span data-i18n="registerAgreeTerms1">Се согласувам со</span>
+                            <a href="#" onclick="showTermsModal(); return false;" style="color: var(--primary); font-weight: 600; text-decoration: underline;" data-i18n="registerTermsLink">Условите за користење</a>
+                        </label>
+                    </div>
+
+                    <div style="display: flex; align-items: start; gap: 10px; margin-bottom: 24px;">
+                        <input type="checkbox" id="agreePrivacy" style="margin-top: 4px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary);">
+                        <label for="agreePrivacy" style="cursor: pointer; color: var(--text-light); font-size: 14px;">
+                            <span data-i18n="registerAgreePrivacy1">Се согласувам со</span>
+                            <a href="#" onclick="showPrivacyModal(); return false;" style="color: var(--primary); font-weight: 600; text-decoration: underline;" data-i18n="registerPrivacyLink">Политиката за приватност</a>
+                        </label>
+                    </div>
+                </div>
+
                 <button class="btn btn-primary" onclick="register()" style="width: 100%;" data-i18n="registerButton">Регистрирај се</button>
 
                 <p style="text-align: center; margin-top: 20px; color: var(--text-light);">
@@ -836,6 +1208,75 @@
                 <button class="btn btn-primary" onclick="submitAnswer()" style="flex: 1;" data-i18n="answerModalSubmit">Испрати одговор</button>
                 <button class="btn btn-outline" onclick="closeAnswerModal()" data-i18n="answerModalCancel">Откажи</button>
             </div>
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">3. Si i përdorim të dhënat</h3>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Për t'ju mundësuar akses në platformë</li>
+                    <li>Për të lidhur pyetjet tuaja me mjekët përkatës</li>
+                    <li>Për t'ju dërguar njoftime për përgjigje</li>
+                    <li>Për përmirësimin e cilësisë së shërbimeve</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">4. Të drejtat tuaja</h3>
+                <p style="margin-bottom: 16px;">Keni të drejtë:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>✓ Të aksesoni të dhënat tuaja</li>
+                    <li>✓ Të korrigjoni të dhëna të pasakta</li>
+                    <li>✓ Të fshini profilin dhe të dhënat tuaja</li>
+                    <li>✓ Të tërhiqni pëlqimin për përpunim</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">5. Kontakt</h3>
+                <p style="margin-bottom: 16px;">
+                    <strong>Email:</strong> info@vtoromislenje.com<br>
+                    <strong>Telefon:</strong> +389 70 123 456
+                </p>
+            </div>
+
+            <div id="privacyContentEN" class="hidden" style="line-height: 1.8; color: var(--text-light);">
+                <p style="margin-bottom: 20px;"><strong>Last updated:</strong> January 2025</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">1. Introduction</h3>
+                <p style="margin-bottom: 16px;">Second Opinion respects your privacy and is committed to protecting your personal and medical data in accordance with GDPR and applicable laws.</p>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">2. Data We Collect</h3>
+                <p style="margin-bottom: 12px;"><strong>Basic personal data:</strong></p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Full name</li>
+                    <li>Email address</li>
+                    <li>Phone number</li>
+                    <li>Date of birth</li>
+                </ul>
+                
+                <p style="margin-bottom: 12px;"><strong>Medical data:</strong></p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>Health condition questions</li>
+                    <li>Symptoms and medical history</li>
+                    <li>Attached medical documents (if available)</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">3. How We Use Data</h3>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>To provide access to the platform</li>
+                    <li>To connect your questions with appropriate doctors</li>
+                    <li>To send notifications about answers</li>
+                    <li>To improve service quality</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">4. Your Rights</h3>
+                <p style="margin-bottom: 16px;">You have the right to:</p>
+                <ul style="margin-left: 24px; margin-bottom: 16px;">
+                    <li>✓ Access your data</li>
+                    <li>✓ Correct inaccurate data</li>
+                    <li>✓ Delete your profile and data</li>
+                    <li>✓ Withdraw consent for processing</li>
+                </ul>
+                
+                <h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">5. Contact</h3>
+                <p style="margin-bottom: 16px;">
+                    <strong>Email:</strong> info@vtoromislenje.com<br>
+                    <strong>Phone:</strong> +389 70 123 456
+                </p>
+            </div>
         </div>
     </div>
 
@@ -863,6 +1304,20 @@
         let currentUser = null;
         let registerRole = 'user';
         let currentLanguage = 'mk';
+
+        // Navigation Functions
+        function goToHome() {
+            if (currentUser) {
+                // If logged in, show dashboard
+                return;
+            } else {
+                // If not logged in, show landing page
+                document.getElementById('landingPage').classList.remove('hidden');
+                document.getElementById('dashboardPage').classList.add('hidden');
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
 
         // Translations
         const translations = {
@@ -915,6 +1370,12 @@
                 registerButton: 'Регистрирај се',
                 registerHaveAccount: 'Веќе имате профил?',
                 registerLogin: 'Најавете се',
+                registerAgreeTerms1: 'Се согласувам со',
+                registerTermsLink: 'Условите за користење',
+                registerAgreePrivacy1: 'Се согласувам со',
+                registerPrivacyLink: 'Политиката за приватност',
+                termsTitle: 'Услови за користење',
+                privacyTitle: 'Политика за приватност',
                 dashboardWelcome: 'Добредојдовте назад!',
                 dashboardLogout: 'Одјави се',
                 dashboardAskQuestion: 'Постави ново прашање',
@@ -970,6 +1431,12 @@
                 registerButton: 'Regjistrohu',
                 registerHaveAccount: 'Keni tashmë profil?',
                 registerLogin: 'Hyni',
+                registerAgreeTerms1: 'Pajtohem me',
+                registerTermsLink: 'Kushtet e Përdorimit',
+                registerAgreePrivacy1: 'Pajtohem me',
+                registerPrivacyLink: 'Politikën e Privatësisë',
+                termsTitle: 'Kushtet e Përdorimit',
+                privacyTitle: 'Politika e Privatësisë',
                 dashboardWelcome: 'Mirë se vini përsëri!',
                 dashboardLogout: 'Dilni',
                 dashboardAskQuestion: 'Bëni një pyetje të re',
@@ -1025,6 +1492,12 @@
                 registerButton: 'Register',
                 registerHaveAccount: 'Already have an account?',
                 registerLogin: 'Login',
+                registerAgreeTerms1: 'I agree to the',
+                registerTermsLink: 'Terms of Service',
+                registerAgreePrivacy1: 'I agree to the',
+                registerPrivacyLink: 'Privacy Policy',
+                termsTitle: 'Terms of Service',
+                privacyTitle: 'Privacy Policy',
                 dashboardWelcome: 'Welcome back!',
                 dashboardLogout: 'Logout',
                 dashboardAskQuestion: 'Ask a new question',
@@ -1057,6 +1530,10 @@
 
             // Update HTML lang attribute
             document.documentElement.lang = lang;
+            
+            // Update modal content if open (check if functions exist)
+            if (typeof updateTermsLanguage === 'function') updateTermsLanguage();
+            if (typeof updatePrivacyLanguage === 'function') updatePrivacyLanguage();
         }
 
         // Modal Functions
@@ -1105,6 +1582,56 @@
             }
         }
 
+        function showTermsModal() {
+            document.getElementById('termsModal').classList.remove('hidden');
+            updateTermsLanguage();
+        }
+
+        function closeTermsModal(event) {
+            if (!event || event.target.id === 'termsModal' || event.target.classList.contains('modal-close')) {
+                document.getElementById('termsModal').classList.add('hidden');
+            }
+        }
+
+        function showPrivacyModal() {
+            document.getElementById('privacyModal').classList.remove('hidden');
+            updatePrivacyLanguage();
+        }
+
+        function closePrivacyModal(event) {
+            if (!event || event.target.id === 'privacyModal' || event.target.classList.contains('modal-close')) {
+                document.getElementById('privacyModal').classList.add('hidden');
+            }
+        }
+
+        function updateTermsLanguage() {
+            document.getElementById('termsContentMK').classList.add('hidden');
+            document.getElementById('termsContentSQ').classList.add('hidden');
+            document.getElementById('termsContentEN').classList.add('hidden');
+            
+            if (currentLanguage === 'mk') {
+                document.getElementById('termsContentMK').classList.remove('hidden');
+            } else if (currentLanguage === 'sq') {
+                document.getElementById('termsContentSQ').classList.remove('hidden');
+            } else {
+                document.getElementById('termsContentEN').classList.remove('hidden');
+            }
+        }
+
+        function updatePrivacyLanguage() {
+            document.getElementById('privacyContentMK').classList.add('hidden');
+            document.getElementById('privacyContentSQ').classList.add('hidden');
+            document.getElementById('privacyContentEN').classList.add('hidden');
+            
+            if (currentLanguage === 'mk') {
+                document.getElementById('privacyContentMK').classList.remove('hidden');
+            } else if (currentLanguage === 'sq') {
+                document.getElementById('privacyContentSQ').classList.remove('hidden');
+            } else {
+                document.getElementById('privacyContentEN').classList.remove('hidden');
+            }
+        }
+
         // Auth Functions
         async function register() {
             const email = document.getElementById('regEmail').value.trim();
@@ -1113,9 +1640,18 @@
             const name = document.getElementById('regName').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
             const birthdate = document.getElementById('regBirthdate').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+            const agreePrivacy = document.getElementById('agreePrivacy').checked;
 
             if (!email || !password || !name || !phone || !birthdate) {
                 showToast('Please fill all required fields');
+                return;
+            }
+
+            if (!agreeTerms || !agreePrivacy) {
+                showToast(currentLanguage === 'mk' ? 'Морате да се согласите со Условите и Политиката' : 
+                         currentLanguage === 'sq' ? 'Duhet të pranoni Kushtet dhe Politikën' : 
+                         'You must agree to Terms and Privacy Policy');
                 return;
             }
 
@@ -1128,6 +1664,107 @@
                 showToast('Password must be at least 8 characters');
                 return;
             }
+
+            try {
+                console.log('Attempting to register with:', { email, name, role: registerRole });
+                
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                });
+
+                console.log('Auth response:', { authData, authError });
+
+                if (authError) {
+                    console.error('Auth error details:', authError);
+                    throw authError;
+                }
+
+                if (!authData.user) {
+                    throw new Error('No user data returned from registration');
+                }
+
+                const userData = {
+                    id: authData.user.id,
+                    email: email,
+                    full_name: name,
+                    phone: phone,
+                    birthdate: birthdate,
+                    role: registerRole
+                };
+
+                if (registerRole === 'expert') {
+                    const specialization = document.getElementById('regSpecialization').value;
+                    const license = document.getElementById('regLicense').value.trim();
+                    const hospital = document.getElementById('regHospital').value.trim();
+                    const experience = document.getElementById('regExperience').value;
+
+                    if (!specialization || !license || !hospital || !experience) {
+                        showToast('Please fill all doctor fields');
+                        return;
+                    }
+
+                    userData.specialization = specialization;
+                    userData.license_number = license;
+                    userData.hospital = hospital;
+                    userData.experience = parseInt(experience);
+                }
+
+                console.log('Inserting user data:', userData);
+
+                const { error: userError } = await supabaseClient
+                    .from('users')
+                    .insert([userData]);
+
+                console.log('User insert response:', { userError });
+
+                if (userError) {
+                    if (userError.code === '23505' && userError.message.includes('users_email_key')) {
+                        console.log('User already exists, attempting to update...');
+                        
+                        const { error: updateError } = await supabaseClient
+                            .from('users')
+                            .update(userData)
+                            .eq('id', authData.user.id);
+                        
+                        if (updateError) {
+                            console.error('Update error:', updateError);
+                            showToast('Email already registered. Please login instead.');
+                            closeAuthModal();
+                            setTimeout(() => showLoginModal(), 500);
+                            return;
+                        }
+                    } else {
+                        console.error('User insert error details:', userError);
+                        throw userError;
+                    }
+                }
+
+                showToast('Registration successful! Check your email for verification. ✔');
+                closeAuthModal();
+                
+                // Clear form
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regPasswordConfirm').value = '';
+                document.getElementById('regName').value = '';
+                document.getElementById('regPhone').value = '';
+                document.getElementById('regBirthdate').value = '';
+                document.getElementById('agreeTerms').checked = false;
+                document.getElementById('agreePrivacy').checked = false;
+                
+            } catch (error) {
+                console.error('Full registration error:', error);
+                showToast('Registration error: ' + (error.message || 'Unknown error'));
+                
+                if (error.status) {
+                    console.error('HTTP Status:', error.status);
+                }
+                if (error.details) {
+                    console.error('Error details:', error.details);
+                }
+            }
+        }
 
             try {
                 console.log('Attempting to register with:', { email, name, role: registerRole });
@@ -1309,10 +1946,10 @@
 
                 if (userData.role === 'user') {
                     document.getElementById('userDashboard').classList.remove('hidden');
-                    loadUserQuestions();
+                    await loadUserQuestions();
                 } else {
                     document.getElementById('expertDashboard').classList.remove('hidden');
-                    loadExpertQuestions();
+                    await loadExpertQuestions();
                 }
 
                 closeAuthModal();
@@ -1331,13 +1968,17 @@
         }
 
         async function logout() {
-            await supabaseClient.auth.signOut();
-            currentUser = null;
-            document.getElementById('landingPage').classList.remove('hidden');
-            document.getElementById('dashboardPage').classList.add('hidden');
-            document.getElementById('userDashboard').classList.add('hidden');
-            document.getElementById('expertDashboard').classList.add('hidden');
-            showToast('Logged out');
+            try {
+                await supabaseClient.auth.signOut();
+                currentUser = null;
+                document.getElementById('landingPage').classList.remove('hidden');
+                document.getElementById('dashboardPage').classList.add('hidden');
+                document.getElementById('userDashboard').classList.add('hidden');
+                document.getElementById('expertDashboard').classList.add('hidden');
+                showToast('Logged out');
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
         }
 
         // Question Functions
@@ -1369,7 +2010,7 @@
                 document.getElementById('questionText').value = '';
 
                 showToast('Question submitted successfully! ✔');
-                loadUserQuestions();
+                await loadUserQuestions();
             } catch (error) {
                 showToast('Error: ' + error.message);
                 console.error(error);
@@ -1497,22 +2138,27 @@
         async function answerQuestion(questionId) {
             window.currentQuestionId = questionId;
             
-            const { data: question, error } = await supabaseClient
-                .from('questions')
-                .select('title, question_text')
-                .eq('id', questionId)
-                .single();
-            
-            if (error) {
-                showToast('Error: ' + error.message);
-                return;
+            try {
+                const { data: question, error } = await supabaseClient
+                    .from('questions')
+                    .select('title, question_text')
+                    .eq('id', questionId)
+                    .single();
+                
+                if (error) {
+                    showToast('Error: ' + error.message);
+                    return;
+                }
+                
+                document.getElementById('modalQuestionTitle').textContent = question.title;
+                document.getElementById('modalQuestionText').textContent = question.question_text;
+                document.getElementById('answerText').value = '';
+                
+                document.getElementById('answerModal').classList.remove('hidden');
+            } catch (error) {
+                console.error('Error loading question:', error);
+                showToast('Error loading question');
             }
-            
-            document.getElementById('modalQuestionTitle').textContent = question.title;
-            document.getElementById('modalQuestionText').textContent = question.question_text;
-            document.getElementById('answerText').value = '';
-            
-            document.getElementById('answerModal').classList.remove('hidden');
         }
 
         async function submitAnswer() {
@@ -1543,7 +2189,7 @@
 
                 showToast('Answer submitted successfully! ✔');
                 closeAnswerModal();
-                loadExpertQuestions();
+                await loadExpertQuestions();
             } catch (error) {
                 showToast('Error: ' + error.message);
                 console.error(error);
@@ -1560,29 +2206,73 @@
 
         // Check if user is already logged in
         async function checkAuth() {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            
-            if (session) {
-                const { data: userData, error } = await supabaseClient
-                    .from('users')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                
+                if (session) {
+                    const { data: userData, error } = await supabaseClient
+                        .from('users')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .maybeSingle();
 
-                if (!error && userData) {
-                    currentUser = userData;
-                    document.getElementById('landingPage').classList.add('hidden');
-                    document.getElementById('dashboardPage').classList.remove('hidden');
-                    document.getElementById('userDisplay').textContent = `${userData.full_name} (${userData.role === 'user' ? 'User' : 'Doctor'})`;
+                    if (!error && userData) {
+                        currentUser = userData;
+                        document.getElementById('landingPage').classList.add('hidden');
+                        document.getElementById('dashboardPage').classList.remove('hidden');
+                        
+                        const roleText = userData.role === 'user' ? 
+                            (currentLanguage === 'mk' ? 'Корисник' : currentLanguage === 'sq' ? 'Përdorues' : 'User') :
+                            (currentLanguage === 'mk' ? 'Лекар' : currentLanguage === 'sq' ? 'Mjek' : 'Doctor');
+                        
+                        document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
 
-                    if (userData.role === 'user') {
-                        document.getElementById('userDashboard').classList.remove('hidden');
-                        loadUserQuestions();
-                    } else {
-                        document.getElementById('expertDashboard').classList.remove('hidden');
-                        loadExpertQuestions();
+                        if (userData.role === 'user') {
+                            document.getElementById('userDashboard').classList.remove('hidden');
+                            await loadUserQuestions();
+                        } else {
+                            document.getElementById('expertDashboard').classList.remove('hidden');
+                            await loadExpertQuestions();
+                        }
                     }
                 }
+            } catch (error) {
+                console.error('Auth check error:', error);
+            }
+        }
+
+        // Initialize
+        checkAuth();
+                
+                if (session) {
+                    const { data: userData, error } = await supabaseClient
+                        .from('users')
+                        .select('*')
+                        .eq('id', session.user.id)
+                        .maybeSingle();
+
+                    if (!error && userData) {
+                        currentUser = userData;
+                        document.getElementById('landingPage').classList.add('hidden');
+                        document.getElementById('dashboardPage').classList.remove('hidden');
+                        
+                        const roleText = userData.role === 'user' ? 
+                            (currentLanguage === 'mk' ? 'Корисник' : currentLanguage === 'sq' ? 'Përdorues' : 'User') :
+                            (currentLanguage === 'mk' ? 'Лекар' : currentLanguage === 'sq' ? 'Mjek' : 'Doctor');
+                        
+                        document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
+
+                        if (userData.role === 'user') {
+                            document.getElementById('userDashboard').classList.remove('hidden');
+                            loadUserQuestions();
+                        } else {
+                            document.getElementById('expertDashboard').classList.remove('hidden');
+                            loadExpertQuestions();
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
             }
         }
 
@@ -1595,5 +2285,8 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
+    
+    <!-- Vercel Speed Insights (optional) -->
+    <script defer src="/_vercel/speed-insights/script.js"></script>
 </body>
 </html>                
