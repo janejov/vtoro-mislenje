@@ -1605,34 +1605,45 @@
         }
 
         function updateTermsLanguage() {
-            document.getElementById('termsContentMK').classList.add('hidden');
-            document.getElementById('termsContentSQ').classList.add('hidden');
-            document.getElementById('termsContentEN').classList.add('hidden');
+            const mk = document.getElementById('termsContentMK');
+            const sq = document.getElementById('termsContentSQ');
+            const en = document.getElementById('termsContentEN');
             
-            if (currentLanguage === 'mk') {
-                document.getElementById('termsContentMK').classList.remove('hidden');
-            } else if (currentLanguage === 'sq') {
-                document.getElementById('termsContentSQ').classList.remove('hidden');
-            } else {
-                document.getElementById('termsContentEN').classList.remove('hidden');
+            if (mk) mk.classList.add('hidden');
+            if (sq) sq.classList.add('hidden');
+            if (en) en.classList.add('hidden');
+            
+            if (currentLanguage === 'mk' && mk) {
+                mk.classList.remove('hidden');
+            } else if (currentLanguage === 'sq' && sq) {
+                sq.classList.remove('hidden');
+            } else if (en) {
+                en.classList.remove('hidden');
             }
         }
 
         function updatePrivacyLanguage() {
-            document.getElementById('privacyContentMK').classList.add('hidden');
-            document.getElementById('privacyContentSQ').classList.add('hidden');
-            document.getElementById('privacyContentEN').classList.add('hidden');
+            const mk = document.getElementById('privacyContentMK');
+            const sq = document.getElementById('privacyContentSQ');
+            const en = document.getElementById('privacyContentEN');
             
-            if (currentLanguage === 'mk') {
-                document.getElementById('privacyContentMK').classList.remove('hidden');
-            } else if (currentLanguage === 'sq') {
-                document.getElementById('privacyContentSQ').classList.remove('hidden');
-            } else {
-                document.getElementById('privacyContentEN').classList.remove('hidden');
+            if (mk) mk.classList.add('hidden');
+            if (sq) sq.classList.add('hidden');
+            if (en) en.classList.add('hidden');
+            
+            if (currentLanguage === 'mk' && mk) {
+                mk.classList.remove('hidden');
+            } else if (currentLanguage === 'sq' && sq) {
+                sq.classList.remove('hidden');
+            } else if (en) {
+                en.classList.remove('hidden');
             }
         }
 
-        // Auth Functions
+        // ============================================
+        // AUTH FUNCTIONS
+        // ============================================
+        
         async function register() {
             const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
