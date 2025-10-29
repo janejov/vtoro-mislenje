@@ -578,16 +578,61 @@
                     </div>
                 </div>
                 <div class="hero-image">
-<svg width="80" height="80" viewBox="0 0 64 64" style="animation: heartbeat 1.5s ease-in-out infinite;">
-  <path d="M32 56s-20-12-20-28a12 12 0 0 1 24 0 12 12 0 0 1 24 0c0 16-20 28-20 28z" fill="#10B981"/>
-</svg>
+  <svg width="140" height="140" viewBox="0 0 140 140" class="heartbeat-svg">
+    <!-- Heart outline -->
+    <path d="M70 122
+             C 70 122, 24 98, 24 66
+             C 24 48, 38 36, 54 36
+             C 63 36, 70 41, 70 48
+             C 70 41, 77 36, 86 36
+             C 102 36, 116 48, 116 66
+             C 116 98, 70 122, 70 122 Z"
+          fill="none" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- EKG line across the heart -->
+    <path d="M20 72
+             L44 72
+             L50 60
+             L56 84
+             L64 66
+             L72 78
+             L80 60
+             L88 84
+             L96 72
+             L120 72"
+          fill="none" stroke="#0066CC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"
+          class="ekg-line"/>
+  </svg>
+</div>
+
 <style>
-@keyframes heartbeat {
+.heartbeat-svg {
+  animation: hb 2.2s ease-in-out infinite;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.08));
+}
+
+.ekg-line {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: ekg 2.2s linear infinite;
+}
+
+/* Heartbeat scale pulses */
+@keyframes hb {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  15% { transform: scale(1.06); }
+  30% { transform: scale(1); }
+  55% { transform: scale(1.08); }
+  70% { transform: scale(1); }
+}
+
+/* EKG "drawing" that loops left->right */
+@keyframes ekg {
+  0%   { stroke-dashoffset: 220; opacity: 0.85; }
+  40%  { opacity: 1; }
+  100% { stroke-dashoffset: -220; opacity: 0.9; }
 }
 </style>
-</div>
             </div>
         </section>
 
