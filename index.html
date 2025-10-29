@@ -766,10 +766,7 @@
                         <label class="form-label" data-i18n="questionSpecialtyLabel">Медицинска област</label>
                         <select class="form-input" id="questionSpecialty">
                             <option value="" data-i18n="questionSpecialtyPlaceholder">Изберете медицинска област</option>
-                            <option value="general">Општа медицина</option>
-                            <option value="cardiology">Кардиологија</option>
-                            <option value="dermatology">Дерматологија</option>
-                        </select>
+</select>
                     </div>
 
                     <div class="form-group">
@@ -861,10 +858,7 @@
                         <label class="form-label" data-i18n="registerSpecialization">Специјализација</label>
                         <select class="form-input" id="regSpecialization">
                             <option value="">Изберете специјализација</option>
-                            <option value="general">Општа медицина</option>
-                            <option value="cardiology">Кардиологија</option>
-                            <option value="dermatology">Дерматологија</option>
-                        </select>
+</select>
                     </div>
 
                     <div class="form-group">
@@ -1006,7 +1000,7 @@
                 registerButton: 'Регистрирај се',
                 registerHaveAccount: 'Веќе имате профил?',
                 registerLogin: 'Најавете се',
-                dashboardWelcome: 'Добредојдовте назад!',
+                dashboardWelcome: 'Добредојдовте во вашиот профил',
                 dashboardLogout: 'Одјави се',
                 dashboardAskQuestion: 'Постави ново прашање',
                 dashboardMyQuestions: 'Мои прашања',
@@ -1061,7 +1055,7 @@
                 registerButton: 'Regjistrohu',
                 registerHaveAccount: 'Keni tashmë profil?',
                 registerLogin: 'Hyni',
-                dashboardWelcome: 'Mirë se vini përsëri!',
+                dashboardWelcome: 'Добредојдовте во вашиот профил',
                 dashboardLogout: 'Dilni',
                 dashboardAskQuestion: 'Bëni një pyetje të re',
                 dashboardMyQuestions: 'Pyetjet e mia',
@@ -1116,7 +1110,7 @@
                 registerButton: 'Register',
                 registerHaveAccount: 'Already have an account?',
                 registerLogin: 'Login',
-                dashboardWelcome: 'Welcome back!',
+                dashboardWelcome: 'Добредојдовте во вашиот профил',
                 dashboardLogout: 'Logout',
                 dashboardAskQuestion: 'Ask a new question',
                 dashboardMyQuestions: 'My questions',
@@ -1124,7 +1118,168 @@
             }
         };
 
-        // Language Switching
+        
+
+// === Medical specialties (i18n) ===
+const SPECIALTIES = {
+  mk: [
+    { value: 'general', label: 'Општа медицина' },
+    { value: 'family-medicine', label: 'Семејна медицина' },
+    { value: 'cardiology', label: 'Кардиологија' },
+    { value: 'dermatology', label: 'Дерматологија' },
+    { value: 'dermatovenereology', label: 'Дерматовенерологија' },
+    { value: 'endocrinology', label: 'Ендокринологија' },
+    { value: 'gastroenterology', label: 'Гастроентерологија' },
+    { value: 'hematology', label: 'Хематологија' },
+    { value: 'infectious-diseases', label: 'Инфективни болести' },
+    { value: 'nephrology', label: 'Нефрологија' },
+    { value: 'neurology', label: 'Неврологија' },
+    { value: 'oncology', label: 'Онкологија' },
+    { value: 'orthopedics', label: 'Ортопедија' },
+    { value: 'otolaryngology', label: 'Оториноларингологија (Уво-Нос-Грло)' },
+    { value: 'ophthalmology', label: 'Офталмологија' },
+    { value: 'pediatrics', label: 'Педијатрија' },
+    { value: 'psychiatry', label: 'Психијатрија' },
+    { value: 'pulmonology', label: 'Пулмологија' },
+    { value: 'rheumatology', label: 'Ревматологија' },
+    { value: 'urology', label: 'Урологија' },
+    { value: 'gynecology-obstetrics', label: 'Гинекологија и акушерство' },
+    { value: 'radiology', label: 'Радиологија' },
+    { value: 'anesthesiology', label: 'Анестезиологија' },
+    { value: 'emergency-medicine', label: 'Ургентна медицина' },
+    { value: 'pathology', label: 'Патологија' },
+    { value: 'immunology', label: 'Имунологија' },
+    { value: 'allergology', label: 'Алергологија' },
+    { value: 'pmr', label: 'Физикална медицина и рехабилитација' },
+    { value: 'general-surgery', label: 'Општа хирургија' },
+    { value: 'thoracic-surgery', label: 'Торакална хирургија' },
+    { value: 'vascular-surgery', label: 'Васкуларна хирургија' },
+    { value: 'neurosurgery', label: 'Неврохирургија' },
+    { value: 'plastic-surgery', label: 'Пластична хирургија' },
+    { value: 'occupational-medicine', label: 'Трудова медицина' },
+    { value: 'sports-medicine', label: 'Спортска медицина' },
+    { value: 'dentistry', label: 'Стоматологија' }
+  ],
+  sq: [
+    { value: 'general', label: 'Mjekësi e përgjithshme' },
+    { value: 'family-medicine', label: 'Mjekësi familjare' },
+    { value: 'cardiology', label: 'Kardiologji' },
+    { value: 'dermatology', label: 'Dermatologji' },
+    { value: 'dermatovenereology', label: 'Dermatovenerologji' },
+    { value: 'endocrinology', label: 'Endokrinologji' },
+    { value: 'gastroenterology', label: 'Gastroenterologji' },
+    { value: 'hematology', label: 'Hematologji' },
+    { value: 'infectious-diseases', label: 'Sëmundje infektive' },
+    { value: 'nephrology', label: 'Nefrologji' },
+    { value: 'neurology', label: 'Neurologji' },
+    { value: 'oncology', label: 'Onkologji' },
+    { value: 'orthopedics', label: 'Ortopedi' },
+    { value: 'otolaryngology', label: 'Otorinolaringologji (ORL)' },
+    { value: 'ophthalmology', label: 'Oftalmologji' },
+    { value: 'pediatrics', label: 'Pediatri' },
+    { value: 'psychiatry', label: 'Psikiatri' },
+    { value: 'pulmonology', label: 'Pulmologji' },
+    { value: 'rheumatology', label: 'Reumatologji' },
+    { value: 'urology', label: 'Urologji' },
+    { value: 'gynecology-obstetrics', label: 'Gjinekologji dhe obstetrikë' },
+    { value: 'radiology', label: 'Radiologji' },
+    { value: 'anesthesiology', label: 'Anesteziologji' },
+    { value: 'emergency-medicine', label: 'Mjekësi emergjente' },
+    { value: 'pathology', label: 'Patologji' },
+    { value: 'immunology', label: 'Imunologji' },
+    { value: 'allergology', label: 'Alergologji' },
+    { value: 'pmr', label: 'Mjekësi fizike dhe rehabilitim' },
+    { value: 'general-surgery', label: 'Kirurgji e përgjithshme' },
+    { value: 'thoracic-surgery', label: 'Kirurgji torakale' },
+    { value: 'vascular-surgery', label: 'Kirurgji vaskulare' },
+    { value: 'neurosurgery', label: 'Neurokirurgji' },
+    { value: 'plastic-surgery', label: 'Kirurgji plastike' },
+    { value: 'occupational-medicine', label: 'Mjekësi e punës' },
+    { value: 'sports-medicine', label: 'Mjekësi sportive' },
+    { value: 'dentistry', label: 'Stomatologji' }
+  ],
+  en: [
+    { value: 'general', label: 'General Medicine' },
+    { value: 'family-medicine', label: 'Family Medicine' },
+    { value: 'cardiology', label: 'Cardiology' },
+    { value: 'dermatology', label: 'Dermatology' },
+    { value: 'dermatovenereology', label: 'Dermatovenereology' },
+    { value: 'endocrinology', label: 'Endocrinology' },
+    { value: 'gastroenterology', label: 'Gastroenterology' },
+    { value: 'hematology', label: 'Hematology' },
+    { value: 'infectious-diseases', label: 'Infectious Diseases' },
+    { value: 'nephrology', label: 'Nephrology' },
+    { value: 'neurology', label: 'Neurology' },
+    { value: 'oncology', label: 'Oncology' },
+    { value: 'orthopedics', label: 'Orthopedics' },
+    { value: 'otolaryngology', label: 'Otolaryngology (ENT)' },
+    { value: 'ophthalmology', label: 'Ophthalmology' },
+    { value: 'pediatrics', label: 'Pediatrics' },
+    { value: 'psychiatry', label: 'Psychiatry' },
+    { value: 'pulmonology', label: 'Pulmonology' },
+    { value: 'rheumatology', label: 'Rheumatology' },
+    { value: 'urology', label: 'Urology' },
+    { value: 'gynecology-obstetrics', label: 'Gynecology & Obstetrics' },
+    { value: 'radiology', label: 'Radiology' },
+    { value: 'anesthesiology', label: 'Anesthesiology' },
+    { value: 'emergency-medicine', label: 'Emergency Medicine' },
+    { value: 'pathology', label: 'Pathology' },
+    { value: 'immunology', label: 'Immunology' },
+    { value: 'allergology', label: 'Allergology' },
+    { value: 'pmr', label: 'Physical Medicine & Rehabilitation' },
+    { value: 'general-surgery', label: 'General Surgery' },
+    { value: 'thoracic-surgery', label: 'Thoracic Surgery' },
+    { value: 'vascular-surgery', label: 'Vascular Surgery' },
+    { value: 'neurosurgery', label: 'Neurosurgery' },
+    { value: 'plastic-surgery', label: 'Plastic Surgery' },
+    { value: 'occupational-medicine', label: 'Occupational Medicine' },
+    { value: 'sports-medicine', label: 'Sports Medicine' },
+    { value: 'dentistry', label: 'Dentistry' }
+  ]
+};
+
+function renderSpecialties() {
+  try {
+    const lang = (typeof currentLanguage !== 'undefined' && currentLanguage) ? currentLanguage : 'mk';
+    const list = SPECIALTIES[lang] || SPECIALTIES.mk;
+
+    const selects = [
+      { id: 'questionSpecialty', placeholderKey: 'questionSpecialtyPlaceholder' },
+      { id: 'regSpecialization', placeholderKey: 'questionSpecialtyPlaceholder' }
+    ];
+
+    selects.forEach(conf => {
+      const sel = document.getElementById(conf.id);
+      if (!sel) return;
+      const currentVal = sel.value;
+      sel.innerHTML = '';
+
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      const ph = (translations?.[lang]?.[conf.placeholderKey]) || 'Изберете медицинска област';
+      placeholder.textContent = ph;
+      sel.appendChild(placeholder);
+
+      list.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.value;
+        opt.textContent = item.label;
+        sel.appendChild(opt);
+      });
+
+      if (list.some(i => i.value === currentVal)) {
+        sel.value = currentVal;
+      }
+    });
+  } catch (e) {
+    console.warn('renderSpecialties error:', e);
+  }
+}
+
+// Call once on load
+document.addEventListener('DOMContentLoaded', renderSpecialties);
+
+// Language Switching
         function switchLanguage(lang) {
             currentLanguage = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
@@ -1135,7 +1290,9 @@
                 const key = el.getAttribute('data-i18n');
                 if (translations[lang][key]) {
                     el.textContent = translations[lang][key];
-                }
+                
+    try { renderSpecialties(); } catch(e) {}
+}
             });
 
             // Update placeholders
