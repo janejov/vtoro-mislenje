@@ -900,6 +900,16 @@
                         <input type="number" class="form-input" id="regExperience" placeholder="0" min="0">
                     </div>
                 </div>
+    <div class="form-group" style="display:flex; gap:10px; align-items:flex-start; margin-top:8px;">
+        <input type="checkbox" id="regAccept" style="margin-top:6px;">
+        <label for="regAccept" style="color: var(--text-light); line-height:1.6;">
+            <span data-i18n="acceptText">Ги прифаќам</span>
+            <a href="#" onclick="openTerms(); return false;" style="color: var(--primary); font-weight:600;" data-i18n="terms">Условите за користење</a>
+            <span data-i18n="and">и</span>
+            <a href="#" onclick="openPrivacy(); return false;" style="color: var(--primary); font-weight:600;" data-i18n="privacy">Политиката за приватност</a>.
+        </label>
+    </div>
+
 
                 <button class="btn btn-primary" onclick="register()" style="width: 100%;" data-i18n="registerButton">Регистрирај се</button>
 
@@ -999,6 +1009,12 @@
                 footerPrivacy: 'Приватност',
                 footerTerms: 'Услови',
                 footerRights: 'Сите права задржани.',
+                ,acceptText: 'Ги прифаќам'
+                ,terms: 'Услови за користење'
+                ,privacy: 'Политика за приватност'
+                ,and: 'и'
+                ,mustAccept: 'Ве молиме прифатете ги Условите и Политиката за приватност'
+
                 loginEmail: 'Email адреса',
                 loginPassword: 'Шифра',
                 loginButton: 'Најави се',
@@ -1054,6 +1070,12 @@
                 footerPrivacy: 'Privatësia',
                 footerTerms: 'Kushtet',
                 footerRights: 'Të gjitha të drejtat e rezervuara.',
+                ,acceptText: 'Pranoj'
+                ,terms: 'Kushtet e përdorimit'
+                ,privacy: 'Politika e privatësisë'
+                ,and: 'dhe'
+                ,mustAccept: 'Ju lutemi pranoni Kushtet dhe Politikën e privatësisë'
+
                 loginEmail: 'Adresa email',
                 loginPassword: 'Fjalëkalimi',
                 loginButton: 'Hyrje',
@@ -1109,6 +1131,12 @@
                 footerPrivacy: 'Privacy',
                 footerTerms: 'Terms',
                 footerRights: 'All rights reserved.',
+                ,acceptText: 'I accept the'
+                ,terms: 'Terms of Use'
+                ,privacy: 'Privacy Policy'
+                ,and: 'and'
+                ,mustAccept: 'Please accept the Terms and Privacy Policy'
+
                 loginEmail: 'Email address',
                 loginPassword: 'Password',
                 loginButton: 'Login',
@@ -1197,11 +1225,29 @@
             }
         }
 
-        function closeAnswerModal(event) {
+function closeAnswerModal(event) {
             if (!event || event.target.id === 'answerModal' || event.target.classList.contains('modal-close')) {
                 document.getElementById('answerModal').classList.add('hidden');
             }
+        
+
+        function openTerms() {
+            document.getElementById('termsModal').classList.remove('hidden');
         }
+        function closeTerms(event) {
+            if (!event || event.target.id === 'termsModal' || (event.target && event.target.classList && event.target.classList.contains('modal-close'))) {
+                document.getElementById('termsModal').classList.add('hidden');
+            }
+        }
+        function openPrivacy() {
+            document.getElementById('privacyModal').classList.remove('hidden');
+        }
+        function closePrivacy(event) {
+            if (!event || event.target.id === 'privacyModal' || (event.target && event.target.classList && event.target.classList.contains('modal-close'))) {
+                document.getElementById('privacyModal').classList.add('hidden');
+            }
+        }
+}
 
         // Auth Functions
         async function register() {
@@ -1212,7 +1258,13 @@
             const phone = document.getElementById('regPhone').value.trim();
             const birthdate = document.getElementById('regBirthdate').value;
 
-            if (!email || !password || !name || !phone || !birthdate) {
+            
+            const accepted = document.getElementById('regAccept') && document.getElementById('regAccept').checked;
+            if (!accepted) {
+                showToast(translations[currentLanguage]?.mustAccept || 'Please accept the Terms and Privacy Policy');
+                return;
+            }
+if (!email || !password || !name || !phone || !birthdate) {
                 showToast('Please fill all required fields');
                 return;
             }
@@ -1693,5 +1745,36 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
+
+<!-- Terms Modal -->
+<div id="termsModal" class="modal-overlay hidden" onclick="closeTerms(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 data-i18n="terms">Услови за користење</h2>
+      <button class="modal-close" onclick="closeTerms()">×</button>
+    </div>
+    <div id="termsContent" style="white-space:pre-wrap; color: var(--text-dark); line-height:1.7;">
+      <!-- Тука ќе дојде финалниот текст за Услови за користење -->
+      Во овој прозорец ќе биде прикажан целиот текст со условите за користење. 
+      Можеш да ми го испратиш текстот и ќе го вметнам овде.
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div id="privacyModal" class="modal-overlay hidden" onclick="closePrivacy(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h2 data-i18n="privacy">Политика за приватност</h2>
+      <button class="modal-close" onclick="closePrivacy()">×</button>
+    </div>
+    <div id="privacyContent" style="white-space:pre-wrap; color: var(--text-dark); line-height:1.7;">
+      <!-- Тука ќе дојде финалниот текст за Политика за приватност -->
+      Во овој прозорец ќе биде прикажан целиот текст со политиката за приватност. 
+      Можеш да ми го испратиш текстот и ќе го вметнам овде.
+    </div>
+  </div>
+</div>
+
 </body>
 </html>                
