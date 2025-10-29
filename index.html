@@ -63,6 +63,31 @@
             align-items: center;
             gap: 10px;
         }
+.logo-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.3s, transform 0.2s;
+}
+
+.logo-link:hover {
+    color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.logo-icon {
+    font-size: 28px;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.logo-link:hover .logo-icon {
+    color: var(--primary-dark);
+    transform: rotate(-10deg) scale(1.1);
+}
 
         .nav-links {
             display: flex;
@@ -514,12 +539,10 @@
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-<div class="logo">
-    <span style="font-size: 28px;">⚕️</span>
-    <a href="index.html"
-       data-i18n="siteName"
-       class="logo-link">
-        Второ мислење
+            <div class="logo">
+    <a href="index.html" class="logo-link">
+        <span class="logo-icon">⚕️</span>
+        <span data-i18n="siteName">Второ мислење</span>
     </a>
 </div>
             <div class="nav-links">
