@@ -577,17 +577,40 @@
                         <button class="btn btn-outline" onclick="showRegisterModal('expert')" data-i18n="heroButton2">Регистрирај се како лекар</button>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <svg viewBox="0 0 500 400" style="width: 100%;">
-                        <rect x="50" y="50" width="400" height="300" rx="20" fill="#E6F2FF"/>
-                        <circle cx="150" cy="150" r="40" fill="#0066CC"/>
-                        <rect x="220" y="120" width="200" height="15" rx="7" fill="#3399FF"/>
-                        <rect x="220" y="150" width="150" height="15" rx="7" fill="#3399FF" opacity="0.5"/>
-                        <circle cx="350" cy="280" r="40" fill="#10B981"/>
-                        <rect x="100" y="250" width="200" height="15" rx="7" fill="#66BB6A"/>
-                        <rect x="100" y="280" width="180" height="15" rx="7" fill="#66BB6A" opacity="0.5"/>
-                    </svg>
-                </div>
+                <div class="hero-image" style="display:flex; justify-content:center; align-items:center;">
+  <svg width="400" height="400" viewBox="0 0 140 140" class="heartbeat-svg">
+    <!-- Heart outline -->
+    <path d="M70 122
+             C 70 122, 24 98, 24 66
+             C 24 48, 38 36, 54 36
+             C 63 36, 70 41, 70 48
+             C 70 41, 77 36, 86 36
+             C 102 36, 116 48, 116 66
+             C 116 98, 70 122, 70 122 Z"
+          fill="none" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- EKG line across the heart -->
+    <path d="M20 72
+             L44 72
+             L50 60
+             L56 84
+             L64 66
+             L72 78
+             L80 60
+             L88 84
+             L96 72
+             L120 72"
+          fill="none" stroke="#0066CC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"
+          class="ekg-line"/>
+  </svg>
+</div>
+<style>
+/* Heartbeat animation (kept isolated to avoid affecting other styles) */
+.heartbeat-svg { animation: hb 6.8s ease-in-out infinite; filter: drop-shadow(0 20px 25px rgba(0,0,0,0.08)); }
+.ekg-line { stroke-dasharray: 220; stroke-dashoffset: 220; animation: ekg 6.8s linear infinite; }
+@keyframes hb { 0%,100%{transform:scale(1)} 20%{transform:scale(1.05)} 50%{transform:scale(1)} 70%{transform:scale(1.08)} }
+@keyframes ekg { 0%{stroke-dashoffset:220;opacity:.8} 40%{opacity:1} 100%{stroke-dashoffset:-220;opacity:.9} }
+</style>
             </div>
         </section>
 
