@@ -577,8 +577,8 @@
                         <button class="btn btn-outline" onclick="showRegisterModal('expert')" data-i18n="heroButton2">Регистрирај се како лекар</button>
                     </div>
                 </div>
-                <div class="hero-image">
-  <svg width="140" height="140" viewBox="0 0 140 140" class="heartbeat-svg">
+                <div class="hero-image" style="display:flex; justify-content:center; align-items:center;">
+  <svg width="400" height="400" viewBox="0 0 140 140" class="heartbeat-svg">
     <!-- Heart outline -->
     <path d="M70 122
              C 70 122, 24 98, 24 66
@@ -604,6 +604,32 @@
           class="ekg-line"/>
   </svg>
 </div>
+
+<style>
+.heartbeat-svg {
+  animation: hb 4s ease-in-out infinite; /* slower heartbeat */
+  filter: drop-shadow(0 20px 25px rgba(0,0,0,0.08));
+}
+
+.ekg-line {
+  stroke-dasharray: 220;
+  stroke-dashoffset: 220;
+  animation: ekg 4s linear infinite; /* slower EKG movement */
+}
+
+@keyframes hb {
+  0%, 100% { transform: scale(1); }
+  20% { transform: scale(1.05); }
+  50% { transform: scale(1); }
+  70% { transform: scale(1.08); }
+}
+
+@keyframes ekg {
+  0%   { stroke-dashoffset: 220; opacity: 0.8; }
+  40%  { opacity: 1; }
+  100% { stroke-dashoffset: -220; opacity: 0.9; }
+}
+</style>
 
 <style>
 .heartbeat-svg {
