@@ -4,151 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Второ мислење - Медицински консултации онлајн</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-// ===== Doctor Pool / Claim UI =====
-async function isDoctorUser() {
-  try {
-    const { data: sess } = await supabaseClient.auth.getSession();
-    const me = sess?.session?.user?.id;
-    if (!me) return false;
-    const { data: doc } = await supabaseClient
-      .from('doctor_profiles')
-      .select('user_id')
-      .eq('user_id', me)
-      .single();
-    return !!doc;
-  } catch (e) {
-    console.warn('isDoctorUser error', e);
-    return false;
-  }
-}
-
-async function loadPool() {
-  try {
-    const pool = document.getElementById('doctorPoolSection');
-    if (!pool) return;
-
-    // RLS will restrict results to specialties available to this doctor
-    const { data: rows, error } = await supabaseClient
-      .from('questions')
-      .select('id, title, specialty, specialty_name, question_text, created_at, status')
-      .eq('status', 'open')
-      .order('created_at', { ascending: true });
-
-    if (error) { console.error(error); return; }
-
-    const list = document.getElementById('poolList');
-    list.innerHTML = (rows || []).map(r => `
-      <div class="pool-row">
-        <div>
-          <div><strong>${r.title || ''}</strong></div>
-          <div><small>${(r.specialty_name || r.specialty || '')} • ${new Date(r.created_at).toLocaleString()}</small></div>
-          <pre>${(r.question_text || '').slice(0, 1200)}</pre>
-        </div>
-        <div style="display:flex; align-items:flex-start; gap:8px;">
-          <button class="btn btn-secondary" onclick="claimQuestion('${r.id}')" data-i18n="claimBtn">Преземи</button>
-        </div>
-      </div>
-    `).join('') || '<em data-i18n="noOpen">Нема отворени прашања</em>';
-  } catch (e) {
-    console.error('loadPool error', e);
-  }
-}
-
-async function claimQuestion(questionId) {
-  try {
-    const { data: sess } = await supabaseClient.auth.getSession();
-    const me = sess?.session?.user?.id;
-    if (!me) { showToast('Мора да сте најавени.'); return; }
-
-    const { data, error } = await supabaseClient.rpc('claim_question', {
-      p_question_id: questionId,
-      p_doctor_id: me
-    });
-    if (error) { console.error(error); showToast('Неуспешно преземање.'); return; }
-    if (!data || !data.length) {
-      showToast('Веќе е преземено од друг доктор.');
-    } else {
-      showToast('Успешно преземено.');
-    }
-    await loadPool();
-    await loadMyClaims();
-  } catch (e) {
-    console.error('claimQuestion error', e);
-    showToast('Грешка при преземање.');
-  }
-}
-
-async function loadMyClaims() {
-  try {
-    const claims = document.getElementById('doctorClaimsSection');
-    if (!claims) return;
-
-    const { data: sess } = await supabaseClient.auth.getSession();
-    const me = sess?.session?.user?.id;
-    if (!me) return;
-
-    const { data: rows, error } = await supabaseClient
-      .from('questions')
-      .select('id, title, specialty_name, question_text, created_at, status')
-      .eq('claimed_by', me)
-      .in('status', ['claimed','answered','closed'])
-      .order('created_at', { ascending: false });
-    if (error) { console.error(error); return; }
-
-    const list = document.getElementById('myClaimsList');
-    list.innerHTML = (rows || []).map(r => `
-      <div class="pool-row">
-        <div>
-          <div><strong>${r.title || ''}</strong> <small>• ${r.status}</small></div>
-          <div><small>${(r.specialty_name || '')} • ${new Date(r.created_at).toLocaleString()}</small></div>
-          <pre>${(r.question_text || '').slice(0, 1200)}</pre>
-        </div>
-        <div style="display:flex; align-items:flex-start; gap:8px;">
-          <!-- Future actions: answer, close, etc. -->
-        </div>
-      </div>
-    `).join('') || '<em data-i18n="noClaims">Немате преземени прашања</em>';
-  } catch (e) {
-    console.error('loadMyClaims error', e);
-  }
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    if (typeof supabaseClient === 'undefined') return;
-    const isDoc = await isDoctorUser();
-    const pool = document.getElementById('doctorPoolSection');
-    const claims = document.getElementById('doctorClaimsSection');
-    if (isDoc) {
-      if (pool) pool.style.display = '';
-      if (claims) claims.style.display = '';
-      await loadPool();
-      await loadMyClaims();
-
-      // Realtime updates
-      try {
-        supabaseClient
-          .channel('realtime:questions')
-          .on('postgres_changes', { event: '*', schema: 'public', table: 'questions' }, () => {
-            loadPool();
-            loadMyClaims();
-          })
-          .subscribe();
-      } catch (e) {
-        console.warn('realtime subscribe error', e);
-      }
-    } else {
-      // Ensure hidden for non-doctors
-      if (pool) pool.style.display = 'none';
-      if (claims) claims.style.display = 'none';
-    }
-  } catch (e) {
-    console.warn('doctor init error', e);
-  }
-});
-
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
             margin: 0;
@@ -810,28 +666,6 @@ img, svg { max-width: 100%; height: auto; }
   .modal-content li { font-size: 14px; line-height: 1.6; }
 }
 
-
-/* Doctor pool list cards */
-.pool-row {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  padding: 12px;
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 12px;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(6px);
-}
-.pool-row pre {
-  white-space: pre-wrap;
-  margin: 6px 0 0 0;
-  color: var(--text-dark);
-}
-@media (max-width: 768px) {
-  .pool-row { grid-template-columns: 1fr; }
-}
-
-
 </style>
 </head>
 <body>
@@ -988,7 +822,7 @@ img, svg { max-width: 100%; height: auto; }
                     <ul class="footer-links">
                         <li><a href="#how" data-i18n="navHow" data-auth="public-only">Како работи</a></li>
                         <li><a href="#features" data-i18n="navFeatures" data-auth="public-only">Предности</a></li>
-                        <li><a href="#" onclick="showLoginModal()" data-i18n="navLogin" data-auth="public-only">Најава</a></li>
+                        <li><a href="#" onclick="showLoginModal(); return false;" data-i18n="navLogin" data-auth="public-only">Најава</a></li>
                     </ul>
                 </div>
                 <div>
@@ -1065,19 +899,6 @@ img, svg { max-width: 100%; height: auto; }
             </div>
         </div>
     </div>
-
-    
-<!-- Doctor Pool Section (visible only to doctors with a doctor_profiles row) -->
-<section id="doctorPoolSection" class="glass-card" style="display:none; margin-top:18px;">
-  <h3 data-i18n="poolTitle">Пул на прашања</h3>
-  <div id="poolList" style="display:flex; flex-direction:column; gap:10px;"></div>
-</section>
-
-<!-- My Claimed Section -->
-<section id="doctorClaimsSection" class="glass-card" style="display:none; margin-top:18px;">
-  <h3 data-i18n="myClaimsTitle">Мои преземени прашања</h3>
-  <div id="myClaimsList" style="display:flex; flex-direction:column; gap:10px;"></div>
-</section>
 
     <!-- Login/Register Modal -->
     <div id="authModal" class="modal-overlay hidden" onclick="closeAuthModal(event)">
@@ -1178,7 +999,7 @@ img, svg { max-width: 100%; height: auto; }
 
                 <p style="text-align: center; margin-top: 20px; color: var(--text-light);">
                     <span data-i18n="registerHaveAccount">Веќе имате профил?</span>
-                    <a href="#" onclick="showLoginModal()" style="color: var(--primary); font-weight: 600;" data-i18n="registerLogin">Најавете се</a>
+                    <a href="#" onclick="showLoginFromRegister(); return false;" style="color: var(--primary); font-weight: 600;" data-i18n="registerLogin">Најавете се</a>
                 </p>
             </div>
         </div>
@@ -1291,11 +1112,6 @@ img, svg { max-width: 100%; height: auto; }
                 dashboardAskQuestion: 'Постави ново прашање',
                 dashboardMyQuestions: 'Мои прашања',
                 dashboardQuestionsToAnswer: 'Прашања за одговор'
-                poolTitle: 'Пул на прашања',
-                myClaimsTitle: 'Мои преземени прашања',
-                claimBtn: 'Преземи',
-                noOpen: 'Нема отворени прашања',
-                noClaims: 'Немате преземени прашања',
             },
             sq: {
                 siteName: 'Mendimi i dytë',
@@ -1351,11 +1167,6 @@ img, svg { max-width: 100%; height: auto; }
                 dashboardAskQuestion: 'Bëni një pyetje të re',
                 dashboardMyQuestions: 'Pyetjet e mia',
                 dashboardQuestionsToAnswer: 'Pyetje për t\'u përgjigjur'
-                poolTitle: 'Pool i pyetjeve',
-                myClaimsTitle: 'Pyetjet e mia të marra',
-                claimBtn: 'Merr',
-                noOpen: 'Nuk ka pyetje të hapura',
-                noClaims: 'Nuk keni pyetje të marra',
             },
             en: {
                 siteName: 'Second Opinion',
@@ -1411,11 +1222,6 @@ img, svg { max-width: 100%; height: auto; }
                 dashboardAskQuestion: 'Ask a new question',
                 dashboardMyQuestions: 'My questions',
                 dashboardQuestionsToAnswer: 'Questions to answer'
-                poolTitle: 'Question pool',
-                myClaimsTitle: 'My claimed questions',
-                claimBtn: 'Claim',
-                noOpen: 'No open questions',
-                noClaims: 'You have no claimed questions',
             }
         };
 
@@ -1581,34 +1387,18 @@ function renderSpecialties() {
 document.addEventListener('DOMContentLoaded', renderSpecialties);
 
 // Language Switching
-        
-function switchLanguage(lang) {
-  try {
-    currentLanguage = lang;
-    // Toggle active state on buttons
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-      const t = (btn.textContent || '').trim().toLowerCase();
-      const map = { mk: 'mk', sq: 'sq', en: 'en' };
-      if (map[t] === lang) btn.classList.add('active'); else btn.classList.remove('active');
-    });
-    // Update text content
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      const val = translations?.[lang]?.[key];
-      if (val) el.textContent = val;
-    });
-    // Update placeholders if you use data-i18n-placeholder
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-      const key = el.getAttribute('data-i18n-placeholder');
-      const val = translations?.[lang]?.[key];
-      if (val) el.setAttribute('placeholder', val);
-    });
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update all translated elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                
     try { renderSpecialties(); } catch(e) {}
-  } catch (e) {
-    console.warn('switchLanguage error:', e);
-  }
-}
-
 }
             });
 
