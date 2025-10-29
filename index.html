@@ -55,22 +55,39 @@
             align-items: center;
         }
 
-        \1
-
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 .logo-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 28px;
-  font-weight: 800;
-  color: var(--primary);
-  text-decoration: none;
-  transition: color 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    text-decoration: none;
+    transition: color 0.3s, transform 0.2s;
 }
-.logo-link:hover { color: var(--primary-dark); transform: scale(1.05); }
-.logo-icon { font-size: 28px; transition: transform 0.3s, color 0.3s; }
-.logo-link:hover .logo-icon { color: var(--primary-dark); transform: rotate(-10deg) scale(1.1); }
 
+.logo-link:hover {
+    color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.logo-icon {
+    font-size: 28px;
+    transition: transform 0.3s, color 0.3s;
+}
+
+.logo-link:hover .logo-icon {
+    color: var(--primary-dark);
+    transform: rotate(-10deg) scale(1.1);
+}
 
         .nav-links {
             display: flex;
@@ -523,18 +540,18 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-  <a href="index.html" class="logo-link">
-    <span class="logo-icon">⚕️</span>
-    <span data-i18n="siteName">Второ мислење</span>
-  </a>
+    <a href="index.html" class="logo-link">
+        <span class="logo-icon">⚕️</span>
+        <span data-i18n="siteName">Второ мислење</span>
+    </a>
 </div>
             <div class="nav-links">
                 <a href="#how" class="nav-link" data-i18n="navHow">Како работи</a>
                 <a href="#features" class="nav-link" data-i18n="navFeatures">Предности</a>
                 <div class="language-switcher">
-                    <button class="lang-btn active" onclick="switchLanguage('mk', event)">МК</button>
-                    <button class="lang-btn" onclick="switchLanguage('sq', event)">SQ</button>
-                    <button class="lang-btn" onclick="switchLanguage('en', event)">EN</button>
+                    <button class="lang-btn active" onclick="switchLanguage('mk')">МК</button>
+                    <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
+                    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
                 </div>
                 <button class="btn btn-primary" onclick="showLoginModal()" data-i18n="navLogin">Најава</button>
             </div>
@@ -560,36 +577,17 @@
                         <button class="btn btn-outline" onclick="showRegisterModal('expert')" data-i18n="heroButton2">Регистрирај се како лекар</button>
                     </div>
                 </div>
-                <div class="hero-image" style="display:flex; justify-content:center; align-items:center;">
-  <svg width="400" height="400" viewBox="0 0 140 140" class="heartbeat-svg">
-    <path d="M70 122
-             C 70 122, 24 98, 24 66
-             C 24 48, 38 36, 54 36
-             C 63 36, 70 41, 70 48
-             C 70 41, 77 36, 86 36
-             C 102 36, 116 48, 116 66
-             C 116 98, 70 122, 70 122 Z"
-          fill="none" stroke="#10B981" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M20 72
-             L44 72
-             L50 60
-             L56 84
-             L64 66
-             L72 78
-             L80 60
-             L88 84
-             L96 72
-             L120 72"
-          fill="none" stroke="#0066CC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"
-          class="ekg-line"/>
-  </svg>
-</div>
-<style>
-.heartbeat-svg { animation: hb 6.8s ease-in-out infinite; filter: drop-shadow(0 20px 25px rgba(0,0,0,0.08)); }
-.ekg-line { stroke-dasharray: 220; stroke-dashoffset: 220; animation: ekg 6.8s linear infinite; }
-@keyframes hb { 0%,100%{transform:scale(1)} 20%{transform:scale(1.05)} 50%{transform:scale(1)} 70%{transform:scale(1.08)} }
-@keyframes ekg { 0%{stroke-dashoffset:220;opacity:.8} 40%{opacity:1} 100%{stroke-dashoffset:-220;opacity:.9} }
-</style>
+                <div class="hero-image">
+                    <svg viewBox="0 0 500 400" style="width: 100%;">
+                        <rect x="50" y="50" width="400" height="300" rx="20" fill="#E6F2FF"/>
+                        <circle cx="150" cy="150" r="40" fill="#0066CC"/>
+                        <rect x="220" y="120" width="200" height="15" rx="7" fill="#3399FF"/>
+                        <rect x="220" y="150" width="150" height="15" rx="7" fill="#3399FF" opacity="0.5"/>
+                        <circle cx="350" cy="280" r="40" fill="#10B981"/>
+                        <rect x="100" y="250" width="200" height="15" rx="7" fill="#66BB6A"/>
+                        <rect x="100" y="280" width="180" height="15" rx="7" fill="#66BB6A" opacity="0.5"/>
+                    </svg>
+                </div>
             </div>
         </section>
 
@@ -774,17 +772,65 @@
             </div>
 
             <!-- Register Form -->
-            \1
-    <div class="form-group" style="display:flex; gap:10px; align-items:flex-start; margin-top:8px;">
-        <input type="checkbox" id="regAccept" style="margin-top:6px;">
-        <label for="regAccept" style="color: var(--text-light); line-height:1.6;">
-            <span data-i18n="acceptText">Ги прифаќам</span>
-            <a href="#" onclick="openTerms(); return false;" style="color: var(--primary); font-weight:600;" data-i18n="terms">Услови за користење</a>
-            <span data-i18n="and">и</span>
-            <a href="#" onclick="openPrivacy(); return false;" style="color: var(--primary); font-weight:600;" data-i18n="privacy">Политиката за приватност</a>.
-        </label>
-    </div>
-\2
+            <div id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerName">Име и презиме</label>
+                    <input type="text" class="form-input" id="regName" data-i18n-placeholder="registerNamePlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerEmail">Email адреса</label>
+                    <input type="email" class="form-input" id="regEmail" data-i18n-placeholder="registerEmailPlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerPhone">Телефонски број</label>
+                    <input type="tel" class="form-input" id="regPhone" data-i18n-placeholder="registerPhonePlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerBirthdate">Датум на раѓање</label>
+                    <input type="date" class="form-input" id="regBirthdate">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerPassword">Шифра</label>
+                    <input type="password" class="form-input" id="regPassword" data-i18n-placeholder="registerPasswordPlaceholder">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" data-i18n="registerPasswordConfirm">Потврди шифра</label>
+                    <input type="password" class="form-input" id="regPasswordConfirm" data-i18n-placeholder="registerPasswordConfirmPlaceholder">
+                </div>
+
+                <div id="doctorFields" class="hidden">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerSpecialization">Специјализација</label>
+                        <select class="form-input" id="regSpecialization">
+                            <option value="">Изберете специјализација</option>
+                            <option value="general">Општа медицина</option>
+                            <option value="cardiology">Кардиологија</option>
+                            <option value="dermatology">Дерматологија</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerLicense">Број на лиценца</label>
+                        <input type="text" class="form-input" id="regLicense" data-i18n-placeholder="registerLicensePlaceholder">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerHospital">Болница/Клиника</label>
+                        <input type="text" class="form-input" id="regHospital" data-i18n-placeholder="registerHospitalPlaceholder">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="registerExperience">Години искуство</label>
+                        <input type="number" class="form-input" id="regExperience" placeholder="0" min="0">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="register()" style="width: 100%;" data-i18n="registerButton">Регистрирај се</button>
 
                 <p style="text-align: center; margin-top: 20px; color: var(--text-light);">
                     <span data-i18n="registerHaveAccount">Веќе имате профил?</span>
@@ -902,12 +948,6 @@
                 dashboardMyQuestions: 'Мои прашања',
                 dashboardQuestionsToAnswer: 'Прашања за одговор'
             },
-                acceptText: 'Ги прифаќам',
-                terms: 'Услови за користење',
-                privacy: 'Политика за приватност',
-                and: 'и',
-                mustAccept: 'Ве молиме прифатете ги Условите и Политиката за приватност',
-
             sq: {
                 siteName: 'Mendimi i dytë',
                 navHow: 'Si funksionon',
@@ -963,12 +1003,6 @@
                 dashboardMyQuestions: 'Pyetjet e mia',
                 dashboardQuestionsToAnswer: 'Pyetje për t\'u përgjigjur'
             },
-                acceptText: 'Pranoj',
-                terms: 'Kushtet e përdorimit',
-                privacy: 'Politika e privatësisë',
-                and: 'dhe',
-                mustAccept: 'Ju lutemi pranoni Kushtet dhe Politikën e privatësisë',
-
             en: {
                 siteName: 'Second Opinion',
                 navHow: 'How it works',
@@ -1027,10 +1061,10 @@
         };
 
         // Language Switching
-        function switchLanguage(lang, ev) {
+        function switchLanguage(lang) {
             currentLanguage = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            (ev && ev.target && ev.target.classList.add('active'));
+            event.target.classList.add('active');
             
             // Update all translated elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1092,30 +1126,27 @@
             }
         }
 
-        \1
-
-        function openTerms() { document.getElementById('termsModal').classList.remove('hidden'); }
-        function closeTerms(event) {
-            if (!event || event.target.id === 'termsModal' || (event.target && event.target.classList && event.target.classList.contains('modal-close'))) {
-                document.getElementById('termsModal').classList.add('hidden');
+        function closeAnswerModal(event) {
+            if (!event || event.target.id === 'answerModal' || event.target.classList.contains('modal-close')) {
+                document.getElementById('answerModal').classList.add('hidden');
             }
         }
-        function openPrivacy() { document.getElementById('privacyModal').classList.remove('hidden'); }
-        function closePrivacy(event) {
-            if (!event || event.target.id === 'privacyModal' || (event.target && event.target.classList && event.target.classList.contains('modal-close'))) {
-                document.getElementById('privacyModal').classList.add('hidden');
-            }
-        }
-}
 
         // Auth Functions
-        \1
-            const accepted = document.getElementById('regAccept') && document.getElementById('regAccept').checked;
-            if (!accepted) {
-                showToast(translations[currentLanguage]?.mustAccept || 'Please accept the Terms and Privacy Policy');
+        async function register() {
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const passwordConfirm = document.getElementById('regPasswordConfirm').value;
+            const name = document.getElementById('regName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const birthdate = document.getElementById('regBirthdate').value;
+
+            if (!email || !password || !name || !phone || !birthdate) {
+                showToast('Please fill all required fields');
                 return;
             }
-\2if (password !== passwordConfirm) {
+
+            if (password !== passwordConfirm) {
                 showToast('Passwords do not match!');
                 return;
             }
@@ -1126,13 +1157,7 @@
             }
 
             try {
-                console.log('Attempting to register with:',
-                acceptText: 'I accept the',
-                terms: 'Terms of Use',
-                privacy: 'Privacy Policy',
-                and: 'and',
-                mustAccept: 'Please accept the Terms and Privacy Policy',
- { email, name, role: registerRole });
+                console.log('Attempting to register with:', { email, name, role: registerRole });
                 
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email: email,
@@ -1597,32 +1622,5 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
-
-<!-- Terms Modal -->
-<div id="termsModal" class="modal-overlay hidden" onclick="closeTerms(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <h2 data-i18n="terms">Услови за користење</h2>
-      <button class="modal-close" onclick="closeTerms()">×</button>
-    </div>
-    <div id="termsContent" style="white-space:pre-wrap; color: var(--text-dark); line-height:1.7;">
-      Тука ќе дојде финалниот текст за Услови за користење.
-    </div>
-  </div>
-</div>
-
-<!-- Privacy Modal -->
-<div id="privacyModal" class="modal-overlay hidden" onclick="closePrivacy(event)">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <div class="modal-header">
-      <h2 data-i18n="privacy">Политика за приватност</h2>
-      <button class="modal-close" onclick="closePrivacy()">×</button>
-    </div>
-    <div id="privacyContent" style="white-space:pre-wrap; color: var(--text-dark); line-height:1.7;">
-      Тука ќе дојде финалниот текст за Политика за приватност.
-    </div>
-  </div>
-</div>
-
 </body>
 </html>                
