@@ -549,9 +549,9 @@
                 <a href="#how" class="nav-link" data-i18n="navHow">Како работи</a>
                 <a href="#features" class="nav-link" data-i18n="navFeatures">Предности</a>
                 <div class="language-switcher">
-                    <button class="lang-btn active" onclick="switchLanguage('mk')">МК</button>
-                    <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
-                    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+                    <button class="lang-btn active" onclick="switchLanguage('mk', event)">МК</button>
+                    <button class="lang-btn" onclick="switchLanguage('sq', event)">SQ</button>
+                    <button class="lang-btn" onclick="switchLanguage('en', event)">EN</button>
                 </div>
                 <button class="btn btn-primary" onclick="showLoginModal()" data-i18n="navLogin">Најава</button>
             </div>
@@ -1160,10 +1160,10 @@
         };
 
         // Language Switching
-        function switchLanguage(lang) {
+        function switchLanguage(lang, ev) {
             currentLanguage = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            (ev && ev.target && ev.target.classList.add('active'));
             
             // Update all translated elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
