@@ -565,6 +565,83 @@
 
 
 .hidden{display:none!important}
+
+/* === Mobile optimizations === */
+.hamburger {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  padding: 8px 10px;
+  margin-left: auto;
+  border-radius: 12px;
+}
+.hamburger:focus { outline: 2px solid var(--primary); }
+
+.nav-links-wrapper { display: flex; gap: 18px; align-items: center; }
+
+/* Responsive images/SVG */
+img, svg { max-width: 100%; height: auto; }
+
+/* Forms: avoid zoom on iOS, larger tap targets */
+.form-input, input, select, textarea {
+  font-size: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+.btn { padding: 12px 16px; border-radius: 14px; }
+
+/* Modals: mobile-friendly */
+.modal-content {
+  max-width: 95vw;
+  width: 95vw;
+  max-height: 85vh;
+  height: auto;
+  overflow: auto;
+  border-radius: 18px;
+}
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 2;
+  padding-top: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* Grids/hero on small screens */
+@media (max-width: 768px) {
+  .container { padding-left: 14px; padding-right: 14px; }
+  .navbar { gap: 10px; }
+  .hamburger { display: block; }
+  #navLinks {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    padding: 10px 0 6px;
+    gap: 8px;
+  }
+  #navLinks.open { display: flex; }
+  .nav-links-wrapper a, .nav-links-wrapper button { width: 100%; text-align: left; padding: 10px 4px; }
+  .hero { grid-template-columns: 1fr; gap: 18px; }
+  .hero .hero-text { text-align: center; }
+  .hero .actions, .hero .btn { width: 100%; }
+  .hero-image { justify-content: center; align-items: center; }
+  .heartbeat-svg { width: 70vw; height: auto; }
+  .features-grid, .how-grid, .cards-grid { grid-template-columns: 1fr !important; }
+  .glass-card { padding: 16px; }
+  footer .footer-columns { grid-template-columns: 1fr; gap: 14px; }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .heartbeat-svg { width: 78vw; }
+  .btn { padding: 12px; }
+}
+
 </style>
 </head>
 <body>
@@ -577,7 +654,9 @@
         <span data-i18n="siteName">Второ мислење</span>
     </a>
 </div>
-            <div class="nav-links">
+<button id="mobileMenuBtn" class="hamburger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">☰</button>
+<div id="navLinks" class="nav-links-wrapper">
+<div class="nav-links">
                 <a href="#how" class="nav-link" data-i18n="navHow" data-auth="public-only">Како работи</a>
                 <a href="#features" class="nav-link" data-i18n="navFeatures" data-auth="public-only">Предности</a>
                 <div class="language-switcher">
@@ -588,7 +667,9 @@
                 <button class="btn btn-primary" onclick="showLoginModal()" data-i18n="navLogin" data-auth="public-only">Најава</button>
             </div>
         </div>
-    </nav>
+    
+</div>
+</nav>
 
     <!-- Landing Page -->
     <div id="landingPage">
@@ -1923,6 +2004,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }catch(e){ console.warn('auth init error:', e); }
 });
+
+
+// Mobile nav toggle
+(function(){
+  const btn = document.getElementById('mobileMenuBtn');
+  const links = document.getElementById('navLinks');
+  if (btn && links) {
+    btn.addEventListener('click', () => {
+      const isOpen = links.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+})();
 
 </script>
     
