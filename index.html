@@ -1233,6 +1233,9 @@ if (!email || !password || !name || !phone || !birthdate) {
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
+                    options: {
+                        emailRedirectTo: (window?.location?.origin || 'https://your-domain.com') + '/#email-confirmed'
+                    }
                 });
 
                 console.log('Auth response:', { authData, authError });
@@ -1700,6 +1703,43 @@ if (!email || !password || !name || !phone || !birthdate) {
             }
         }
     
+
+// Detect return from email confirmation
+(function () {
+    try {
+        const hash = window.location.hash || '';
+        if (hash.includes('email-confirmed') || hash.includes('access_token') || hash.includes('type=signup')) {
+            showToast('Email verified — you can log in now.');
+            // Optionally clear hash so refreshes don't repeat the toast
+            history.replaceState(null, document.title, window.location.pathname + window.location.search);
+        }
+    } catch (e) {
+        console.warn('Confirm detection error:', e);
+    }
+})();
+
+
+async function resendConfirmationEmail() {
+    try {
+        const emailEl = document.getElementById('regEmail');
+        const email = emailEl ? emailEl.value.trim() : '';
+        if (!email) {
+            showToast('Внесете email за да испратиме потврда повторно.');
+            return;
+        }
+        const { data, error } = await supabaseClient.auth.resend({ type: 'signup', email });
+        if (error) {
+            console.error('Resend error:', error);
+            showToast('Не можевме да ја испратиме потврдата. Обидете се подоцна.');
+            return;
+        }
+        showToast('Повторна потврда испратена на вашиот email.');
+    } catch (e) {
+        console.error('Resend exception:', e);
+        showToast('Грешка при испраќање на потврдата.');
+    }
+}
+
 </script>
     
     <!-- Vercel Analytics -->
