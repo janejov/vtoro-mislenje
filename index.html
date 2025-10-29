@@ -1581,18 +1581,34 @@ function renderSpecialties() {
 document.addEventListener('DOMContentLoaded', renderSpecialties);
 
 // Language Switching
-        function switchLanguage(lang) {
-            currentLanguage = lang;
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Update all translated elements
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                
+        
+function switchLanguage(lang) {
+  try {
+    currentLanguage = lang;
+    // Toggle active state on buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      const t = (btn.textContent || '').trim().toLowerCase();
+      const map = { mk: 'mk', sq: 'sq', en: 'en' };
+      if (map[t] === lang) btn.classList.add('active'); else btn.classList.remove('active');
+    });
+    // Update text content
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      const val = translations?.[lang]?.[key];
+      if (val) el.textContent = val;
+    });
+    // Update placeholders if you use data-i18n-placeholder
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      const val = translations?.[lang]?.[key];
+      if (val) el.setAttribute('placeholder', val);
+    });
     try { renderSpecialties(); } catch(e) {}
+  } catch (e) {
+    console.warn('switchLanguage error:', e);
+  }
+}
+
 }
             });
 
