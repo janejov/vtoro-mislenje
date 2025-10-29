@@ -33,6 +33,7 @@
             background: var(--bg-white);
         }
 
+        /* Navigation */
         .navbar {
             position: fixed;
             top: 0;
@@ -55,22 +56,12 @@
         }
 
         .logo {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--primary);
             display: flex;
             align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-
-        .logo:hover {
-            opacity: 0.8;
-        }
-
-        .logo-icon {
-            font-size: 32px;
+            gap: 10px;
         }
 
         .nav-links {
@@ -148,6 +139,7 @@
             color: white;
         }
 
+        /* Hero Section */
         .hero {
             margin-top: 80px;
             padding: 100px 40px;
@@ -159,7 +151,10 @@
         .hero-container {
             max-width: 1200px;
             margin: 0 auto;
-            text-align: center;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
         }
 
         .hero-content h1 {
@@ -179,17 +174,24 @@
             color: var(--text-light);
             margin-bottom: 40px;
             line-height: 1.8;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         .hero-buttons {
             display: flex;
             gap: 16px;
-            justify-content: center;
         }
 
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Features Section */
         .features {
             padding: 100px 40px;
             background: white;
@@ -246,6 +248,51 @@
             line-height: 1.8;
         }
 
+        /* How It Works */
+        .how-it-works {
+            padding: 100px 40px;
+            background: var(--bg-light);
+        }
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .step {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+            align-items: start;
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .step-content h3 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .step-content p {
+            color: var(--text-light);
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        /* CTA Section */
         .cta-section {
             padding: 80px 40px;
             background: var(--primary);
@@ -274,13 +321,54 @@
             box-shadow: 0 8px 20px rgba(255, 255, 255, 0.3);
         }
 
+        /* Footer */
         .footer {
             padding: 60px 40px;
             background: var(--text-dark);
             color: white;
-            text-align: center;
         }
 
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer h4 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 40px auto 0;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Dashboard styles (from previous version) */
         .dashboard-container {
             max-width: 1400px;
             margin: 100px auto 40px;
@@ -353,6 +441,7 @@
             transform: translateY(0);
         }
 
+        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -401,9 +490,20 @@
         }
 
         @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
+
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
             .nav-links {
                 display: none;
             }
@@ -411,101 +511,181 @@
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#" onclick="goToHome(); return false;" class="logo">
-                <span class="logo-icon">⚕️</span>
-                <span>Второ мислење</span>
-            </a>
+            <div class="logo">
+                <span>🏥</span>
+                <span data-i18n="siteName">Второ мислење</span>
+            </div>
             <div class="nav-links">
+                <a href="#how" class="nav-link" data-i18n="navHow">Како работи</a>
+                <a href="#features" class="nav-link" data-i18n="navFeatures">Предности</a>
                 <div class="language-switcher">
                     <button class="lang-btn active" onclick="switchLanguage('mk')">МК</button>
                     <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
                     <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
                 </div>
-                <button class="btn btn-primary" onclick="showLoginModal()">Најава</button>
+                <button class="btn btn-primary" onclick="showLoginModal()" data-i18n="navLogin">Најава</button>
             </div>
         </div>
     </nav>
 
+    <!-- Landing Page -->
     <div id="landingPage">
+        <!-- Hero Section -->
         <section class="hero">
             <div class="hero-container">
                 <div class="hero-content">
                     <h1>
-                        Добијте<br>
-                        <span>професионално</span><br>
-                        второ мислење
+                        <span data-i18n="heroTitle1">Добијте</span><br>
+                        <span data-i18n="heroTitle2">професионално</span><br>
+                        <span data-i18n="heroTitle3">второ мислење</span>
                     </h1>
-                    <p>
+                    <p data-i18n="heroSubtitle">
                         Поврзете се со лиценцирани лекари онлајн и добијте професионални медицински совети брзо и безбедно.
                     </p>
                     <div class="hero-buttons">
-                        <button class="btn btn-primary" onclick="showRegisterModal('user')">Започни сега</button>
-                        <button class="btn btn-outline" onclick="showRegisterModal('expert')">Регистрирај се како лекар</button>
+                        <button class="btn btn-primary" onclick="showRegisterModal('user')" data-i18n="heroButton1">Започни сега</button>
+                        <button class="btn btn-outline" onclick="showRegisterModal('expert')" data-i18n="heroButton2">Регистрирај се како лекар</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <svg viewBox="0 0 500 400" style="width: 100%;">
+                        <rect x="50" y="50" width="400" height="300" rx="20" fill="#E6F2FF"/>
+                        <circle cx="150" cy="150" r="40" fill="#0066CC"/>
+                        <rect x="220" y="120" width="200" height="15" rx="7" fill="#3399FF"/>
+                        <rect x="220" y="150" width="150" height="15" rx="7" fill="#3399FF" opacity="0.5"/>
+                        <circle cx="350" cy="280" r="40" fill="#10B981"/>
+                        <rect x="100" y="250" width="200" height="15" rx="7" fill="#66BB6A"/>
+                        <rect x="100" y="280" width="180" height="15" rx="7" fill="#66BB6A" opacity="0.5"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <h2 class="section-title" data-i18n="featuresTitle">Зошто нè избираат</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">👨‍⚕️</div>
+                    <h3 data-i18n="feature1Title">Лиценцирани лекари</h3>
+                    <p data-i18n="feature1Text">Сите наши лекари се целосно лиценцирани и верификувани специјалисти со години искуство.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 data-i18n="feature2Title">Брзи одговори</h3>
+                    <p data-i18n="feature2Text">Добијте одговор на вашите прашања во најкратко можно време, обично во рок од неколку часа.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 data-i18n="feature3Title">Приватност</h3>
+                    <p data-i18n="feature3Text">Вашите медицински податоци се целосно заштитени според GDPR стандардите.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works" id="how">
+            <h2 class="section-title" data-i18n="howTitle">Како работи</h2>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3 data-i18n="step1Title">Регистрирајте се</h3>
+                        <p data-i18n="step1Text">Креирајте бесплатен профил во неколку едноставни чекори. Треба ви само email адреса и основни информации.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3 data-i18n="step2Title">Поставете прашање</h3>
+                        <p data-i18n="step2Text">Опишете го вашето здравствено прашање детално. Изберете соодветна медицинска област за најдобар одговор.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3 data-i18n="step3Title">Добијте одговор</h3>
+                        <p data-i18n="step3Text">Лиценциран лекар од соодветната област ќе ви одговори брзо и професионално. Добивате и email нотификација.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="features">
-            <h2 class="section-title">Зошто нè избираат</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">👨‍⚕️</div>
-                    <h3>Лиценцирани лекари</h3>
-                    <p>Сите наши лекари се целосно лиценцирани и верификувани специјалисти со години искуство.</p>
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2 data-i18n="ctaTitle">Подготвени да започнете?</h2>
+            <p data-i18n="ctaText">Придружете се на илјадници корисници кои веќе ги користат нашите услуги.</p>
+            <button class="btn btn-white" onclick="showRegisterModal('user')" data-i18n="ctaButton">Регистрирајте се бесплатно</button>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div>
+                    <h4 data-i18n="siteName">Второ мислење</h4>
+                    <p style="opacity: 0.7; margin-top: 12px;" data-i18n="footerDesc">
+                        Професионални медицински консултации онлајн од лиценцирани специјалисти.
+                    </p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Брзи одговори</h3>
-                    <p>Добијте одговор на вашите прашања во најкратко можно време, обично во рок од неколку часа.</p>
+                <div>
+                    <h4 data-i18n="footerLinks">Линкови</h4>
+                    <ul class="footer-links">
+                        <li><a href="#how" data-i18n="navHow">Како работи</a></li>
+                        <li><a href="#features" data-i18n="navFeatures">Предности</a></li>
+                        <li><a href="#" onclick="showLoginModal(); return false;" data-i18n="navLogin">Најава</a></li>
+                    </ul>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🔒</div>
-                    <h3>Приватност</h3>
-                    <p>Вашите медицински податоци се целосно заштитени според GDPR стандардите.</p>
+                <div>
+                    <h4 data-i18n="footerLegal">Правни</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" data-i18n="footerPrivacy">Приватност</a></li>
+                        <li><a href="#" data-i18n="footerTerms">Услови</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 data-i18n="footerContact">Контакт</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:info@vtoromislenje.com">info@vtoromislenje.com</a></li>
+                        <li><a href="tel:+38970123456">+389 70 123 456</a></li>
+                    </ul>
                 </div>
             </div>
-        </section>
-
-        <section class="cta-section">
-            <h2>Подготвени да започнете?</h2>
-            <p>Придружете се на илјадници корисници кои веќе ги користат нашите услуги.</p>
-            <button class="btn btn-white" onclick="showRegisterModal('user')">Регистрирајте се бесплатно</button>
-        </section>
-
-        <footer class="footer">
-            <p>© 2025 Второ мислење. Сите права задржани.</p>
-            <p style="margin-top: 10px;">info@vtoromislenje.com • +389 70 123 456</p>
+            <div class="footer-bottom">
+                <p>© 2025 Второ мислење. <span data-i18n="footerRights">Сите права задржани.</span></p>
+            </div>
         </footer>
     </div>
 
+    <!-- Dashboard (Hidden initially) -->
     <div id="dashboardPage" class="hidden">
         <div class="dashboard-container">
             <div class="glass-card">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Добредојдовте назад!</h2>
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" data-i18n="dashboardWelcome">Добредојдовте назад!</h2>
                         <p id="userDisplay" style="color: var(--text-light);"></p>
                     </div>
-                    <button class="btn btn-outline" onclick="logout()">Одјави се</button>
+                    <button class="btn btn-outline" onclick="logout()" data-i18n="dashboardLogout">Одјави се</button>
                 </div>
             </div>
 
+            <!-- User Dashboard -->
             <div id="userDashboard" class="hidden">
                 <div class="glass-card">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Постави ново прашање</h3>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashboardAskQuestion">Постави ново прашање</h3>
                     
                     <div class="form-group">
-                        <label class="form-label">Наслов</label>
-                        <input type="text" class="form-input" id="questionTitle" placeholder="Кратко опишете го вашиот проблем">
+                        <label class="form-label" data-i18n="questionTitleLabel">Наслов</label>
+                        <input type="text" class="form-input" id="questionTitle" data-i18n-placeholder="questionTitlePlaceholder">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Медицинска област</label>
+                        <label class="form-label" data-i18n="questionSpecialtyLabel">Медицинска област</label>
                         <select class="form-input" id="questionSpecialty">
-                            <option value="">Изберете медицинска област</option>
+                            <option value="" data-i18n="questionSpecialtyPlaceholder">Изберете медицинска област</option>
                             <option value="general">Општа медицина</option>
                             <option value="cardiology">Кардиологија</option>
                             <option value="dermatology">Дерматологија</option>
@@ -513,28 +693,30 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Детали</label>
-                        <textarea class="form-input" id="questionText" rows="4" placeholder="Опишете ги вашите симптоми..."></textarea>
+                        <label class="form-label" data-i18n="questionTextLabel">Детали</label>
+                        <textarea class="form-input" id="questionText" rows="4" data-i18n-placeholder="questionTextPlaceholder"></textarea>
                     </div>
 
-                    <button class="btn btn-primary" onclick="submitQuestion()">Испрати прашање</button>
+                    <button class="btn btn-primary" onclick="submitQuestion()" data-i18n="questionSubmit">Испрати прашање</button>
                 </div>
 
                 <div class="glass-card">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Мои прашања</h3>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashboardMyQuestions">Мои прашања</h3>
                     <div id="userQuestions"></div>
                 </div>
             </div>
 
+            <!-- Expert Dashboard -->
             <div id="expertDashboard" class="hidden">
                 <div class="glass-card">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Прашања за одговор</h3>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashboardQuestionsToAnswer">Прашања за одговор</h3>
                     <div id="expertQuestions"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Login/Register Modal -->
     <div id="authModal" class="modal-overlay hidden" onclick="closeAuthModal(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -542,59 +724,61 @@
                 <button class="modal-close" onclick="closeAuthModal()">×</button>
             </div>
 
+            <!-- Login Form -->
             <div id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">Email адреса</label>
-                    <input type="email" class="form-input" id="loginEmail" placeholder="име@example.com">
+                    <label class="form-label" data-i18n="loginEmail">Email адреса</label>
+                    <input type="email" class="form-input" id="loginEmail" data-i18n-placeholder="loginEmailPlaceholder">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Шифра</label>
-                    <input type="password" class="form-input" id="loginPassword" placeholder="••••••••">
+                    <label class="form-label" data-i18n="loginPassword">Шифра</label>
+                    <input type="password" class="form-input" id="loginPassword" data-i18n-placeholder="loginPasswordPlaceholder">
                 </div>
 
-                <button class="btn btn-primary" onclick="login()" style="width: 100%;">Најави се</button>
+                <button class="btn btn-primary" onclick="login()" style="width: 100%;" data-i18n="loginButton">Најави се</button>
 
                 <p style="text-align: center; margin-top: 20px; color: var(--text-light);">
-                    Немате профил?
-                    <a href="#" onclick="showRegisterFromLogin(); return false;" style="color: var(--primary); font-weight: 600;">Регистрирајте се</a>
+                    <span data-i18n="loginNoAccount">Немате профил?</span>
+                    <a href="#" onclick="showRegisterFromLogin(); return false;" style="color: var(--primary); font-weight: 600;" data-i18n="loginRegister">Регистрирајте се</a>
                 </p>
             </div>
 
+            <!-- Register Form -->
             <div id="registerForm" class="hidden">
                 <div class="form-group">
-                    <label class="form-label">Име и презиме</label>
-                    <input type="text" class="form-input" id="regName" placeholder="Внесете го вашето целосно име">
+                    <label class="form-label" data-i18n="registerName">Име и презиме</label>
+                    <input type="text" class="form-input" id="regName" data-i18n-placeholder="registerNamePlaceholder">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Email адреса</label>
-                    <input type="email" class="form-input" id="regEmail" placeholder="име@example.com">
+                    <label class="form-label" data-i18n="registerEmail">Email адреса</label>
+                    <input type="email" class="form-input" id="regEmail" data-i18n-placeholder="registerEmailPlaceholder">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Телефонски број</label>
-                    <input type="tel" class="form-input" id="regPhone" placeholder="+389 XX XXX XXX">
+                    <label class="form-label" data-i18n="registerPhone">Телефонски број</label>
+                    <input type="tel" class="form-input" id="regPhone" data-i18n-placeholder="registerPhonePlaceholder">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Датум на раѓање</label>
+                    <label class="form-label" data-i18n="registerBirthdate">Датум на раѓање</label>
                     <input type="date" class="form-input" id="regBirthdate">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Шифра</label>
-                    <input type="password" class="form-input" id="regPassword" placeholder="Минимум 8 знаци">
+                    <label class="form-label" data-i18n="registerPassword">Шифра</label>
+                    <input type="password" class="form-input" id="regPassword" data-i18n-placeholder="registerPasswordPlaceholder">
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Потврди шифра</label>
-                    <input type="password" class="form-input" id="regPasswordConfirm" placeholder="Повторете ја шифрата">
+                    <label class="form-label" data-i18n="registerPasswordConfirm">Потврди шифра</label>
+                    <input type="password" class="form-input" id="regPasswordConfirm" data-i18n-placeholder="registerPasswordConfirmPlaceholder">
                 </div>
 
                 <div id="doctorFields" class="hidden">
                     <div class="form-group">
-                        <label class="form-label">Специјализација</label>
+                        <label class="form-label" data-i18n="registerSpecialization">Специјализација</label>
                         <select class="form-input" id="regSpecialization">
                             <option value="">Изберете специјализација</option>
                             <option value="general">Општа медицина</option>
@@ -604,38 +788,74 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Број на лиценца</label>
-                        <input type="text" class="form-input" id="regLicense" placeholder="Внесете го бројот на вашата лиценца">
+                        <label class="form-label" data-i18n="registerLicense">Број на лиценца</label>
+                        <input type="text" class="form-input" id="regLicense" data-i18n-placeholder="registerLicensePlaceholder">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Болница/Клиника</label>
-                        <input type="text" class="form-input" id="regHospital" placeholder="Име на установа каде работите">
+                        <label class="form-label" data-i18n="registerHospital">Болница/Клиника</label>
+                        <input type="text" class="form-input" id="regHospital" data-i18n-placeholder="registerHospitalPlaceholder">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Години искуство</label>
+                        <label class="form-label" data-i18n="registerExperience">Години искуство</label>
                         <input type="number" class="form-input" id="regExperience" placeholder="0" min="0">
                     </div>
                 </div>
 
-                <button class="btn btn-primary" onclick="register()" style="width: 100%;">Регистрирај се</button>
+                <button class="btn btn-primary" onclick="register()" style="width: 100%;" data-i18n="registerButton">Регистрирај се</button>
 
                 <p style="text-align: center; margin-top: 20px; color: var(--text-light);">
-                    Веќе имате профил?
-                    <a href="#" onclick="showLoginFromRegister(); return false;" style="color: var(--primary); font-weight: 600;">Најавете се</a>
+                    <span data-i18n="registerHaveAccount">Веќе имате профил?</span>
+                    <a href="#" onclick="showLoginFromRegister(); return false;" style="color: var(--primary); font-weight: 600;" data-i18n="registerLogin">Најавете се</a>
                 </p>
             </div>
         </div>
     </div>
 
+    <!-- Answer Modal -->
+    <div id="answerModal" class="modal-overlay hidden" onclick="closeAnswerModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 data-i18n="answerModalTitle">Одговори на прашањето</h2>
+                <button class="modal-close" onclick="closeAnswerModal()">×</button>
+            </div>
+            
+            <div style="background: var(--bg-light); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+                <h3 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;" data-i18n="answerModalQuestionLabel">Прашање:</h3>
+                <p id="modalQuestionTitle" style="font-size: 18px; font-weight: 600; margin-bottom: 12px;"></p>
+                <p id="modalQuestionText" style="color: var(--text-light); line-height: 1.6;"></p>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" data-i18n="answerModalAnswerLabel">Ваш одговор</label>
+                <textarea class="form-input" id="answerText" rows="8" data-i18n-placeholder="answerModalPlaceholder"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-primary" onclick="submitAnswer()" style="flex: 1;" data-i18n="answerModalSubmit">Испрати одговор</button>
+                <button class="btn btn-outline" onclick="closeAnswerModal()" data-i18n="answerModalCancel">Откажи</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
     <div class="toast" id="toast">
         <div id="toastMessage"></div>
     </div>
 
     <script>
+        // Supabase Configuration
+        // IMPORTANT: Verify these values in Supabase Dashboard → Settings → API
         const SUPABASE_URL = 'https://goplfstrsnnssxmunqkx.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvcGxmc3Ryc25uc3N4bXVucWt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDIyMzIsImV4cCI6MjA3NjIxODIzMn0.ai4OED2Y7F9rrqoiBTyV6nka-2O80gxAinFZNrOuupA';
+        
+        // Debug: Log configuration on page load
+        console.log('Supabase Config:', {
+            url: SUPABASE_URL,
+            keyPrefix: SUPABASE_ANON_KEY.substring(0, 20) + '...',
+            timestamp: new Date().toISOString()
+        });
         
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -644,25 +864,207 @@
         let registerRole = 'user';
         let currentLanguage = 'mk';
 
-        function goToHome() {
-            if (!currentUser) {
-                document.getElementById('landingPage').classList.remove('hidden');
-                document.getElementById('dashboardPage').classList.add('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Translations
+        const translations = {
+            mk: {
+                siteName: 'Второ мислење',
+                navHow: 'Како работи',
+                navFeatures: 'Предности',
+                navLogin: 'Најава',
+                heroTitle1: 'Добијте',
+                heroTitle2: 'професионално',
+                heroTitle3: 'второ мислење',
+                heroSubtitle: 'Поврзете се со лиценцирани лекари онлајн и добијте професионални медицински совети брзо и безбедно.',
+                heroButton1: 'Започни сега',
+                heroButton2: 'Регистрирај се како лекар',
+                featuresTitle: 'Зошто нè избираат',
+                feature1Title: 'Лиценцирани лекари',
+                feature1Text: 'Сите наши лекари се целосно лиценцирани и верификувани специјалисти со години искуство.',
+                feature2Title: 'Брзи одговори',
+                feature2Text: 'Добијте одговор на вашите прашања во најкратко можно време, обично во рок од неколку часа.',
+                feature3Title: 'Приватност',
+                feature3Text: 'Вашите медицински податоци се целосно заштитени според GDPR стандардите.',
+                howTitle: 'Како работи',
+                step1Title: 'Регистрирајте се',
+                step1Text: 'Креирајте бесплатен профил во неколку едноставни чекори. Треба ви само email адреса и основни информации.',
+                step2Title: 'Поставете прашање',
+                step2Text: 'Опишете го вашето здравствено прашање детално. Изберете соодветна медицинска област за најдобар одговор.',
+                step3Title: 'Добијте одговор',
+                step3Text: 'Лиценциран лекар од соодветната област ќе ви одговори брзо и професионално. Добивате и email нотификација.',
+                ctaTitle: 'Подготвени да започнете?',
+                ctaText: 'Придружете се на илјадници корисници кои веќе ги користат нашите услуги.',
+                ctaButton: 'Регистрирајте се бесплатно',
+                footerDesc: 'Професионални медицински консултации онлајн од лиценцирани специјалисти.',
+                footerLinks: 'Линкови',
+                footerLegal: 'Правни',
+                footerContact: 'Контакт',
+                footerPrivacy: 'Приватност',
+                footerTerms: 'Услови',
+                footerRights: 'Сите права задржани.',
+                loginEmail: 'Email адреса',
+                loginPassword: 'Шифра',
+                loginButton: 'Најави се',
+                loginNoAccount: 'Немате профил?',
+                loginRegister: 'Регистрирајте се',
+                registerName: 'Име и презиме',
+                registerEmail: 'Email адреса',
+                registerPhone: 'Телефонски број',
+                registerBirthdate: 'Датум на раѓање',
+                registerPassword: 'Шифра',
+                registerPasswordConfirm: 'Потврди шифра',
+                registerButton: 'Регистрирај се',
+                registerHaveAccount: 'Веќе имате профил?',
+                registerLogin: 'Најавете се',
+                dashboardWelcome: 'Добредојдовте назад!',
+                dashboardLogout: 'Одјави се',
+                dashboardAskQuestion: 'Постави ново прашање',
+                dashboardMyQuestions: 'Мои прашања',
+                dashboardQuestionsToAnswer: 'Прашања за одговор'
+            },
+            sq: {
+                siteName: 'Mendimi i dytë',
+                navHow: 'Si funksionon',
+                navFeatures: 'Përparësitë',
+                navLogin: 'Hyrje',
+                heroTitle1: 'Merrni',
+                heroTitle2: 'profesionale',
+                heroTitle3: 'mendim të dytë',
+                heroSubtitle: 'Lidhuni me mjekë të licensuar online dhe merrni këshilla mjekësore profesionale shpejt dhe në mënyrë të sigurt.',
+                heroButton1: 'Filloni tani',
+                heroButton2: 'Regjistrohuni si mjek',
+                featuresTitle: 'Pse na zgjedhin',
+                feature1Title: 'Mjekë të licensuar',
+                feature1Text: 'Të gjithë mjekët tanë janë plotësisht të licensuar dhe specialistë të verifikuar me vite përvojë.',
+                feature2Title: 'Përgjigje të shpejta',
+                feature2Text: 'Merrni përgjigje për pyetjet tuaja sa më shpejt të jetë e mundur, zakonisht brenda disa orëve.',
+                feature3Title: 'Privatësia',
+                feature3Text: 'Të dhënat tuaja mjekësore janë plotësisht të mbrojtura sipas standardeve GDPR.',
+                howTitle: 'Si funksionon',
+                step1Title: 'Regjistrohuni',
+                step1Text: 'Krijoni një profil falas në disa hapa të thjeshtë. Ju nevojitet vetëm një adresë emaili dhe informacione bazë.',
+                step2Title: 'Bëni një pyetje',
+                step2Text: 'Përshkruani pyetjen tuaj shëndetësore në detaje. Zgjidhni fushën e duhur mjekësore për përgjigjen më të mirë.',
+                step3Title: 'Merrni përgjigje',
+                step3Text: 'Një mjek i licensuar nga fusha përkatëse do t\'ju përgjigjet shpejt dhe profesionalisht. Gjithashtu merrni njoftim me email.',
+                ctaTitle: 'Gati për të filluar?',
+                ctaText: 'Bashkohuni me mijëra përdorues që tashmë përdorin shërbimet tona.',
+                ctaButton: 'Regjistrohuni falas',
+                footerDesc: 'Konsultime mjekësore profesionale online nga specialistë të licensuar.',
+                footerLinks: 'Lidhjet',
+                footerLegal: 'Ligjore',
+                footerContact: 'Kontakti',
+                footerPrivacy: 'Privatësia',
+                footerTerms: 'Kushtet',
+                footerRights: 'Të gjitha të drejtat e rezervuara.',
+                loginEmail: 'Adresa email',
+                loginPassword: 'Fjalëkalimi',
+                loginButton: 'Hyrje',
+                loginNoAccount: 'Nuk keni profil?',
+                loginRegister: 'Regjistrohuni',
+                registerName: 'Emri dhe mbiemri',
+                registerEmail: 'Adresa email',
+                registerPhone: 'Numri i telefonit',
+                registerBirthdate: 'Data e lindjes',
+                registerPassword: 'Fjalëkalimi',
+                registerPasswordConfirm: 'Konfirmoni fjalëkalimin',
+                registerButton: 'Regjistrohu',
+                registerHaveAccount: 'Keni tashmë profil?',
+                registerLogin: 'Hyni',
+                dashboardWelcome: 'Mirë se vini përsëri!',
+                dashboardLogout: 'Dilni',
+                dashboardAskQuestion: 'Bëni një pyetje të re',
+                dashboardMyQuestions: 'Pyetjet e mia',
+                dashboardQuestionsToAnswer: 'Pyetje për t\'u përgjigjur'
+            },
+            en: {
+                siteName: 'Second Opinion',
+                navHow: 'How it works',
+                navFeatures: 'Features',
+                navLogin: 'Login',
+                heroTitle1: 'Get a',
+                heroTitle2: 'professional',
+                heroTitle3: 'second opinion',
+                heroSubtitle: 'Connect with licensed doctors online and get professional medical advice quickly and securely.',
+                heroButton1: 'Get started',
+                heroButton2: 'Register as a doctor',
+                featuresTitle: 'Why choose us',
+                feature1Title: 'Licensed doctors',
+                feature1Text: 'All our doctors are fully licensed and verified specialists with years of experience.',
+                feature2Title: 'Fast responses',
+                feature2Text: 'Get answers to your questions as quickly as possible, usually within a few hours.',
+                feature3Title: 'Privacy',
+                feature3Text: 'Your medical data is fully protected according to GDPR standards.',
+                howTitle: 'How it works',
+                step1Title: 'Register',
+                step1Text: 'Create a free profile in a few simple steps. You only need an email address and basic information.',
+                step2Title: 'Ask a question',
+                step2Text: 'Describe your health question in detail. Choose the appropriate medical field for the best answer.',
+                step3Title: 'Get an answer',
+                step3Text: 'A licensed doctor from the appropriate field will respond quickly and professionally. You also receive an email notification.',
+                ctaTitle: 'Ready to get started?',
+                ctaText: 'Join thousands of users who already use our services.',
+                ctaButton: 'Register for free',
+                footerDesc: 'Professional medical consultations online from licensed specialists.',
+                footerLinks: 'Links',
+                footerLegal: 'Legal',
+                footerContact: 'Contact',
+                footerPrivacy: 'Privacy',
+                footerTerms: 'Terms',
+                footerRights: 'All rights reserved.',
+                loginEmail: 'Email address',
+                loginPassword: 'Password',
+                loginButton: 'Login',
+                loginNoAccount: 'Don\'t have an account?',
+                loginRegister: 'Register',
+                registerName: 'Full name',
+                registerEmail: 'Email address',
+                registerPhone: 'Phone number',
+                registerBirthdate: 'Date of birth',
+                registerPassword: 'Password',
+                registerPasswordConfirm: 'Confirm password',
+                registerButton: 'Register',
+                registerHaveAccount: 'Already have an account?',
+                registerLogin: 'Login',
+                dashboardWelcome: 'Welcome back!',
+                dashboardLogout: 'Logout',
+                dashboardAskQuestion: 'Ask a new question',
+                dashboardMyQuestions: 'My questions',
+                dashboardQuestionsToAnswer: 'Questions to answer'
             }
-        }
+        };
 
+        // Language Switching
         function switchLanguage(lang) {
             currentLanguage = lang;
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
+            
+            // Update all translated elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
         }
 
+        // Modal Functions
         function showLoginModal() {
             document.getElementById('authModal').classList.remove('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
             document.getElementById('registerForm').classList.add('hidden');
-            document.getElementById('modalTitle').textContent = 'Најава';
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].navLogin;
         }
 
         function showRegisterModal(role) {
@@ -670,7 +1072,7 @@
             document.getElementById('authModal').classList.remove('hidden');
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = 'Регистрација';
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].registerButton;
             
             if (role === 'expert') {
                 document.getElementById('doctorFields').classList.remove('hidden');
@@ -682,13 +1084,13 @@
         function showRegisterFromLogin() {
             document.getElementById('loginForm').classList.add('hidden');
             document.getElementById('registerForm').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = 'Регистрација';
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].registerButton;
         }
 
         function showLoginFromRegister() {
             document.getElementById('registerForm').classList.add('hidden');
             document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('modalTitle').textContent = 'Најава';
+            document.getElementById('modalTitle').textContent = translations[currentLanguage].navLogin;
         }
 
         function closeAuthModal(event) {
@@ -697,6 +1099,13 @@
             }
         }
 
+        function closeAnswerModal(event) {
+            if (!event || event.target.id === 'answerModal' || event.target.classList.contains('modal-close')) {
+                document.getElementById('answerModal').classList.add('hidden');
+            }
+        }
+
+        // Auth Functions
         async function register() {
             const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
@@ -706,27 +1115,38 @@
             const birthdate = document.getElementById('regBirthdate').value;
 
             if (!email || !password || !name || !phone || !birthdate) {
-                showToast('Ве молам пополнете ги сите полиња');
+                showToast('Please fill all required fields');
                 return;
             }
 
             if (password !== passwordConfirm) {
-                showToast('Шифрите не се совпаѓаат!');
+                showToast('Passwords do not match!');
                 return;
             }
 
             if (password.length < 8) {
-                showToast('Шифрата мора да содржи најмалку 8 знаци');
+                showToast('Password must be at least 8 characters');
                 return;
             }
 
             try {
+                console.log('Attempting to register with:', { email, name, role: registerRole });
+                
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
                 });
 
-                if (authError) throw authError;
+                console.log('Auth response:', { authData, authError });
+
+                if (authError) {
+                    console.error('Auth error details:', authError);
+                    throw authError;
+                }
+
+                if (!authData.user) {
+                    throw new Error('No user data returned from registration');
+                }
 
                 const userData = {
                     id: authData.user.id,
@@ -744,7 +1164,7 @@
                     const experience = document.getElementById('regExperience').value;
 
                     if (!specialization || !license || !hospital || !experience) {
-                        showToast('Ве молам пополнете ги сите полиња за лекари');
+                        showToast('Please fill all doctor fields');
                         return;
                     }
 
@@ -754,26 +1174,60 @@
                     userData.experience = parseInt(experience);
                 }
 
+                console.log('Inserting user data:', userData);
+
                 const { error: userError } = await supabaseClient
                     .from('users')
                     .insert([userData]);
 
+                console.log('User insert response:', { userError });
+
                 if (userError) {
-                    if (userError.code === '23505') {
-                        showToast('Email веќе е регистриран. Најавете се.');
-                        closeAuthModal();
-                        setTimeout(() => showLoginModal(), 500);
-                        return;
+                    // If user already exists in users table, it means auth was created but users insert failed before
+                    // In this case, update the existing user record instead
+                    if (userError.code === '23505' && userError.message.includes('users_email_key')) {
+                        console.log('User already exists, attempting to update...');
+                        
+                        const { error: updateError } = await supabaseClient
+                            .from('users')
+                            .update(userData)
+                            .eq('id', authData.user.id);
+                        
+                        if (updateError) {
+                            console.error('Update error:', updateError);
+                            showToast('Email already registered. Please login instead.');
+                            closeAuthModal();
+                            setTimeout(() => showLoginModal(), 500);
+                            return;
+                        }
+                    } else {
+                        console.error('User insert error details:', userError);
+                        throw userError;
                     }
-                    throw userError;
                 }
 
-                showToast('Регистрацијата е успешна! Проверете го вашиот email. ✔');
+                showToast('Registration successful! Check your email for verification. ✔');
                 closeAuthModal();
                 
+                // Clear form
+                document.getElementById('regEmail').value = '';
+                document.getElementById('regPassword').value = '';
+                document.getElementById('regPasswordConfirm').value = '';
+                document.getElementById('regName').value = '';
+                document.getElementById('regPhone').value = '';
+                document.getElementById('regBirthdate').value = '';
+                
             } catch (error) {
-                console.error('Registration error:', error);
-                showToast('Грешка: ' + (error.message || 'Непозната грешка'));
+                console.error('Full registration error:', error);
+                showToast('Registration error: ' + (error.message || 'Unknown error'));
+                
+                // Show more detailed error in console
+                if (error.status) {
+                    console.error('HTTP Status:', error.status);
+                }
+                if (error.details) {
+                    console.error('Error details:', error.details);
+                }
             }
         }
 
@@ -782,24 +1236,42 @@
             const password = document.getElementById('loginPassword').value;
 
             if (!email || !password) {
-                showToast('Ве молиме внесете email и шифра');
+                showToast('Please enter email and password');
                 return;
             }
 
             try {
+                console.log('Attempting to login with:', email);
+                
                 const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
                     email: email,
                     password: password,
                 });
 
+                console.log('Login auth response:', { authData, authError });
+
                 if (authError) {
+                    console.error('Login error details:', authError);
+                    
+                    // Provide user-friendly error messages
                     if (authError.message.includes('Invalid login credentials')) {
-                        showToast('Невалиден email или шифра');
+                        showToast('Invalid email or password');
+                    } else if (authError.message.includes('Email not confirmed')) {
+                        showToast('Please verify your email first. Check your inbox.');
+                    } else if (authError.message.includes('Failed to fetch')) {
+                        showToast('Connection error. Please check your internet connection and try again.');
+                        console.error('Network error - possible causes:', {
+                            'CORS': 'Check Supabase URL Configuration',
+                            'API Key': 'Verify anon key is correct',
+                            'Network': 'Check internet connection'
+                        });
                     } else {
-                        showToast('Грешка при најава: ' + authError.message);
+                        showToast('Login error: ' + authError.message);
                     }
                     return;
                 }
+
+                console.log('Fetching user data for:', authData.user.id);
 
                 const { data: userData, error: userError } = await supabaseClient
                     .from('users')
@@ -807,17 +1279,321 @@
                     .eq('id', authData.user.id)
                     .maybeSingle();
 
+                console.log('User data response:', { userData, userError });
+
                 if (userError) {
-                    showToast('Грешка при вчитување на профил');
+                    console.error('User fetch error:', userError);
+                    showToast('Error loading user profile: ' + userError.message);
                     return;
                 }
 
                 if (!userData) {
-                    showToast('Профилот не е пронајден');
+                    console.error('No user profile found for auth user:', authData.user.id);
+                    showToast('User profile not found. Please register again or contact support.');
+                    
+                    // Auto-logout if profile doesn't exist
+                    await supabaseClient.auth.signOut();
                     return;
                 }
 
                 currentUser = userData;
                 
                 document.getElementById('landingPage').classList.add('hidden');
-                document.getElementById('dash
+                document.getElementById('dashboardPage').classList.remove('hidden');
+                
+                const roleText = userData.role === 'user' ? 
+                    (currentLanguage === 'mk' ? 'Корисник' : currentLanguage === 'sq' ? 'Përdorues' : 'User') :
+                    (currentLanguage === 'mk' ? 'Лекар' : currentLanguage === 'sq' ? 'Mjek' : 'Doctor');
+                    
+                document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
+
+                if (userData.role === 'user') {
+                    document.getElementById('userDashboard').classList.remove('hidden');
+                    loadUserQuestions();
+                } else {
+                    document.getElementById('expertDashboard').classList.remove('hidden');
+                    loadExpertQuestions();
+                }
+
+                closeAuthModal();
+                showToast('Login successful! 🎉');
+            } catch (error) {
+                console.error('Unexpected login error:', error);
+                showToast('Login error: ' + (error.message || 'Unknown error'));
+                
+                // Additional debugging info
+                console.error('Error details:', {
+                    name: error.name,
+                    message: error.message,
+                    stack: error.stack
+                });
+            }
+        }
+
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            currentUser = null;
+            document.getElementById('landingPage').classList.remove('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('userDashboard').classList.add('hidden');
+            document.getElementById('expertDashboard').classList.add('hidden');
+            showToast('Logged out');
+        }
+
+        // Question Functions
+        async function submitQuestion() {
+            const title = document.getElementById('questionTitle').value.trim();
+            const specialty = document.getElementById('questionSpecialty').value;
+            const text = document.getElementById('questionText').value.trim();
+
+            if (!title || !specialty || !text) {
+                showToast('Please fill all fields');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('questions')
+                    .insert([{
+                        title: title,
+                        specialty: specialty,
+                        specialty_name: document.getElementById('questionSpecialty').options[document.getElementById('questionSpecialty').selectedIndex].text,
+                        question_text: text,
+                        user_id: currentUser.id
+                    }]);
+
+                if (error) throw error;
+
+                document.getElementById('questionTitle').value = '';
+                document.getElementById('questionSpecialty').value = '';
+                document.getElementById('questionText').value = '';
+
+                showToast('Question submitted successfully! ✔');
+                loadUserQuestions();
+            } catch (error) {
+                showToast('Error: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function loadUserQuestions() {
+            try {
+                const { data: questions, error } = await supabaseClient
+                    .from('questions')
+                    .select(`
+                        *,
+                        answers (
+                            answer_text,
+                            created_at,
+                            expert:expert_id (full_name)
+                        )
+                    `)
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('userQuestions');
+
+                if (questions.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
+                            <div style="font-size: 48px; margin-bottom: 16px;">🔭</div>
+                            <h3>No questions yet</h3>
+                            <p>You haven't asked any questions yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = questions.map(q => {
+                    const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
+                    return `
+                        <div class="question-card">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                                <h4 style="font-size: 18px; font-weight: 600;">${q.title}</h4>
+                                <span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; ${answer ? 'background: #D1FAE5; color: #059669;' : 'background: #FEF3C7; color: #D97706;'}">
+                                    ${answer ? 'Answered' : 'Pending'}
+                                </span>
+                            </div>
+                            <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
+                            ${answer ? `
+                                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
+                                    <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">
+                                        ✓ Answer from ${answer.expert.full_name}:
+                                    </p>
+                                    <p style="color: var(--text-light);">${answer.answer_text}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                showToast('Error loading questions: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function loadExpertQuestions() {
+            try {
+                const { data: questions, error: questionsError } = await supabaseClient
+                    .from('questions')
+                    .select('*')
+                    .eq('status', 'pending')
+                    .order('created_at', { ascending: false });
+
+                if (questionsError) throw questionsError;
+
+                if (!questions || questions.length === 0) {
+                    const container = document.getElementById('expertQuestions');
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
+                            <div style="font-size: 48px; margin-bottom: 16px;">✅</div>
+                            <h3>Great work!</h3>
+                            <p>No pending questions at the moment.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const questionsWithUsers = await Promise.all(
+                    questions.map(async (q) => {
+                        const { data: userData, error: userError } = await supabaseClient
+                            .from('users')
+                            .select('full_name')
+                            .eq('id', q.user_id)
+                            .single();
+                        
+                        if (userError) {
+                            console.error('Error fetching user:', userError);
+                        }
+                        
+                        return {
+                            ...q,
+                            user_name: userData?.full_name || 'Unknown user'
+                        };
+                    })
+                );
+
+                const container = document.getElementById('expertQuestions');
+                container.innerHTML = questionsWithUsers.map(q => `
+                    <div class="question-card">
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${q.title}</h4>
+                        <p style="font-size: 14px; color: var(--text-light); margin-bottom: 12px;">
+                            From ${q.user_name} • ${new Date(q.created_at).toLocaleDateString()}
+                        </p>
+                        <p style="color: var(--text-light); margin-bottom: 16px;">${q.question_text}</p>
+                        <button class="btn btn-primary" onclick="answerQuestion('${q.id}')">
+                            Answer Question
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('Error loading questions: ' + error.message);
+                console.error('Full error:', error);
+            }
+        }
+
+        async function answerQuestion(questionId) {
+            window.currentQuestionId = questionId;
+            
+            const { data: question, error } = await supabaseClient
+                .from('questions')
+                .select('title, question_text')
+                .eq('id', questionId)
+                .single();
+            
+            if (error) {
+                showToast('Error: ' + error.message);
+                return;
+            }
+            
+            document.getElementById('modalQuestionTitle').textContent = question.title;
+            document.getElementById('modalQuestionText').textContent = question.question_text;
+            document.getElementById('answerText').value = '';
+            
+            document.getElementById('answerModal').classList.remove('hidden');
+        }
+
+        async function submitAnswer() {
+            const answer = document.getElementById('answerText').value.trim();
+            
+            if (!answer) {
+                showToast('Please enter an answer');
+                return;
+            }
+
+            try {
+                const { error: answerError } = await supabaseClient
+                    .from('answers')
+                    .insert([{
+                        question_id: window.currentQuestionId,
+                        expert_id: currentUser.id,
+                        answer_text: answer
+                    }]);
+
+                if (answerError) throw answerError;
+
+                const { error: updateError } = await supabaseClient
+                    .from('questions')
+                    .update({ status: 'answered' })
+                    .eq('id', window.currentQuestionId);
+
+                if (updateError) throw updateError;
+
+                showToast('Answer submitted successfully! ✔');
+                closeAnswerModal();
+                loadExpertQuestions();
+            } catch (error) {
+                showToast('Error: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Check if user is already logged in
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (session) {
+                const { data: userData, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .single();
+
+                if (!error && userData) {
+                    currentUser = userData;
+                    document.getElementById('landingPage').classList.add('hidden');
+                    document.getElementById('dashboardPage').classList.remove('hidden');
+                    document.getElementById('userDisplay').textContent = `${userData.full_name} (${userData.role === 'user' ? 'User' : 'Doctor'})`;
+
+                    if (userData.role === 'user') {
+                        document.getElementById('userDashboard').classList.remove('hidden');
+                        loadUserQuestions();
+                    } else {
+                        document.getElementById('expertDashboard').classList.remove('hidden');
+                        loadExpertQuestions();
+                    }
+                }
+            }
+        }
+
+        // Initialize
+        checkAuth();
+    </script>
+    
+    <!-- Vercel Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+</body>
+</html>                
