@@ -982,24 +982,25 @@
         <div class="nav-container">
             <a href="#" class="logo-link">
                 <span class="logo-icon">⚕️</span>
-                <span>Второ мислење</span>
+                <span data-i18n="siteName">Второ мислење</span>
             </a>
             <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
                 ☰
             </button>
             <div class="nav-links" id="navLinks">
-                <a href="#features" class="nav-link">Карактеристики</a>
-                <a href="#how-it-works" class="nav-link">Како функционира</a>
-                <a href="#pricing" class="nav-link">Цени</a>
-                <a href="#faq" class="nav-link">FAQ</a>
-                <a href="#contact" class="nav-link">Контакт</a>
+                <a href="#features" class="nav-link" data-i18n="navFeatures">Карактеристики</a>
+                <a href="#how-it-works" class="nav-link" data-i18n="navHow">Како функционира</a>
+                <a href="#pricing" class="nav-link" data-i18n="navPricing">Цени</a>
+                <a href="#faq" class="nav-link" data-i18n="navFaq">FAQ</a>
+                <a href="#contact" class="nav-link" data-i18n="navContact">Контакт</a>
                 <div class="language-switcher">
-                    <button class="lang-btn active">МК</button>
-                    <button class="lang-btn">EN</button>
+                    <button class="lang-btn active" onclick="switchLanguage('mk')">МК</button>
+                    <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
+                    <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
                 </div>
                 <div class="auth-buttons">
-                    <button class="btn-signin" onclick="openSignin()">Најава</button>
-                    <button class="btn-register" onclick="openRegister()">Регистрација</button>
+                    <button class="btn-signin" onclick="openSignin()" data-i18n="navLogin">Најава</button>
+                    <button class="btn-register" onclick="openRegister()" data-i18n="navRegister">Регистрација</button>
                 </div>
             </div>
         </div>
@@ -1009,11 +1010,11 @@
     <section class="hero">
         <div class="hero-container">
             <div class="hero-content">
-                <h1>Стручно <span>медицинско</span> мислење на еден клик</h1>
-                <p>Добијте професионални одговори на вашите здравствени прашања од сертифицирани лекари, брзо и доверливо.</p>
+                <h1 data-i18n="heroTitle">Стручно медицинско мислење на еден клик</h1>
+                <p data-i18n="heroSubtitle">Добијте професионални одговори на вашите здравствени прашања од сертифицирани лекари, брзо и доверливо.</p>
                 <div class="hero-buttons">
-                    <a href="#contact" class="btn btn-primary">Поставете прашање</a>
-                    <a href="#how-it-works" class="btn btn-outline">Како функционира</a>
+                    <a href="#contact" class="btn btn-primary" data-i18n="heroButton1">Поставете прашање</a>
+                    <a href="#how-it-works" class="btn btn-outline" data-i18n="heroButton2">Како функционира</a>
                 </div>
             </div>
             <div class="hero-image" style="display:flex; justify-content:center; align-items:center;">
@@ -1048,168 +1049,168 @@
 
     <!-- Features Section -->
     <section class="features" id="features">
-        <h2 class="section-title">Зошто да не изберете?</h2>
+        <h2 class="section-title" data-i18n="featuresTitle">Зошто да не изберете?</h2>
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
-                <h3>Брзи одговори</h3>
-                <p>Добијте професионален одговор од сертифициран лекар во рок од 24-48 часа.</p>
+                <h3 data-i18n="feature1Title">Брзи одговори</h3>
+                <p data-i18n="feature1Text">Добијте професионален одговор од сертифициран лекар во рок од 24-48 часа.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
-                <h3>100% Доверливо</h3>
-                <p>Вашите податоци се целосно заштитени и криптирани согласно меѓународните стандарди.</p>
+                <h3 data-i18n="feature2Title">100% Доверливо</h3>
+                <p data-i18n="feature2Text">Вашите податоци се целосно заштитени и криптирани согласно меѓународните стандарди.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">👨‍⚕️</div>
-                <h3>Сертифицирани лекари</h3>
-                <p>Сите наши лекари се лиценцирани професионалци со години искуство.</p>
+                <h3 data-i18n="feature3Title">Сертифицирани лекари</h3>
+                <p data-i18n="feature3Text">Сите наши лекари се лиценцирани професионалци со години искуство.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💰</div>
-                <h3>Достапни цени</h3>
-                <p>Квалитетни медицински консултации по цени пристапни за секого.</p>
+                <h3 data-i18n="feature4Title">Достапни цени</h3>
+                <p data-i18n="feature4Text">Квалитетни медицински консултации по цени пристапни за секого.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📱</div>
-                <h3>Достапно 24/7</h3>
-                <p>Поставете прашање во секое време, од каде било.</p>
+                <h3 data-i18n="feature5Title">Достапно 24/7</h3>
+                <p data-i18n="feature5Text">Поставете прашање во секое време, од каде било.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📄</div>
-                <h3>Прикачете документи</h3>
-                <p>Споделете медицински снимки, резултати и документи за попрецизен одговор.</p>
+                <h3 data-i18n="feature6Title">Прикачете документи</h3>
+                <p data-i18n="feature6Text">Споделете медицински снимки, резултати и документи за попрецизен одговор.</p>
             </div>
         </div>
     </section>
 
     <!-- How It Works -->
     <section class="how-it-works" id="how-it-works">
-        <h2 class="section-title">Како функционира?</h2>
+        <h2 class="section-title" data-i18n="howTitle">Како функционира?</h2>
         <div class="steps-container">
             <div class="step">
                 <div class="step-number">1</div>
-                <h3>Регистрирајте се</h3>
-                <p>Креирајте профил за неколку секунди</p>
+                <h3 data-i18n="step1Title">Регистрирајте се</h3>
+                <p data-i18n="step1Text">Креирајте профил за неколку секунди</p>
             </div>
             <div class="step">
                 <div class="step-number">2</div>
-                <h3>Поставете прашање</h3>
-                <p>Опишете го вашиот здравствен проблем</p>
+                <h3 data-i18n="step2Title">Поставете прашање</h3>
+                <p data-i18n="step2Text">Опишете го вашиот здравствен проблем</p>
             </div>
             <div class="step">
                 <div class="step-number">3</div>
-                <h3>Изберете лекар</h3>
-                <p>Одберете специјалист според вашите потреби</p>
+                <h3 data-i18n="step3Title">Изберете лекар</h3>
+                <p data-i18n="step3Text">Одберете специјалист според вашите потреби</p>
             </div>
             <div class="step">
                 <div class="step-number">4</div>
-                <h3>Добијте одговор</h3>
-                <p>Прочитајте професионално мислење</p>
+                <h3 data-i18n="step4Title">Добијте одговор</h3>
+                <p data-i18n="step4Text">Прочитајте професионално мислење</p>
             </div>
         </div>
     </section>
 
     <!-- Pricing -->
     <section class="pricing" id="pricing">
-        <h2 class="section-title">Изберете го вашиот план</h2>
+        <h2 class="section-title" data-i18n="pricingTitle">Транспарентни цени</h2>
         <div class="pricing-grid">
             <div class="pricing-card">
-                <h3>Основен</h3>
+                <h3 data-i18n="pricingBasicName">Основен</h3>
                 <div class="pricing-price">799 <span>МКД</span></div>
                 <ul class="pricing-features">
-                    <li>1 медицинско прашање</li>
-                    <li>Одговор во 48 часа</li>
-                    <li>Основна консултација</li>
-                    <li>Email нотификации</li>
+                    <li data-i18n="pricingBasicFeature1">1 медицинско прашање</li>
+                    <li data-i18n="pricingBasicFeature2">Одговор во 48 часа</li>
+                    <li data-i18n="pricingBasicFeature3">Основна консултација</li>
+                    <li data-i18n="pricingBasicFeature4">Email нотификации</li>
                 </ul>
-                <a href="#contact" class="btn btn-outline">Избери план</a>
+                <a href="#contact" class="btn btn-outline" data-i18n="pricingBasicButton">Избери план</a>
             </div>
             <div class="pricing-card featured">
-                <div class="pricing-badge">Најпопуларно</div>
-                <h3>Стандард</h3>
+                <div class="pricing-badge" data-i18n="pricingStandardBadge">Најпопуларно</div>
+                <h3 data-i18n="pricingStandardName">Стандард</h3>
                 <div class="pricing-price">1,499 <span>МКД</span></div>
                 <ul class="pricing-features">
-                    <li>3 медицински прашања</li>
-                    <li>Одговор во 24 часа</li>
-                    <li>Детална консултација</li>
-                    <li>Прикачување документи</li>
-                    <li>Приоритетна поддршка</li>
+                    <li data-i18n="pricingStandardFeature1">3 медицински прашања</li>
+                    <li data-i18n="pricingStandardFeature2">Одговор во 24 часа</li>
+                    <li data-i18n="pricingStandardFeature3">Детална консултација</li>
+                    <li data-i18n="pricingStandardFeature4">Прикачување документи</li>
+                    <li data-i18n="pricingStandardFeature5">Приоритетна поддршка</li>
                 </ul>
-                <a href="#contact" class="btn btn-primary">Избери план</a>
+                <a href="#contact" class="btn btn-primary" data-i18n="pricingStandardButton">Избери план</a>
             </div>
             <div class="pricing-card">
-                <h3>Премиум</h3>
+                <h3 data-i18n="pricingPremiumName">Премиум</h3>
                 <div class="pricing-price">2,999 <span>МКД</span></div>
                 <ul class="pricing-features">
-                    <li>Неограничени прашања (1 месец)</li>
-                    <li>Одговор во 12 часа</li>
-                    <li>Детална анализа</li>
-                    <li>Видео консултација</li>
-                    <li>Следење на здравје</li>
-                    <li>24/7 Поддршка</li>
+                    <li data-i18n="pricingPremiumFeature1">Неограничени прашања (1 месец)</li>
+                    <li data-i18n="pricingPremiumFeature2">Одговор во 12 часа</li>
+                    <li data-i18n="pricingPremiumFeature3">Детална анализа</li>
+                    <li data-i18n="pricingPremiumFeature4">Видео консултација</li>
+                    <li data-i18n="pricingPremiumFeature5">Следење на здравје</li>
+                    <li data-i18n="pricingPremiumFeature6">24/7 Поддршка</li>
                 </ul>
-                <a href="#contact" class="btn btn-outline">Избери план</a>
+                <a href="#contact" class="btn btn-outline" data-i18n="pricingPremiumButton">Избери план</a>
             </div>
         </div>
     </section>
 
     <!-- FAQ -->
     <section class="faq" id="faq">
-        <h2 class="section-title">Често поставувани прашања</h2>
+        <h2 class="section-title" data-i18n="faqTitle">Често поставувани прашања</h2>
         <div class="faq-container">
             <div class="faq-item">
-                <button class="faq-question">
+                <button class="faq-question" data-i18n="faq1Q">
                     Дали одговорите на лекарите се официјални дијагнози?
                     <span class="faq-icon">▼</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Не, одговорите на лекарите на нашата платформа не се официјални дијагнози. Тие претставуваат професионално мислење базирано на информациите што ги давате, но не можат да ја заменат директната консултација со лекар и физички преглед.
+                        <span data-i18n="faq1A">Не, одговорите на лекарите на нашата платформа не се официјални дијагнози. Тие претставуваат професионално мислење базирано на информациите што ги давате, но не можат да ја заменат директната консултација со лекар и физички преглед.</span>
                     </div>
                 </div>
             </div>
             <div class="faq-item">
-                <button class="faq-question">
+                <button class="faq-question" data-i18n="faq2Q">
                     Колку долго треба да чекам за одговор?
                     <span class="faq-icon">▼</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Времето за одговор зависи од изборот на план. Основниот план гарантира одговор во рок од 48 часа, Стандард планот во 24 часа, а Премиум планот во 12 часа. Многу прашања добиваат одговор и побрзо.
+                        <span data-i18n="faq2A">Времето за одговор зависи од изборот на план. Основниот план гарантира одговор во рок од 48 часа, Стандард планот во 24 часа, а Премиум планот во 12 часа. Многу прашања добиваат одговор и побрзо.</span>
                     </div>
                 </div>
             </div>
             <div class="faq-item">
-                <button class="faq-question">
-                    Дали моите податоци се безбедни?
+                <button class="faq-question" data-i18n="faq3Q">
+                    Дали мојот идентитет е заштитен?
                     <span class="faq-icon">▼</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Да, ние ја земаме вашата приватност многу сериозно. Сите податоци се криптирани и складирани согласно со GDPR и другите меѓународни стандарди за заштита на лични податоци. Вашите медицински информации се строго доверливи.
+                        <span data-i18n="faq3A">Да, целосно. Вашите лични податоци се чуваат во согласност со GDPR и се криптирани. Лекарите ги гледаат само информациите релевантни за прашањето.</span>
                     </div>
                 </div>
             </div>
             <div class="faq-item">
-                <button class="faq-question">
-                    Дали можам да прикачам медицински документи?
+                <button class="faq-question" data-i18n="faq4Q">
+                    Можам ли да поставам повеќе прашања?
                     <span class="faq-icon">▼</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Да, на Стандард и Премиум плановите можете да прикачувате медицински документи, снимки, лабораториски резултати и други релевантни фајлови. Ова им помага на лекарите да дадат попрецизен одговор.
+                        <span data-i18n="faq4A">Да, зависно од планот што го изберете. Основниот план вклучува едно прашање, Стандардниот 3 прашања, а Премиум планот нуди неограничени прашања во рамки на еден месец.</span>
                     </div>
                 </div>
             </div>
             <div class="faq-item">
-                <button class="faq-question">
-                    Што се случува во итни случаи?
+                <button class="faq-question" data-i18n="faq5Q">
+                    Дали можам да прикачам документи?
                     <span class="faq-icon">▼</span>
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        Нашата платформа НЕ Е наменета за итни случаи. Ако имате итна медицинска состојба, ве молиме веднаш контактирајте 194 (Итна помош), вашиот семеен лекар или одете во најблиската итна служба.
+                        <span data-i18n="faq5A">Да, можете да прикачите медицински снимки, лабораториски резултати или други релевантни документи кои ќе му помогнат на лекарот да даде попрецизен одговор.</span>
                     </div>
                 </div>
             </div>
@@ -1218,29 +1219,29 @@
 
     <!-- Contact Section -->
     <section class="contact" id="contact">
-        <h2 class="section-title">Контактирајте нѐ</h2>
+        <h2 class="section-title" data-i18n="contactTitle">Контактирајте нѐ</h2>
         <div class="contact-container">
             <form class="contact-form" id="contactForm">
                 <div class="form-group">
-                    <label for="name">Име и презиме *</label>
+                    <label for="name" data-i18n="contactName">Име и презиме *</label>
                     <input type="text" id="name" name="name" required>
                     <div class="form-error">Ве молиме внесете го вашето име</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email">Email адреса *</label>
+                    <label for="email" data-i18n="contactEmail">Email адреса *</label>
                     <input type="email" id="email" name="email" required>
                     <div class="form-error">Ве молиме внесете валидна email адреса</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="phone">Телефонски број</label>
+                    <label for="phone" data-i18n="contactPhone">Телефонски број</label>
                     <input type="tel" id="phone" name="phone">
                     <div class="form-error">Ве молиме внесете валиден телефонски број</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="subject">Предмет *</label>
+                    <label for="subject" data-i18n="contactSubject">Предмет *</label>
                     <select id="subject" name="subject" required>
                         <option value="">Изберете предмет</option>
                         <option value="general">Општо прашање</option>
@@ -1253,7 +1254,7 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="message">Вашата порака *</label>
+                    <label for="message" data-i18n="contactMessage">Вашата порака *</label>
                     <textarea id="message" name="message" required maxlength="1000"></textarea>
                     <div class="char-count"><span id="charCount">0</span>/1000</div>
                     <div class="form-error">Ве молиме внесете порака (минимум 10 карактери)</div>
@@ -1285,12 +1286,12 @@
             <div class="footer-section">
                 <h4>Правни</h4>
                 <ul class="footer-links">
-                    <li><a href="#" onclick="openTerms(); return false;">Услови за користење</a></li>
-                    <li><a href="#" onclick="openPrivacy(); return false;">Политика за приватност</a></li>
+                    <li><a href="#" onclick="openTerms(); return false;" data-i18n="footerTerms">Услови за користење</a></li>
+                    <li><a href="#" onclick="openPrivacy(); return false;" data-i18n="footerPrivacy">Политика за приватност</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Контакт</h4>
+                <h4 data-i18n="footerContact">Контакт</h4>
                 <ul class="footer-links">
                     <li><a href="mailto:janejovanov@gmail.com">janejovanov@gmail.com</a></li>
                     <li><a href="tel:+420776595387">+420 776 595 387</a></li>
@@ -1469,6 +1470,300 @@
     <script defer src="/_vercel/insights/script.js"></script>
 
     <script>
+        // Current language tracker
+        let currentLanguage = 'mk';
+
+        // Translations object
+        const translations = {
+            mk: {
+                siteName: 'Второ мислење',
+                navFeatures: 'Карактеристики',
+                navHow: 'Како функционира',
+                navPricing: 'Цени',
+                navFaq: 'FAQ',
+                navContact: 'Контакт',
+                navLogin: 'Најава',
+                navRegister: 'Регистрација',
+                heroTitle: 'Стручно медицинско мислење на еден клик',
+                heroSubtitle: 'Добијте професионални одговори на вашите здравствени прашања од сертифицирани лекари, брзо и доверливо.',
+                heroButton1: 'Поставете прашање',
+                heroButton2: 'Како функционира',
+                featuresTitle: 'Зошто да не изберете?',
+                feature1Title: 'Брзи одговори',
+                feature1Text: 'Добијте професионален одговор од сертифициран лекар во рок од 24-48 часа.',
+                feature2Title: '100% Доверливо',
+                feature2Text: 'Вашите податоци се целосно заштитени и криптирани согласно меѓународните стандарди.',
+                feature3Title: 'Сертифицирани лекари',
+                feature3Text: 'Сите наши лекари се лиценцирани професионалци со години искуство.',
+                feature4Title: 'Достапни цени',
+                feature4Text: 'Квалитетни медицински консултации по цени пристапни за секого.',
+                feature5Title: 'Достапно 24/7',
+                feature5Text: 'Поставете прашање во секое време, од каде било.',
+                feature6Title: 'Прикачете документи',
+                feature6Text: 'Споделете медицински снимки, резултати и документи за попрецизен одговор.',
+                howTitle: 'Како функционира?',
+                step1Title: 'Регистрирајте се',
+                step1Text: 'Креирајте профил за неколку секунди',
+                step2Title: 'Поставете прашање',
+                step2Text: 'Опишете го вашиот здравствен проблем',
+                step3Title: 'Изберете лекар',
+                step3Text: 'Одберете специјалист според вашите потреби',
+                step4Title: 'Добијте одговор',
+                step4Text: 'Прочитајте професионално мислење',
+                pricingTitle: 'Транспарентни цени',
+                pricingBasicName: 'Основен',
+                pricingBasicFeature1: '1 медицинско прашање',
+                pricingBasicFeature2: 'Одговор во 48 часа',
+                pricingBasicFeature3: 'Основна консултација',
+                pricingBasicFeature4: 'Email нотификации',
+                pricingBasicButton: 'Избери план',
+                pricingStandardBadge: 'Најпопуларно',
+                pricingStandardName: 'Стандард',
+                pricingStandardFeature1: '3 медицински прашања',
+                pricingStandardFeature2: 'Одговор во 24 часа',
+                pricingStandardFeature3: 'Детална консултација',
+                pricingStandardFeature4: 'Прикачување документи',
+                pricingStandardFeature5: 'Приоритетна поддршка',
+                pricingStandardButton: 'Избери план',
+                pricingPremiumName: 'Премиум',
+                pricingPremiumFeature1: 'Неограничени прашања (1 месец)',
+                pricingPremiumFeature2: 'Одговор во 12 часа',
+                pricingPremiumFeature3: 'Детална анализа',
+                pricingPremiumFeature4: 'Видео консултација',
+                pricingPremiumFeature5: 'Следење на здравје',
+                pricingPremiumFeature6: '24/7 Поддршка',
+                pricingPremiumButton: 'Избери план',
+                faqTitle: 'Често поставувани прашања',
+                faq1Q: 'Дали одговорите на лекарите се официјални дијагнози?',
+                faq1A: 'Не, одговорите на лекарите на нашата платформа не се официјални дијагнози. Тие претставуваат професионално мислење базирано на информациите што ги давате, но не можат да ја заменат директната консултација со лекар и физички преглед.',
+                faq2Q: 'Колку долго треба да чекам за одговор?',
+                faq2A: 'Времето за одговор зависи од изборот на план. Основниот план гарантира одговор во рок од 48 часа, Стандард планот во 24 часа, а Премиум планот во 12 часа. Многу прашања добиваат одговор и побрзо.',
+                faq3Q: 'Дали мојот идентитет е заштитен?',
+                faq3A: 'Да, целосно. Вашите лични податоци се чуваат во согласност со GDPR и се криптирани. Лекарите ги гледаат само информациите релевантни за прашањето.',
+                faq4Q: 'Можам ли да поставам повеќе прашања?',
+                faq4A: 'Да, зависно од планот што го изберете. Основниот план вклучува едно прашање, Стандардниот 3 прашања, а Премиум планот нуди неограничени прашања во рамки на еден месец.',
+                faq5Q: 'Дали можам да прикачам документи?',
+                faq5A: 'Да, можете да прикачите медицински снимки, лабораториски резултати или други релевантни документи кои ќе му помогнат на лекарот да даде попрецизен одговор.',
+                contactTitle: 'Контактирајте нѐ',
+                contactIntro: 'Имате прашање? Пополнете ја формата подолу и ќе ви одговориме наскоро.',
+                contactName: 'Име и презиме *',
+                contactEmail: 'Email адреса *',
+                contactPhone: 'Телефонски број',
+                contactSubject: 'Предмет *',
+                contactMessage: 'Вашата порака *',
+                contactButton: 'Испрати порака',
+                footerAbout: 'За нас',
+                footerDesc: 'Второ мислење е платформа за онлајн медицински консултации која ви овозможува да добиете професионално мислење од сертифицирани лекари.',
+                footerQuickLinks: 'Брзи линкови',
+                footerLegal: 'Правно',
+                footerPrivacy: 'Политика за приватност',
+                footerTerms: 'Услови за користење',
+                footerContact: 'Контакт',
+                footerRights: '© 2025 Второ мислење. Сите права задржани.'
+            },
+            sq: {
+                siteName: 'Mendimi i dytë',
+                navFeatures: 'Karakteristikat',
+                navHow: 'Si funksionon',
+                navPricing: 'Çmimet',
+                navFaq: 'FAQ',
+                navContact: 'Kontakti',
+                navLogin: 'Hyrje',
+                navRegister: 'Regjistrimi',
+                heroTitle: 'Mendim mjekësor profesional me një klikim',
+                heroSubtitle: 'Merrni përgjigje profesionale për pyetjet tuaja shëndetësore nga mjekë të certifikuar, shpejt dhe në mënyrë konfidenciale.',
+                heroButton1: 'Bëni një pyetje',
+                heroButton2: 'Si funksionon',
+                featuresTitle: 'Pse të na zgjidhni?',
+                feature1Title: 'Përgjigje të shpejta',
+                feature1Text: 'Merrni përgjigje profesionale nga një mjek i certifikuar brenda 24-48 orëve.',
+                feature2Title: '100% Konfidenciale',
+                feature2Text: 'Të dhënat tuaja janë plotësisht të mbrojtura dhe të enkriptuara sipas standardeve ndërkombëtare.',
+                feature3Title: 'Mjekë të certifikuar',
+                feature3Text: 'Të gjithë mjekët tanë janë profesionistë të licensuar me vite përvojë.',
+                feature4Title: 'Çmime të arritshme',
+                feature4Text: 'Konsultime mjekësore cilësore me çmime të arritshme për të gjithë.',
+                feature5Title: 'I disponueshëm 24/7',
+                feature5Text: 'Bëni një pyetje në çdo kohë, nga kudo.',
+                feature6Title: 'Bashkëngjitni dokumente',
+                feature6Text: 'Ndani imazhe mjekësore, rezultate dhe dokumente për një përgjigje më të saktë.',
+                howTitle: 'Si funksionon?',
+                step1Title: 'Regjistrohuni',
+                step1Text: 'Krijoni një profil për disa sekonda',
+                step2Title: 'Bëni një pyetje',
+                step2Text: 'Përshkruani problemin tuaj shëndetësor',
+                step3Title: 'Zgjidhni një mjek',
+                step3Text: 'Zgjidhni një specialist sipas nevojave tuaja',
+                step4Title: 'Merrni përgjigje',
+                step4Text: 'Lexoni mendimin profesional',
+                pricingTitle: 'Çmime transparente',
+                pricingBasicName: 'Bazë',
+                pricingBasicFeature1: '1 pyetje mjekësore',
+                pricingBasicFeature2: 'Përgjigje brenda 48 orësh',
+                pricingBasicFeature3: 'Konsultim bazë',
+                pricingBasicFeature4: 'Njoftimet me email',
+                pricingBasicButton: 'Zgjidhni planin',
+                pricingStandardBadge: 'Më e njohura',
+                pricingStandardName: 'Standard',
+                pricingStandardFeature1: '3 pyetje mjekësore',
+                pricingStandardFeature2: 'Përgjigje brenda 24 orësh',
+                pricingStandardFeature3: 'Konsultim i detajuar',
+                pricingStandardFeature4: 'Bashkëngjitje dokumentesh',
+                pricingStandardFeature5: 'Mbështetje prioritare',
+                pricingStandardButton: 'Zgjidhni planin',
+                pricingPremiumName: 'Premium',
+                pricingPremiumFeature1: 'Pyetje të pakufizuara (1 muaj)',
+                pricingPremiumFeature2: 'Përgjigje brenda 12 orësh',
+                pricingPremiumFeature3: 'Analizë e detajuar',
+                pricingPremiumFeature4: 'Konsultim me video',
+                pricingPremiumFeature5: 'Ndjekje shëndetësore',
+                pricingPremiumFeature6: 'Mbështetje 24/7',
+                pricingPremiumButton: 'Zgjidhni planin',
+                faqTitle: 'Pyetje të shpeshta',
+                faq1Q: 'A janë përgjigjet e mjekëve diagnoza zyrtare?',
+                faq1A: 'Jo, përgjigjet e mjekëve në platformën tonë nuk janë diagnoza zyrtare. Ato përfaqësojnë mendim profesional bazuar në informacionin që jepni, por nuk mund të zëvendësojnë një konsultim të drejtpërdrejtë me një mjek dhe ekzaminim fizik.',
+                faq2Q: 'Sa kohë duhet të pres për një përgjigje?',
+                faq2A: 'Koha e përgjigjes varet nga plani që zgjidhni. Plani bazë garanton përgjigje brenda 48 orësh, plani Standard brenda 24 orësh, dhe plani Premium brenda 12 orësh. Shumë pyetje marrin përgjigje edhe më shpejt.',
+                faq3Q: 'A është identiteti im i mbrojtur?',
+                faq3A: 'Po, plotësisht. Të dhënat tuaja personale ruhen në përputhje me GDPR dhe janë të enkriptuara. Mjekët shohin vetëm informacionin që është relevant për pyetjen.',
+                faq4Q: 'A mund të bëj pyetje të shumta?',
+                faq4A: 'Po, në varësi të planit që zgjidhni. Plani bazë përfshin një pyetje, plani Standard 3 pyetje, dhe plani Premium ofron pyetje të pakufizuara brenda një muaji.',
+                faq5Q: 'A mund të bashkëngjis dokumente?',
+                faq5A: 'Po, mund të bashkëngjisni imazhe mjekësore, rezultate laboratorike ose dokumente të tjera relevante që do të ndihmojnë mjekun të japë një përgjigje më të saktë.',
+                contactTitle: 'Na kontaktoni',
+                contactIntro: 'Keni një pyetje? Plotësoni formularin më poshtë dhe do t\'ju përgjigjemi së shpejti.',
+                contactName: 'Emri dhe mbiemri *',
+                contactEmail: 'Adresa email *',
+                contactPhone: 'Numri i telefonit',
+                contactSubject: 'Subjekti *',
+                contactMessage: 'Mesazhi juaj *',
+                contactButton: 'Dërgo mesazhin',
+                footerAbout: 'Rreth nesh',
+                footerDesc: 'Mendimi i dytë është një platformë për konsultime mjekësore online që ju mundëson të merrni mendim profesional nga mjekë të certifikuar.',
+                footerQuickLinks: 'Lidhje të shpejta',
+                footerLegal: 'Ligjore',
+                footerPrivacy: 'Politika e privatësisë',
+                footerTerms: 'Kushtet e përdorimit',
+                footerContact: 'Kontakti',
+                footerRights: '© 2025 Mendimi i dytë. Të gjitha të drejtat e rezervuara.'
+            },
+            en: {
+                siteName: 'Second Opinion',
+                navFeatures: 'Features',
+                navHow: 'How it works',
+                navPricing: 'Pricing',
+                navFaq: 'FAQ',
+                navContact: 'Contact',
+                navLogin: 'Login',
+                navRegister: 'Register',
+                heroTitle: 'Expert medical opinion at one click',
+                heroSubtitle: 'Get professional answers to your health questions from certified doctors, quickly and confidentially.',
+                heroButton1: 'Ask a question',
+                heroButton2: 'How it works',
+                featuresTitle: 'Why choose us?',
+                feature1Title: 'Fast responses',
+                feature1Text: 'Get a professional answer from a certified doctor within 24-48 hours.',
+                feature2Title: '100% Confidential',
+                feature2Text: 'Your data is fully protected and encrypted according to international standards.',
+                feature3Title: 'Certified doctors',
+                feature3Text: 'All our doctors are licensed professionals with years of experience.',
+                feature4Title: 'Affordable prices',
+                feature4Text: 'Quality medical consultations at prices accessible to everyone.',
+                feature5Title: 'Available 24/7',
+                feature5Text: 'Ask a question anytime, from anywhere.',
+                feature6Title: 'Attach documents',
+                feature6Text: 'Share medical images, results and documents for a more accurate answer.',
+                howTitle: 'How it works?',
+                step1Title: 'Register',
+                step1Text: 'Create a profile in a few seconds',
+                step2Title: 'Ask a question',
+                step2Text: 'Describe your health problem',
+                step3Title: 'Choose a doctor',
+                step3Text: 'Select a specialist according to your needs',
+                step4Title: 'Get an answer',
+                step4Text: 'Read the professional opinion',
+                pricingTitle: 'Transparent pricing',
+                pricingBasicName: 'Basic',
+                pricingBasicFeature1: '1 medical question',
+                pricingBasicFeature2: 'Response within 48 hours',
+                pricingBasicFeature3: 'Basic consultation',
+                pricingBasicFeature4: 'Email notifications',
+                pricingBasicButton: 'Choose plan',
+                pricingStandardBadge: 'Most popular',
+                pricingStandardName: 'Standard',
+                pricingStandardFeature1: '3 medical questions',
+                pricingStandardFeature2: 'Response within 24 hours',
+                pricingStandardFeature3: 'Detailed consultation',
+                pricingStandardFeature4: 'Document attachments',
+                pricingStandardFeature5: 'Priority support',
+                pricingStandardButton: 'Choose plan',
+                pricingPremiumName: 'Premium',
+                pricingPremiumFeature1: 'Unlimited questions (1 month)',
+                pricingPremiumFeature2: 'Response within 12 hours',
+                pricingPremiumFeature3: 'Detailed analysis',
+                pricingPremiumFeature4: 'Video consultation',
+                pricingPremiumFeature5: 'Health monitoring',
+                pricingPremiumFeature6: '24/7 Support',
+                pricingPremiumButton: 'Choose plan',
+                faqTitle: 'Frequently asked questions',
+                faq1Q: 'Are the doctors\' answers official diagnoses?',
+                faq1A: 'No, the doctors\' answers on our platform are not official diagnoses. They represent professional opinions based on the information you provide, but cannot replace direct consultation with a doctor and physical examination.',
+                faq2Q: 'How long should I wait for an answer?',
+                faq2A: 'Response time depends on the plan you choose. The Basic plan guarantees a response within 48 hours, Standard plan within 24 hours, and Premium plan within 12 hours. Many questions receive answers even faster.',
+                faq3Q: 'Is my identity protected?',
+                faq3A: 'Yes, completely. Your personal data is stored in accordance with GDPR and is encrypted. Doctors only see information relevant to the question.',
+                faq4Q: 'Can I ask multiple questions?',
+                faq4A: 'Yes, depending on the plan you choose. The Basic plan includes one question, Standard plan 3 questions, and Premium plan offers unlimited questions within one month.',
+                faq5Q: 'Can I attach documents?',
+                faq5A: 'Yes, you can attach medical images, laboratory results or other relevant documents that will help the doctor provide a more accurate answer.',
+                contactTitle: 'Contact us',
+                contactIntro: 'Have a question? Fill out the form below and we will respond soon.',
+                contactName: 'Full name *',
+                contactEmail: 'Email address *',
+                contactPhone: 'Phone number',
+                contactSubject: 'Subject *',
+                contactMessage: 'Your message *',
+                contactButton: 'Send message',
+                footerAbout: 'About us',
+                footerDesc: 'Second Opinion is an online medical consultation platform that enables you to get professional opinions from certified doctors.',
+                footerQuickLinks: 'Quick links',
+                footerLegal: 'Legal',
+                footerPrivacy: 'Privacy policy',
+                footerTerms: 'Terms of service',
+                footerContact: 'Contact',
+                footerRights: '© 2025 Second Opinion. All rights reserved.'
+            }
+        };
+
+        // Language switching function
+        function switchLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update all translated elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    // For buttons and elements that might have children (like FAQ questions with icons)
+                    if (el.tagName === 'BUTTON' && el.querySelector('.faq-icon')) {
+                        // Preserve the icon
+                        const icon = el.querySelector('.faq-icon');
+                        el.textContent = translations[lang][key];
+                        el.appendChild(icon);
+                    } else {
+                        // For simple text elements
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+
+            // Update HTML lang attribute
+            document.documentElement.lang = lang;
+        }
+
         // Toast Notification System
         function showToast(type, title, message) {
             // Remove existing toast if any
