@@ -2821,6 +2821,10 @@
         // Load User Questions Function - UPDATED
         async function loadUserQuestions() {
             try {
+                console.log('Loading user questions...');
+                console.log('Current user:', window.currentUser);
+                console.log('User ID:', window.currentUser.id);
+                
                 const { data: questions, error } = await supabaseClient
                     .from('questions')
                     .select(`
@@ -2839,6 +2843,9 @@
                     `)
                     .eq('user_id', window.currentUser.id)
                     .order('created_at', { ascending: false });
+
+                console.log('User questions query result:', { questions, error });
+                console.log('Number of user questions found:', questions?.length || 0);
 
                 if (error) throw error;
 
