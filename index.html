@@ -975,9 +975,58 @@
             40% { opacity: 1; }
             100% { stroke-dashoffset: -220; opacity: 0.9; }
         }
+        
+        /* Dashboard Styles */
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 40px;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            margin-bottom: 24px;
+        }
+        
+        .question-card {
+            background: var(--bg-light);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+        }
     </style>
 </head>
 <body>
+    <!-- Landing Page -->
+    <div id="landingPage">
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
@@ -1302,6 +1351,75 @@
             <p>&copy; 2025 Второ мислење. Сите права задржани.</p>
         </div>
     </footer>
+    </div>
+    <!-- End of Landing Page -->
+
+    <!-- Dashboard (Hidden initially) -->
+    <div id="dashboardPage" class="hidden">
+        <div class="dashboard-container">
+            <div class="glass-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Добредојдовте назад!</h2>
+                        <p id="userDisplay" style="color: var(--text-light);"></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="logout()">Одјави се</button>
+                </div>
+            </div>
+
+            <!-- User Dashboard -->
+            <div id="userDashboard" class="hidden">
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Постави ново прашање</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Наслов</label>
+                        <input type="text" class="form-input" id="questionTitle" placeholder="Внесете наслов на прашањето">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Медицинска област</label>
+                        <select class="form-input" id="questionSpecialty">
+                            <option value="">Изберете медицинска област</option>
+                            <option value="cardiology">Кардиологија</option>
+                            <option value="dermatology">Дерматологија</option>
+                            <option value="endocrinology">Ендокринологија</option>
+                            <option value="gastroenterology">Гастроентерологија</option>
+                            <option value="gynecology">Гинекологија</option>
+                            <option value="neurology">Неврологија</option>
+                            <option value="oncology">Онкологија</option>
+                            <option value="orthopedics">Ортопедија</option>
+                            <option value="pediatrics">Педијатрија</option>
+                            <option value="psychiatry">Психијатрија</option>
+                            <option value="pulmonology">Пулмологија</option>
+                            <option value="urology">Урологија</option>
+                            <option value="other">Друго</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Детали</label>
+                        <textarea class="form-input" id="questionText" rows="4" placeholder="Опишете го вашето прашање детално..."></textarea>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="submitQuestion()">Испрати прашање</button>
+                </div>
+
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Мои прашања</h3>
+                    <div id="userQuestions"></div>
+                </div>
+            </div>
+
+            <!-- Expert Dashboard -->
+            <div id="expertDashboard" class="hidden">
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Прашања за одговор</h3>
+                    <div id="expertQuestions"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Sign In Modal -->
     <div id="signinModal" class="modal-overlay hidden" onclick="closeSignin(event)">
@@ -2083,11 +2201,41 @@
                     throw authError;
                 }
 
+                // Fetch user data
+                const { data: userData, error: userError } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', authData.user.id)
+                    .maybeSingle();
+
+                if (userError || !userData) {
+                    console.error('User data fetch error:', userError);
+                    showToast('error', 'Грешка', 'Грешка при вчитување на корисничките податоци.');
+                    return;
+                }
+
+                // Store current user
+                window.currentUser = userData;
+                
+                // Hide landing page and show dashboard
+                document.getElementById('landingPage').classList.add('hidden');
+                document.getElementById('dashboardPage').classList.remove('hidden');
+                
+                // Show user info
+                const roleText = userData.role === 'user' ? 'Корисник' : 'Лекар';
+                document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
+
+                // Show appropriate dashboard
+                if (userData.role === 'user') {
+                    document.getElementById('userDashboard').classList.remove('hidden');
+                    loadUserQuestions();
+                } else {
+                    document.getElementById('expertDashboard').classList.remove('hidden');
+                    loadExpertQuestions();
+                }
+
                 showToast('success', 'Успешно!', 'Успешно сте најавени.');
                 closeSignin();
-                
-                // You can redirect to dashboard or reload page here
-                // window.location.href = '/dashboard.html';
                 
             } catch (error) {
                 console.error('Sign in error:', error);
@@ -2209,6 +2357,217 @@
                 }
             }
         });
+
+        // Logout Function
+        async function logout() {
+            await supabaseClient.auth.signOut();
+            window.currentUser = null;
+            document.getElementById('landingPage').classList.remove('hidden');
+            document.getElementById('dashboardPage').classList.add('hidden');
+            document.getElementById('userDashboard').classList.add('hidden');
+            document.getElementById('expertDashboard').classList.add('hidden');
+            showToast('success', 'Одјава', 'Успешно се одјавивте.');
+        }
+
+        // Submit Question Function
+        async function submitQuestion() {
+            const title = document.getElementById('questionTitle').value.trim();
+            const specialty = document.getElementById('questionSpecialty').value;
+            const text = document.getElementById('questionText').value.trim();
+
+            if (!title || !specialty || !text) {
+                showToast('error', 'Грешка', 'Ве молиме пополнете ги сите полиња.');
+                return;
+            }
+
+            try {
+                const selectedOption = document.getElementById('questionSpecialty').selectedOptions[0];
+                const specialtyName = selectedOption.text;
+
+                const { error } = await supabaseClient
+                    .from('questions')
+                    .insert([{
+                        title: title,
+                        specialty: specialty,
+                        specialty_name: specialtyName,
+                        question_text: text,
+                        user_id: window.currentUser.id
+                    }]);
+
+                if (error) throw error;
+
+                document.getElementById('questionTitle').value = '';
+                document.getElementById('questionSpecialty').value = '';
+                document.getElementById('questionText').value = '';
+
+                showToast('success', 'Успешно!', 'Прашањето е успешно испратено!');
+                loadUserQuestions();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при испраќање: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        // Load User Questions Function
+        async function loadUserQuestions() {
+            try {
+                const { data: questions, error } = await supabaseClient
+                    .from('questions')
+                    .select(`
+                        *,
+                        answers (
+                            answer_text,
+                            created_at,
+                            expert:expert_id (full_name)
+                        )
+                    `)
+                    .eq('user_id', window.currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('userQuestions');
+
+                if (questions.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
+                            <div style="font-size: 48px; margin-bottom: 16px;">🔭</div>
+                            <h3>Немате прашања засега</h3>
+                            <p>Сè уште немате поставено прашање.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = questions.map(q => {
+                    const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
+                    const statusBadge = answer 
+                        ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">Одговорено</span>'
+                        : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">Се чека</span>';
+                    
+                    const answerSection = answer ? `
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
+                            <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">
+                                ✓ Одговор од ${answer.expert.full_name}:
+                            </p>
+                            <p style="color: var(--text-light);">${answer.answer_text}</p>
+                        </div>
+                    ` : '';
+
+                    return `
+                        <div class="question-card">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                                <h4 style="font-size: 18px; font-weight: 600;">${q.title}</h4>
+                                ${statusBadge}
+                            </div>
+                            <p style="color: var(--text-light); font-size: 14px; margin-bottom: 8px;"><strong>Област:</strong> ${q.specialty_name || q.specialty}</p>
+                            <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
+                            ${answerSection}
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при вчитување на прашањата: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        // Load Expert Questions Function
+        async function loadExpertQuestions() {
+            try {
+                const { data: questions, error } = await supabaseClient
+                    .from('questions')
+                    .select(`
+                        *,
+                        user:user_id (full_name),
+                        answers (
+                            answer_text,
+                            created_at
+                        )
+                    `)
+                    .eq('specialty', window.currentUser.specialization)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('expertQuestions');
+
+                if (questions.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
+                            <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
+                            <h3>Нема прашања</h3>
+                            <p>Моментално нема прашања за вашата специјализација.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = questions.map(q => {
+                    const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
+                    const statusBadge = answer 
+                        ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">Одговорено</span>'
+                        : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">Се чека</span>';
+
+                    return `
+                        <div class="question-card">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                                <h4 style="font-size: 18px; font-weight: 600;">${q.title}</h4>
+                                ${statusBadge}
+                            </div>
+                            <p style="color: var(--text-light); font-size: 14px; margin-bottom: 8px;"><strong>Од:</strong> ${q.user.full_name}</p>
+                            <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
+                            ${answer ? `
+                                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
+                                    <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Вашиот одговор:</p>
+                                    <p style="color: var(--text-light);">${answer.answer_text}</p>
+                                </div>
+                            ` : `
+                                <button class="btn btn-primary" style="margin-top: 12px;" onclick="answerQuestion(${q.id})">Одговори</button>
+                            `}
+                        </div>
+                    `;
+                }).join('');
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при вчитување на прашањата: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        // Answer Question Function (placeholder for expert functionality)
+        function answerQuestion(questionId) {
+            showToast('info', 'Информација', 'Функцијата за одговарање е во развој.');
+        }
+
+        // Check if user is already logged in on page load
+        (async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (session && session.user) {
+                // User is logged in, fetch their data and show dashboard
+                const { data: userData, error: userError } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', session.user.id)
+                    .maybeSingle();
+
+                if (userData && !userError) {
+                    window.currentUser = userData;
+                    document.getElementById('landingPage').classList.add('hidden');
+                    document.getElementById('dashboardPage').classList.remove('hidden');
+                    
+                    const roleText = userData.role === 'user' ? 'Корисник' : 'Лекар';
+                    document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
+
+                    if (userData.role === 'user') {
+                        document.getElementById('userDashboard').classList.remove('hidden');
+                        loadUserQuestions();
+                    } else {
+                        document.getElementById('expertDashboard').classList.remove('hidden');
+                        loadExpertQuestions();
+                    }
+                }
+            }
+        })();
     </script>
 </body>
 </html>
