@@ -2056,12 +2056,12 @@
             navLinks.classList.toggle('open');
         });
 
-        // Initialize Supabase (optional - for saving to database)
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Replace with your Supabase URL
-        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Replace with your Supabase anon key
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://goplfstrsnnssxmunqkx.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvcGxmc3Ryc25uc3N4bXVucWt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDIyMzIsImV4cCI6MjA3NjIxODIzMn0.ai4OED2Y7F9rrqoiBTyV6nka-2O80gxAinFZNrOuupA';
         
-        // Uncomment when you have Supabase credentials
-        // window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Sign In Form Handler
         document.getElementById('signinForm').addEventListener('submit', async (e) => {
@@ -2070,24 +2070,29 @@
             const email = formData.get('email');
             const password = formData.get('password');
 
-            // TODO: Implement actual authentication
-            console.log('Sign in attempt:', { email });
-            
-            showToast('success', 'Успешно!', 'Најавата е во тек...');
-            closeSignin();
-            
-            // Example: Using Supabase
-            // if (window.supabase) {
-            //     const { data, error } = await window.supabase.auth.signInWithPassword({
-            //         email, password
-            //     });
-            //     if (error) {
-            //         showToast('error', 'Грешка', error.message);
-            //     } else {
-            //         showToast('success', 'Успешно!', 'Успешно сте најавени.');
-            //         closeSignin();
-            //     }
-            // }
+            try {
+                console.log('Sign in attempt:', { email });
+                
+                const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (authError) {
+                    console.error('Sign in error:', authError);
+                    throw authError;
+                }
+
+                showToast('success', 'Успешно!', 'Успешно сте најавени.');
+                closeSignin();
+                
+                // You can redirect to dashboard or reload page here
+                // window.location.href = '/dashboard.html';
+                
+            } catch (error) {
+                console.error('Sign in error:', error);
+                showToast('error', 'Грешка', 'Грешка при најава: ' + (error.message || 'Непозната грешка'));
+            }
         });
 
         // Register Form Handler
@@ -2118,31 +2123,91 @@
                 return;
             }
 
-            // TODO: Implement actual registration
-            console.log('Registration attempt:', { name, email, phone });
-            
-            showToast('success', 'Успешно!', 'Регистрацијата е успешна. Проверете го вашиот email.');
-            closeRegister();
-            
-            // Example: Using Supabase
-            // if (window.supabase) {
-            //     const { data, error } = await window.supabase.auth.signUp({
-            //         email,
-            //         password,
-            //         options: {
-            //             data: {
-            //                 name,
-            //                 phone
-            //             }
-            //         }
-            //     });
-            //     if (error) {
-            //         showToast('error', 'Грешка', error.message);
-            //     } else {
-            //         showToast('success', 'Успешно!', 'Регистрацијата е успешна. Проверете го вашиот email.');
-            //         closeRegister();
-            //     }
-            // }
+            try {
+                console.log('Attempting to register with:', { email, name });
+                
+                // Sign up with Supabase Auth
+                const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        emailRedirectTo: (window?.location?.origin || window.location.href) + '/#email-confirmed',
+                        data: {
+                            full_name: name,
+                            phone: phone
+                        }
+                    }
+                });
+
+                console.log('Auth response:', { authData, authError });
+
+                if (authError) {
+                    console.error('Auth error details:', authError);
+                    throw authError;
+                }
+
+                if (!authData.user) {
+                    throw new Error('No user data returned from registration');
+                }
+
+                // Insert user data into users table
+                const userData = {
+                    id: authData.user.id,
+                    email: email,
+                    full_name: name,
+                    phone: phone,
+                    role: 'user'
+                };
+
+                console.log('Inserting user data:', userData);
+
+                const { error: userError } = await supabaseClient
+                    .from('users')
+                    .insert([userData]);
+
+                console.log('User insert response:', { userError });
+
+                if (userError) {
+                    // If user already exists in users table, update instead
+                    if (userError.code === '23505' && userError.message.includes('users_email_key')) {
+                        console.log('User already exists, attempting to update...');
+                        
+                        const { error: updateError } = await supabaseClient
+                            .from('users')
+                            .update(userData)
+                            .eq('id', authData.user.id);
+                        
+                        if (updateError) {
+                            console.error('Update error:', updateError);
+                            showToast('error', 'Грешка', 'Email веќе е регистриран. Ве молиме најавете се.');
+                            closeRegister();
+                            setTimeout(() => openSignin(), 500);
+                            return;
+                        }
+                    } else {
+                        console.error('User insert error details:', userError);
+                        throw userError;
+                    }
+                }
+
+                showToast('success', 'Успешно!', 'Регистрацијата е успешна! Проверете го вашиот email за верификација. ✔');
+                closeRegister();
+                
+                // Clear form
+                e.target.reset();
+                
+            } catch (error) {
+                console.error('Full registration error:', error);
+                showToast('error', 'Грешка', 'Грешка при регистрација: ' + (error.message || 'Непозната грешка'));
+                
+                // Show more detailed error in console
+                if (error.status) {
+                    console.error('HTTP Status:', error.status);
+                }
+                if (error.details) {
+                    console.error('Error details:', error.details);
+                }
+            }
         });
     </script>
 </body>
