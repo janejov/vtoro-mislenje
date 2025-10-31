@@ -110,7 +110,7 @@
 
         .auth-buttons {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             flex-wrap: wrap;
         }
@@ -119,12 +119,12 @@
             background: transparent;
             color: var(--primary);
             border: none;
-            padding: 10px 16px;
+            padding: 8px 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
             white-space: nowrap;
         }
 
@@ -136,12 +136,12 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 8px 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
             white-space: nowrap;
         }
 
@@ -1134,43 +1134,6 @@
         .file-remove:hover {
             background: #DC2626;
         }
-        
-        /* Doctor CTA Section */
-        .doctor-cta {
-            padding: 80px 40px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            text-align: center;
-        }
-        
-        .doctor-cta-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        
-        .doctor-cta h2 {
-            font-size: 42px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        
-        .doctor-cta p {
-            font-size: 20px;
-            margin-bottom: 32px;
-            opacity: 0.95;
-        }
-        
-        .doctor-cta .btn {
-            background: white;
-            color: var(--primary);
-            font-size: 18px;
-            padding: 16px 40px;
-        }
-        
-        .doctor-cta .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-        }
     </style>
 </head>
 <body>
@@ -1352,15 +1315,6 @@
                 </ul>
                 <a href="#contact" class="btn btn-outline" data-i18n="pricingPremiumButton">Избери план</a>
             </div>
-        </div>
-    </section>
-
-    <!-- Doctor CTA -->
-    <section class="doctor-cta">
-        <div class="doctor-cta-content">
-            <h2>Сте лекар? Придружете се на нашата платформа</h2>
-            <p>Помогнете на пациентите да добијат стручни медицински совети и заработувајте од вашето знаење и искуство.</p>
-            <button class="btn" onclick="openRegister('doctor')">Регистрирајте се како лекар</button>
         </div>
     </section>
 
@@ -2496,6 +2450,13 @@
                 // Store current user
                 window.currentUser = userData;
                 
+                // Setup real-time subscriptions
+                if (userData.role === 'expert') {
+                    window.questionSubscription = subscribeToQuestions();
+                } else {
+                    window.answerSubscription = subscribeToAnswers();
+                }
+                
                 // Hide landing page and show dashboard
                 document.getElementById('landingPage').classList.add('hidden');
                 document.getElementById('dashboardPage').classList.remove('hidden');
@@ -2773,8 +2734,18 @@
             return uploadedUrls;
         }
 
-        // Logout Function
+        // Logout Function - UPDATED
         async function logout() {
+            // Cleanup subscriptions
+            if (window.questionSubscription) {
+                await window.questionSubscription.unsubscribe();
+                window.questionSubscription = null;
+            }
+            if (window.answerSubscription) {
+                await window.answerSubscription.unsubscribe();
+                window.answerSubscription = null;
+            }
+            
             await supabaseClient.auth.signOut();
             window.currentUser = null;
             document.getElementById('landingPage').classList.remove('hidden');
@@ -2847,7 +2818,7 @@
             }
         }
 
-        // Load User Questions Function
+        // Load User Questions Function - UPDATED
         async function loadUserQuestions() {
             try {
                 const { data: questions, error } = await supabaseClient
@@ -2855,9 +2826,15 @@
                     .select(`
                         *,
                         answers (
+                            id,
                             answer_text,
                             created_at,
-                            expert:expert_id (full_name)
+                            expert:expert_id (
+                                full_name,
+                                specialization,
+                                hospital,
+                                experience
+                            )
                         )
                     `)
                     .eq('user_id', window.currentUser.id)
@@ -2872,7 +2849,7 @@
                         <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
                             <div style="font-size: 48px; margin-bottom: 16px;">🔭</div>
                             <h3>Немате прашања засега</h3>
-                            <p>Сè уште немате поставено прашање.</p>
+                            <p>Поставете прашање за да добиете стручно медицинско мислење.</p>
                         </div>
                     `;
                     return;
@@ -2881,19 +2858,22 @@
                 container.innerHTML = questions.map(q => {
                     const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
                     const statusBadge = answer 
-                        ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">Одговорено</span>'
-                        : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">Се чека</span>';
+                        ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Одговорено</span>'
+                        : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">⏳ Се чека одговор</span>';
                     
                     // Display attachments if any
                     const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
-                        <div style="margin-top: 12px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
+                        <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
                             <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи:</p>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 ${q.attachments.map(file => `
-                                    <a href="${file.url}" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                                    <a href="${file.url}" target="_blank" rel="noopener noreferrer" 
+                                       style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-light); border-radius: 6px; transition: all 0.2s;"
+                                       onmouseover="this.style.background='var(--primary)'; this.style.color='white';"
+                                       onmouseout="this.style.background='var(--bg-light)'; this.style.color='var(--primary)';">
                                         <span>${getFileIcon(file.type)}</span>
-                                        <span>${file.name}</span>
-                                        <span style="color: var(--text-light); font-size: 12px;">(${formatFileSize(file.size)})</span>
+                                        <span style="flex: 1;">${file.name}</span>
+                                        <span style="font-size: 12px; opacity: 0.7;">(${formatFileSize(file.size)})</span>
                                     </a>
                                 `).join('')}
                             </div>
@@ -2901,22 +2881,45 @@
                     ` : '';
                     
                     const answerSection = answer ? `
-                        <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
-                            <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">
-                                ✓ Одговор од ${answer.expert.full_name}:
-                            </p>
-                            <p style="color: var(--text-light);">${answer.answer_text}</p>
+                        <div style="margin-top: 16px; padding: 16px; background: #D1FAE5; border-radius: 8px; border-left: 4px solid var(--success);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div>
+                                    <p style="font-weight: 600; color: var(--success); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+                                        <span style="font-size: 20px;">✓</span>
+                                        <span>Одговор од ${answer.expert.full_name}</span>
+                                    </p>
+                                    <p style="font-size: 13px; color: var(--text-light);">
+                                        ${answer.expert.specialization} • ${answer.expert.hospital} • ${answer.expert.experience} години искуство
+                                    </p>
+                                </div>
+                                <span style="font-size: 12px; color: var(--text-light); white-space: nowrap;">
+                                    ${new Date(answer.created_at).toLocaleDateString('mk-MK', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                </span>
+                            </div>
+                            <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
                         </div>
-                    ` : '';
+                    ` : `
+                        <div style="margin-top: 16px; padding: 12px; background: #FEF3C7; border-radius: 8px; border-left: 4px solid var(--warning);">
+                            <p style="color: var(--text-dark); font-size: 14px;">
+                                ⏳ Вашето прашање е испратено до специјалисти од областа <strong>${q.specialty_name}</strong>. 
+                                Ќе добиете одговор наскоро.
+                            </p>
+                        </div>
+                    `;
 
                     return `
-                        <div class="question-card">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
-                                <h4 style="font-size: 18px; font-weight: 600;">${q.title}</h4>
-                                ${statusBadge}
+                        <div class="question-card" style="position: relative;">
+                            <div style="position: absolute; top: 16px; right: 16px;">${statusBadge}</div>
+                            <div style="padding-right: 140px;">
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
+                                <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
+                                    <span><strong>📂 Област:</strong> ${q.specialty_name || q.specialty}</span>
+                                    <span><strong>📅 Датум:</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
+                                </div>
                             </div>
-                            <p style="color: var(--text-light); font-size: 14px; margin-bottom: 8px;"><strong>Област:</strong> ${q.specialty_name || q.specialty}</p>
-                            <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
+                            <div style="padding: 12px; background: white; border-radius: 8px; margin-bottom: 12px;">
+                                <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${q.question_text}</p>
+                            </div>
                             ${attachmentsSection}
                             ${answerSection}
                         </div>
@@ -2928,17 +2931,20 @@
             }
         }
 
-        // Load Expert Questions Function
+        // Load Expert Questions Function - UPDATED
         async function loadExpertQuestions() {
             try {
+                // Get only questions in expert's specialty
                 const { data: questions, error } = await supabaseClient
                     .from('questions')
                     .select(`
                         *,
-                        user:user_id (full_name),
-                        answers (
+                        user:user_id (full_name, email),
+                        answers!left (
+                            id,
                             answer_text,
-                            created_at
+                            created_at,
+                            expert:expert_id (full_name)
                         )
                     `)
                     .eq('specialty', window.currentUser.specialization)
@@ -2953,63 +2959,221 @@
                         <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
                             <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
                             <h3>Нема прашања</h3>
-                            <p>Моментално нема прашања за вашата специјализација.</p>
+                            <p>Моментално нема прашања за вашата специјализација (${window.currentUser.specialization}).</p>
                         </div>
                     `;
                     return;
                 }
 
-                container.innerHTML = questions.map(q => {
-                    const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
-                    const statusBadge = answer 
-                        ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">Одговорено</span>'
-                        : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">Се чека</span>';
+                // Separate answered and unanswered questions
+                const unansweredQuestions = questions.filter(q => !q.answers || q.answers.length === 0);
+                const answeredQuestions = questions.filter(q => q.answers && q.answers.length > 0);
 
-                    // Display attachments if any
-                    const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
-                        <div style="margin-top: 12px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
-                            <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи:</p>
-                            <div style="display: flex; flex-direction: column; gap: 8px;">
-                                ${q.attachments.map(file => `
-                                    <a href="${file.url}" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                                        <span>${getFileIcon(file.type)}</span>
-                                        <span>${file.name}</span>
-                                        <span style="color: var(--text-light); font-size: 12px;">(${formatFileSize(file.size)})</span>
-                                    </a>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : '';
+                let html = '';
 
-                    return `
-                        <div class="question-card">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
-                                <h4 style="font-size: 18px; font-weight: 600;">${q.title}</h4>
-                                ${statusBadge}
-                            </div>
-                            <p style="color: var(--text-light); font-size: 14px; margin-bottom: 8px;"><strong>Од:</strong> ${q.user.full_name}</p>
-                            <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
-                            ${attachmentsSection}
-                            ${answer ? `
-                                <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
-                                    <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Вашиот одговор:</p>
-                                    <p style="color: var(--text-light);">${answer.answer_text}</p>
-                                </div>
-                            ` : `
-                                <button class="btn btn-primary" style="margin-top: 12px;" onclick="answerQuestion(${q.id})">Одговори</button>
-                            `}
-                        </div>
-                    `;
-                }).join('');
+                // Show unanswered questions first
+                if (unansweredQuestions.length > 0) {
+                    html += '<h3 style="font-size: 20px; font-weight: 700; margin-bottom: 16px; color: var(--primary);">⏳ Прашања што чекаат одговор</h3>';
+                    html += unansweredQuestions.map(q => renderQuestionCard(q, false)).join('');
+                }
+
+                // Show answered questions
+                if (answeredQuestions.length > 0) {
+                    html += '<h3 style="font-size: 20px; font-weight: 700; margin: 32px 0 16px; color: var(--success);">✓ Одговорени прашања</h3>';
+                    html += answeredQuestions.map(q => renderQuestionCard(q, true)).join('');
+                }
+
+                container.innerHTML = html;
             } catch (error) {
                 showToast('error', 'Грешка', 'Грешка при вчитување на прашањата: ' + error.message);
                 console.error(error);
             }
         }
 
-        // Answer Question Function (placeholder for expert functionality)
-        function answerQuestion(questionId) {
-            showToast('info', 'Информација', 'Функцијата за одговарање е во развој.');
+        // Helper function to render question card - NEW
+        function renderQuestionCard(q, isAnswered) {
+            const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
+            const statusBadge = isAnswered 
+                ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Одговорено</span>'
+                : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">⏳ Се чека</span>';
+            
+            // Display attachments if any
+            const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
+                <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
+                    <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи:</p>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        ${q.attachments.map(file => `
+                            <a href="${file.url}" target="_blank" rel="noopener noreferrer" 
+                               style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-light); border-radius: 6px; transition: all 0.2s;"
+                               onmouseover="this.style.background='var(--primary)'; this.style.color='white';"
+                               onmouseout="this.style.background='var(--bg-light)'; this.style.color='var(--primary)';">
+                                <span>${getFileIcon(file.type)}</span>
+                                <span style="flex: 1;">${file.name}</span>
+                                <span style="font-size: 12px; opacity: 0.7;">(${formatFileSize(file.size)})</span>
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '';
+            
+            const answerSection = answer ? `
+                <div style="margin-top: 16px; padding: 16px; background: #D1FAE5; border-radius: 8px; border-left: 4px solid var(--success);">
+                    <p style="font-weight: 600; color: var(--success); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 20px;">✓</span>
+                        <span>Вашиот одговор (${new Date(answer.created_at).toLocaleDateString('mk-MK', { day: 'numeric', month: 'long', year: 'numeric' })}):</span>
+                    </p>
+                    <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
+                </div>
+            ` : `
+                <div style="margin-top: 16px;">
+                    <textarea id="answer-${q.id}" placeholder="Внесете го вашиот професионален одговор..." 
+                              style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 14px; resize: vertical; transition: border-color 0.3s;"
+                              onfocus="this.style.borderColor='var(--primary)'"
+                              onblur="this.style.borderColor='var(--border)'"></textarea>
+                    <button class="btn btn-primary" style="margin-top: 12px; width: 100%;" onclick="submitAnswer(${q.id})">
+                        📤 Испрати одговор
+                    </button>
+                </div>
+            `;
+
+            return `
+                <div class="question-card" style="position: relative;">
+                    <div style="position: absolute; top: 16px; right: 16px;">${statusBadge}</div>
+                    <div style="padding-right: 120px;">
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
+                        <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
+                            <span><strong>👤 Од:</strong> ${q.user.full_name}</span>
+                            <span><strong>📅 Датум:</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
+                        </div>
+                    </div>
+                    <div style="padding: 12px; background: white; border-radius: 8px; margin-bottom: 12px;">
+                        <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${q.question_text}</p>
+                    </div>
+                    ${attachmentsSection}
+                    ${answerSection}
+                </div>
+            `;
+        }
+
+        // Submit Answer Function - NEW
+        async function submitAnswer(questionId) {
+            const answerText = document.getElementById(`answer-${questionId}`).value.trim();
+            
+            if (!answerText || answerText.length < 10) {
+                showToast('error', 'Грешка', 'Ве молиме внесете одговор (минимум 10 карактери).');
+                return;
+            }
+
+            try {
+                // Insert answer
+                const { data: answerData, error: answerError } = await supabaseClient
+                    .from('answers')
+                    .insert([{
+                        question_id: questionId,
+                        expert_id: window.currentUser.id,
+                        answer_text: answerText
+                    }])
+                    .select()
+                    .single();
+
+                if (answerError) throw answerError;
+
+                // Update question status
+                const { error: updateError } = await supabaseClient
+                    .from('questions')
+                    .update({ 
+                        status: 'answered',
+                        assigned_expert_id: window.currentUser.id
+                    })
+                    .eq('id', questionId);
+
+                if (updateError) throw updateError;
+
+                // Get question details for notification
+                const { data: question } = await supabaseClient
+                    .from('questions')
+                    .select('user_id, title')
+                    .eq('id', questionId)
+                    .single();
+
+                // Create notification for user
+                if (question) {
+                    await supabaseClient
+                        .from('notifications')
+                        .insert([{
+                            user_id: question.user_id,
+                            type: 'new_answer',
+                            title: 'Нов одговор на вашето прашање',
+                            message: `Добивте одговор на прашањето: "${question.title}"`,
+                            related_question_id: questionId
+                        }]);
+                }
+
+                showToast('success', 'Успешно!', 'Одговорот е успешно испратен!');
+                loadExpertQuestions(); // Reload questions
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при испраќање на одговорот: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        // Real-time subscription functions - NEW
+        // Subscribe to new questions for experts
+        function subscribeToQuestions() {
+            if (window.currentUser.role !== 'expert') return;
+            
+            const subscription = supabaseClient
+                .channel('questions')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'questions',
+                        filter: `specialty=eq.${window.currentUser.specialization}`
+                    },
+                    (payload) => {
+                        console.log('New question received:', payload);
+                        showToast('info', 'Ново прашање', 'Добивте ново прашање во вашата специјализација!');
+                        loadExpertQuestions();
+                    }
+                )
+                .subscribe();
+            
+            return subscription;
+        }
+
+        // Subscribe to new answers for users
+        function subscribeToAnswers() {
+            if (window.currentUser.role !== 'user') return;
+            
+            const subscription = supabaseClient
+                .channel('answers')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'answers'
+                    },
+                    async (payload) => {
+                        // Check if this answer is for one of user's questions
+                        const { data: question } = await supabaseClient
+                            .from('questions')
+                            .select('user_id')
+                            .eq('id', payload.new.question_id)
+                            .single();
+                        
+                        if (question && question.user_id === window.currentUser.id) {
+                            console.log('New answer received:', payload);
+                            showToast('success', 'Нов одговор', 'Добивте одговор на вашето прашање!');
+                            loadUserQuestions();
+                        }
+                    }
+                )
+                .subscribe();
+            
+            return subscription;
         }
 
         // Check if user is already logged in on page load
@@ -3025,6 +3189,14 @@
 
                 if (userData && !userError) {
                     window.currentUser = userData;
+                    
+                    // Setup real-time subscriptions
+                    if (userData.role === 'expert') {
+                        window.questionSubscription = subscribeToQuestions();
+                    } else {
+                        window.answerSubscription = subscribeToAnswers();
+                    }
+                    
                     document.getElementById('landingPage').classList.add('hidden');
                     document.getElementById('dashboardPage').classList.remove('hidden');
                     
