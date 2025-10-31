@@ -752,8 +752,19 @@
             padding: 20px;
         }
 
+        .hidden {
+            display: none !important;
+        }
+        
         .modal-overlay.hidden {
             display: none;
+        }
+        
+        /* Page containers */
+        #landingPage,
+        #dashboardPage {
+            min-height: 100vh;
+            width: 100%;
         }
 
         .modal-content {
@@ -977,10 +988,16 @@
         }
         
         /* Dashboard Styles */
+        #dashboardPage {
+            background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%);
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+        
         .dashboard-container {
             max-width: 1200px;
-            margin: 100px auto 40px;
-            padding: 0 40px;
+            margin: 0 auto;
+            padding: 40px 40px;
         }
         
         .glass-card {
@@ -1356,6 +1373,20 @@
 
     <!-- Dashboard (Hidden initially) -->
     <div id="dashboardPage" class="hidden">
+        <!-- Dashboard Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="#" class="logo-link" onclick="return false;">
+                    <span class="logo-icon">⚕️</span>
+                    <span>Второ мислење</span>
+                </a>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <span id="dashboardUserName" style="color: var(--text-light); font-weight: 500;"></span>
+                    <button class="btn btn-primary" onclick="logout()">Одјави се</button>
+                </div>
+            </div>
+        </nav>
+        
         <div class="dashboard-container">
             <div class="glass-card">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1363,7 +1394,6 @@
                         <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Добредојдовте назад!</h2>
                         <p id="userDisplay" style="color: var(--text-light);"></p>
                     </div>
-                    <button class="btn btn-primary" onclick="logout()">Одјави се</button>
                 </div>
             </div>
 
@@ -2224,6 +2254,7 @@
                 // Show user info
                 const roleText = userData.role === 'user' ? 'Корисник' : 'Лекар';
                 document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
+                document.getElementById('dashboardUserName').textContent = userData.full_name;
 
                 // Show appropriate dashboard
                 if (userData.role === 'user') {
@@ -2557,6 +2588,7 @@
                     
                     const roleText = userData.role === 'user' ? 'Корисник' : 'Лекар';
                     document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
+                    document.getElementById('dashboardUserName').textContent = userData.full_name;
 
                     if (userData.role === 'user') {
                         document.getElementById('userDashboard').classList.remove('hidden');
