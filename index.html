@@ -2431,7 +2431,12 @@
 
                 if (authError) {
                     console.error('Sign in error:', authError);
-                    throw authError;
+                    if (authError.message.includes('Invalid login credentials')) {
+                        showToast('error', 'Грешка', 'Неточна е-маил адреса или лозинка. Ве молиме проверете ги вашите податоци.');
+                    } else {
+                        showToast('error', 'Грешка', authError.message);
+                    }
+                    return;
                 }
 
                 // Fetch user data
@@ -2893,11 +2898,13 @@
                                 <div>
                                     <p style="font-weight: 600; color: var(--success); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
                                         <span style="font-size: 20px;">✓</span>
-                                        <span>Одговор од ${answer.expert.full_name}</span>
+                                        <span>Одговор од ${answer.expert?.full_name || 'Медицински стручњак'}</span>
                                     </p>
-                                    <p style="font-size: 13px; color: var(--text-light);">
-                                        ${answer.expert.specialization} • ${answer.expert.hospital} • ${answer.expert.experience} години искуство
-                                    </p>
+                                    ${answer.expert ? `
+                                        <p style="font-size: 13px; color: var(--text-light);">
+                                            ${answer.expert.specialization || 'Специјалист'} • ${answer.expert.hospital || 'Медицинска установа'} • ${answer.expert.experience || '?'} години искуство
+                                        </p>
+                                    ` : ''}
                                 </div>
                                 <span style="font-size: 12px; color: var(--text-light); white-space: nowrap;">
                                     ${new Date(answer.created_at).toLocaleDateString('mk-MK', { day: 'numeric', month: 'short', year: 'numeric' })}
