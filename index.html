@@ -1113,6 +1113,43 @@
         .file-remove:hover {
             background: #DC2626;
         }
+        
+        /* Doctor CTA Section */
+        .doctor-cta {
+            padding: 80px 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .doctor-cta-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .doctor-cta h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .doctor-cta p {
+            font-size: 20px;
+            margin-bottom: 32px;
+            opacity: 0.95;
+        }
+        
+        .doctor-cta .btn {
+            background: white;
+            color: var(--primary);
+            font-size: 18px;
+            padding: 16px 40px;
+        }
+        
+        .doctor-cta .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -1139,8 +1176,9 @@
                     <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
                 </div>
                 <div class="auth-buttons">
-                    <button class="btn-signin" onclick="openSignin()" data-i18n="navLogin">Најава</button>
-                    <button class="btn-register" onclick="openRegister()" data-i18n="navRegister">Регистрација</button>
+                    <button class="btn-signin" onclick="openSignin('user')" data-i18n="navLogin">Најава</button>
+                    <button class="btn-signin" onclick="openSignin('doctor')" style="border-left: 2px solid var(--border);" data-i18n="navDoctorLogin">Најава за лекари</button>
+                    <button class="btn-register" onclick="openRegister('user')" data-i18n="navRegister">Регистрација</button>
                 </div>
             </div>
         </div>
@@ -1292,6 +1330,15 @@
                 </ul>
                 <a href="#contact" class="btn btn-outline" data-i18n="pricingPremiumButton">Избери план</a>
             </div>
+        </div>
+    </section>
+
+    <!-- Doctor CTA -->
+    <section class="doctor-cta">
+        <div class="doctor-cta-content">
+            <h2>Сте лекар? Придружете се на нашата платформа</h2>
+            <p>Помогнете на пациентите да добијат стручни медицински совети и заработувајте од вашето знаење и искуство.</p>
+            <button class="btn" onclick="openRegister('doctor')">Регистрирајте се како лекар</button>
         </div>
     </section>
 
@@ -1536,7 +1583,7 @@
     <div id="signinModal" class="modal-overlay hidden" onclick="closeSignin(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2>Најава</h2>
+                <h2 id="signinModalTitle">Најава</h2>
                 <button class="modal-close" onclick="closeSignin()">×</button>
             </div>
             <form id="signinForm" class="contact-form" style="max-width: 100%;">
@@ -1552,7 +1599,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Најави се</button>
                 <p style="text-align: center; margin-top: 16px; color: var(--text-light);">
-                    Немате профил? <a href="#" onclick="closeSignin(); openRegister(); return false;" style="color: var(--primary); font-weight: 600;">Регистрирајте се</a>
+                    Немате профил? <a href="#" id="signinToRegisterLink" onclick="switchToRegister(); return false;" style="color: var(--primary); font-weight: 600;">Регистрирајте се</a>
                 </p>
             </form>
         </div>
@@ -1562,7 +1609,7 @@
     <div id="registerModal" class="modal-overlay hidden" onclick="closeRegister(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h2>Регистрација</h2>
+                <h2 id="registerModalTitle">Регистрација</h2>
                 <button class="modal-close" onclick="closeRegister()">×</button>
             </div>
             <form id="registerForm" class="contact-form" style="max-width: 100%;">
@@ -1581,6 +1628,59 @@
                     <input type="tel" id="register-phone" name="phone" placeholder="+389 70 123 456">
                     <div class="form-error"></div>
                 </div>
+                
+                <!-- Doctor-specific fields (hidden by default) -->
+                <div id="doctorFields" class="hidden">
+                    <div class="form-group">
+                        <label for="doctor-specialty">Специјализација *</label>
+                        <select id="doctor-specialty" name="specialty" class="form-input">
+                            <option value="">Изберете специјализација</option>
+                            <option value="cardiology">Кардиологија</option>
+                            <option value="dermatology">Дерматологија</option>
+                            <option value="endocrinology">Ендокринологија</option>
+                            <option value="gastroenterology">Гастроентерологија</option>
+                            <option value="gynecology">Гинекологија</option>
+                            <option value="neurology">Неврологија</option>
+                            <option value="oncology">Онкологија</option>
+                            <option value="orthopedics">Ортопедија</option>
+                            <option value="pediatrics">Педијатрија</option>
+                            <option value="psychiatry">Психијатрија</option>
+                            <option value="pulmonology">Пулмологија</option>
+                            <option value="urology">Урологија</option>
+                            <option value="general">Општа медицина</option>
+                            <option value="surgery">Хирургија</option>
+                            <option value="ophthalmology">Офталмологија</option>
+                            <option value="otolaryngology">Оториноларингологија</option>
+                            <option value="other">Друго</option>
+                        </select>
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-experience">Години искуство *</label>
+                        <input type="number" id="doctor-experience" name="experience" min="0" max="60" placeholder="Пр. 5" class="form-input">
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-hospital">Болница/Клиника *</label>
+                        <input type="text" id="doctor-hospital" name="hospital" placeholder="Пр. Универзитетска клиника" class="form-input">
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-city">Град *</label>
+                        <input type="text" id="doctor-city" name="city" placeholder="Пр. Скопје" class="form-input">
+                        <div class="form-error"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="doctor-license">Број на лиценца *</label>
+                        <input type="text" id="doctor-license" name="license" placeholder="Број на лекарска лиценца" class="form-input">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+                
                 <div class="form-group">
                     <label for="register-password">Лозинка</label>
                     <input type="password" id="register-password" name="password" required placeholder="Минимум 8 карактери">
@@ -1603,7 +1703,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Регистрирај се</button>
                 <p style="text-align: center; margin-top: 16px; color: var(--text-light);">
-                    Веќе имате профил? <a href="#" onclick="closeRegister(); openSignin(); return false;" style="color: var(--primary); font-weight: 600;">Најавете се</a>
+                    Веќе имате профил? <a href="#" id="registerToSigninLink" onclick="switchToSignin(); return false;" style="color: var(--primary); font-weight: 600;">Најавете се</a>
                 </p>
             </form>
         </div>
@@ -2212,9 +2312,20 @@
         });
 
         // Modal Functions
-        function openSignin() {
+        // Modal type tracking
+        let currentModalType = 'user'; // 'user' or 'doctor'
+
+        function openSignin(type = 'user') {
+            currentModalType = type;
             document.getElementById('signinModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            
+            // Update modal title
+            if (type === 'doctor') {
+                document.getElementById('signinModalTitle').textContent = 'Најава за лекари';
+            } else {
+                document.getElementById('signinModalTitle').textContent = 'Најава';
+            }
         }
 
         function closeSignin(event) {
@@ -2224,9 +2335,34 @@
             }
         }
 
-        function openRegister() {
+        function openRegister(type = 'user') {
+            currentModalType = type;
             document.getElementById('registerModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+            
+            // Show/hide doctor fields and update title
+            const doctorFields = document.getElementById('doctorFields');
+            const modalTitle = document.getElementById('registerModalTitle');
+            
+            if (type === 'doctor') {
+                doctorFields.classList.remove('hidden');
+                modalTitle.textContent = 'Регистрација за лекари';
+                // Make doctor fields required
+                document.getElementById('doctor-specialty').required = true;
+                document.getElementById('doctor-experience').required = true;
+                document.getElementById('doctor-hospital').required = true;
+                document.getElementById('doctor-city').required = true;
+                document.getElementById('doctor-license').required = true;
+            } else {
+                doctorFields.classList.add('hidden');
+                modalTitle.textContent = 'Регистрација';
+                // Make doctor fields not required
+                document.getElementById('doctor-specialty').required = false;
+                document.getElementById('doctor-experience').required = false;
+                document.getElementById('doctor-hospital').required = false;
+                document.getElementById('doctor-city').required = false;
+                document.getElementById('doctor-license').required = false;
+            }
         }
 
         function closeRegister(event) {
@@ -2234,6 +2370,16 @@
                 document.getElementById('registerModal').classList.add('hidden');
                 document.body.style.overflow = '';
             }
+        }
+        
+        function switchToRegister() {
+            closeSignin();
+            setTimeout(() => openRegister(currentModalType), 100);
+        }
+        
+        function switchToSignin() {
+            closeRegister();
+            setTimeout(() => openSignin(currentModalType), 100);
         }
 
         function openTerms() {
@@ -2382,9 +2528,23 @@
                 showToast('error', 'Грешка', 'Мора да ги прифатите Условите за користење и Политиката за приватност.');
                 return;
             }
+            
+            // Validate doctor fields if registering as doctor
+            if (currentModalType === 'doctor') {
+                const specialty = formData.get('specialty');
+                const experience = formData.get('experience');
+                const hospital = formData.get('hospital');
+                const city = formData.get('city');
+                const license = formData.get('license');
+                
+                if (!specialty || !experience || !hospital || !city || !license) {
+                    showToast('error', 'Грешка', 'Ве молиме пополнете ги сите полиња за лекари.');
+                    return;
+                }
+            }
 
             try {
-                console.log('Attempting to register with:', { email, name });
+                console.log('Attempting to register with:', { email, name, type: currentModalType });
                 
                 // Sign up with Supabase Auth
                 const { data: authData, error: authError } = await supabaseClient.auth.signUp({
@@ -2416,8 +2576,17 @@
                     email: email,
                     full_name: name,
                     phone: phone,
-                    role: 'user'
+                    role: currentModalType === 'doctor' ? 'expert' : 'user'
                 };
+                
+                // Add doctor-specific fields if registering as doctor
+                if (currentModalType === 'doctor') {
+                    userData.specialization = formData.get('specialty');
+                    userData.experience = parseInt(formData.get('experience'));
+                    userData.hospital = formData.get('hospital');
+                    userData.city = formData.get('city');
+                    userData.license_number = formData.get('license');
+                }
 
                 console.log('Inserting user data:', userData);
 
