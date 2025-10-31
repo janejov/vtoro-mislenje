@@ -2939,7 +2939,7 @@
                     .from('questions')
                     .select(`
                         *,
-                        user:user_id (full_name, email),
+                        user:user_id !inner (full_name, email),
                         answers!left (
                             id,
                             answer_text,
@@ -3005,8 +3005,8 @@
         // Helper function to render question card - NEW (Fixed null handling)
         function renderQuestionCard(q, isAnswered) {
             // Safety check for user data
-            if (!q.user || !q.user.full_name) {
-                console.warn('Question with invalid user data:', q.id);
+            if (!q || !q.user || !q.user.full_name) {
+                console.warn('Question with invalid user data:', q?.id || 'unknown');
                 return ''; // Skip this question
             }
 
@@ -3060,7 +3060,7 @@
                     <div style="padding-right: 120px;">
                         <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
                         <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
-                            <span><strong>👤 Од:</strong> ${q.user.full_name}</span>
+                            <span><strong>👤 Од:</strong> ${q.user?.full_name || 'Непознат корисник'}</span>
                             <span><strong>📅 Датум:</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
                         </div>
                     </div>
