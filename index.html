@@ -2941,15 +2941,15 @@
                 // DEBUG: Check all questions in database
                 const { data: allQuestions } = await supabaseClient
                     .from('questions')
-                    .select('id, title, specialty, specialty_name');
+                    .select('id, title, specialty, specialty_name, user_id');
                 console.log('ALL questions in database:', allQuestions);
                 
-                // Get only questions in expert's specialty
+                // Get only questions in expert's specialty (using left join to include all questions)
                 const { data: questions, error } = await supabaseClient
                     .from('questions')
                     .select(`
                         *,
-                        user:user_id !inner (full_name, email),
+                        user:user_id (full_name, email),
                         answers!left (
                             id,
                             answer_text,
@@ -2961,6 +2961,7 @@
                     .order('created_at', { ascending: false });
 
                 console.log('Questions query result:', { questions, error });
+                console.log('Number of questions found:', questions?.length || 0);
 
                 if (error) throw error;
 
