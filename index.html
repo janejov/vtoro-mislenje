@@ -1039,6 +1039,80 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
         }
+        
+        /* File Upload Styles */
+        input[type="file"].form-input {
+            cursor: pointer;
+        }
+        
+        input[type="file"].form-input::-webkit-file-upload-button {
+            background: var(--primary);
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        input[type="file"].form-input::-webkit-file-upload-button:hover {
+            background: var(--primary-dark);
+        }
+        
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .file-icon {
+            font-size: 24px;
+        }
+        
+        .file-details {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .file-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+        
+        .file-size {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+        
+        .file-remove {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .file-remove:hover {
+            background: #DC2626;
+        }
     </style>
 </head>
 <body>
@@ -1430,6 +1504,13 @@
                     <div class="form-group">
                         <label class="form-label">Детали</label>
                         <textarea class="form-input" id="questionText" rows="4" placeholder="Опишете го вашето прашање детално..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Прикачи документи (опционално)</label>
+                        <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Можете да прикачите медицински документи, слики, резултати од анализи (максимум 5 фајлови, до 10MB секој)</p>
+                        <input type="file" id="questionFiles" multiple accept="image/*,.pdf,.doc,.docx" class="form-input" style="padding: 10px;">
+                        <div id="fileList" style="margin-top: 12px;"></div>
                     </div>
 
                     <button class="btn btn-primary" onclick="submitQuestion()">Испрати прашање</button>
@@ -2389,6 +2470,118 @@
             }
         });
 
+        // File Upload Handling
+        let selectedFiles = [];
+        const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+        const MAX_FILES = 5;
+
+        document.getElementById('questionFiles')?.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            
+            // Validate number of files
+            if (selectedFiles.length + files.length > MAX_FILES) {
+                showToast('error', 'Грешка', `Можете да прикачите максимум ${MAX_FILES} фајлови.`);
+                e.target.value = '';
+                return;
+            }
+            
+            // Validate each file
+            for (let file of files) {
+                if (file.size > MAX_FILE_SIZE) {
+                    showToast('error', 'Грешка', `Фајлот "${file.name}" е преголем. Максимална големина е 10MB.`);
+                    e.target.value = '';
+                    return;
+                }
+                selectedFiles.push(file);
+            }
+            
+            displayFileList();
+            e.target.value = ''; // Clear input so same file can be added again
+        });
+
+        function displayFileList() {
+            const fileListDiv = document.getElementById('fileList');
+            if (selectedFiles.length === 0) {
+                fileListDiv.innerHTML = '';
+                return;
+            }
+            
+            fileListDiv.innerHTML = selectedFiles.map((file, index) => {
+                const fileIcon = getFileIcon(file.type);
+                const fileSize = formatFileSize(file.size);
+                
+                return `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <span class="file-icon">${fileIcon}</span>
+                            <div class="file-details">
+                                <span class="file-name">${file.name}</span>
+                                <span class="file-size">${fileSize}</span>
+                            </div>
+                        </div>
+                        <button class="file-remove" onclick="removeFile(${index})">✕ Отстрани</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            displayFileList();
+        }
+
+        function getFileIcon(fileType) {
+            if (fileType.startsWith('image/')) return '🖼️';
+            if (fileType === 'application/pdf') return '📄';
+            if (fileType.includes('word')) return '📝';
+            return '📎';
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        async function uploadFiles(questionId) {
+            if (selectedFiles.length === 0) return [];
+            
+            const uploadedUrls = [];
+            
+            for (let file of selectedFiles) {
+                try {
+                    const fileExt = file.name.split('.').pop();
+                    const fileName = `${questionId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                    
+                    const { data, error } = await supabaseClient.storage
+                        .from('question-attachments')
+                        .upload(fileName, file);
+                    
+                    if (error) {
+                        console.error('File upload error:', error);
+                        throw error;
+                    }
+                    
+                    // Get public URL
+                    const { data: urlData } = supabaseClient.storage
+                        .from('question-attachments')
+                        .getPublicUrl(fileName);
+                    
+                    uploadedUrls.push({
+                        name: file.name,
+                        url: urlData.publicUrl,
+                        type: file.type,
+                        size: file.size
+                    });
+                } catch (error) {
+                    console.error('Error uploading file:', file.name, error);
+                    showToast('warning', 'Предупредување', `Грешка при прикачување на "${file.name}"`);
+                }
+            }
+            
+            return uploadedUrls;
+        }
+
         // Logout Function
         async function logout() {
             await supabaseClient.auth.signOut();
@@ -2415,7 +2608,8 @@
                 const selectedOption = document.getElementById('questionSpecialty').selectedOptions[0];
                 const specialtyName = selectedOption.text;
 
-                const { error } = await supabaseClient
+                // First, insert the question
+                const { data: questionData, error: questionError } = await supabaseClient
                     .from('questions')
                     .insert([{
                         title: title,
@@ -2423,13 +2617,36 @@
                         specialty_name: specialtyName,
                         question_text: text,
                         user_id: window.currentUser.id
-                    }]);
+                    }])
+                    .select()
+                    .single();
 
-                if (error) throw error;
+                if (questionError) throw questionError;
 
+                // Upload files if any
+                if (selectedFiles.length > 0) {
+                    showToast('info', 'Се прикачуваат фајлови...', 'Ве молиме почекајте...');
+                    const uploadedFiles = await uploadFiles(questionData.id);
+                    
+                    // Update question with attachment URLs
+                    if (uploadedFiles.length > 0) {
+                        const { error: updateError } = await supabaseClient
+                            .from('questions')
+                            .update({ attachments: uploadedFiles })
+                            .eq('id', questionData.id);
+                        
+                        if (updateError) {
+                            console.error('Error updating attachments:', updateError);
+                        }
+                    }
+                }
+
+                // Clear form
                 document.getElementById('questionTitle').value = '';
                 document.getElementById('questionSpecialty').value = '';
                 document.getElementById('questionText').value = '';
+                selectedFiles = [];
+                displayFileList();
 
                 showToast('success', 'Успешно!', 'Прашањето е успешно испратено!');
                 loadUserQuestions();
@@ -2476,6 +2693,22 @@
                         ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">Одговорено</span>'
                         : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">Се чека</span>';
                     
+                    // Display attachments if any
+                    const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
+                        <div style="margin-top: 12px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
+                            <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи:</p>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                ${q.attachments.map(file => `
+                                    <a href="${file.url}" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                                        <span>${getFileIcon(file.type)}</span>
+                                        <span>${file.name}</span>
+                                        <span style="color: var(--text-light); font-size: 12px;">(${formatFileSize(file.size)})</span>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '';
+                    
                     const answerSection = answer ? `
                         <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
                             <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">
@@ -2493,6 +2726,7 @@
                             </div>
                             <p style="color: var(--text-light); font-size: 14px; margin-bottom: 8px;"><strong>Област:</strong> ${q.specialty_name || q.specialty}</p>
                             <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
+                            ${attachmentsSection}
                             ${answerSection}
                         </div>
                     `;
@@ -2540,6 +2774,22 @@
                         ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">Одговорено</span>'
                         : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">Се чека</span>';
 
+                    // Display attachments if any
+                    const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
+                        <div style="margin-top: 12px; padding: 12px; background: var(--bg-light); border-radius: 8px;">
+                            <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи:</p>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                ${q.attachments.map(file => `
+                                    <a href="${file.url}" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                                        <span>${getFileIcon(file.type)}</span>
+                                        <span>${file.name}</span>
+                                        <span style="color: var(--text-light); font-size: 12px;">(${formatFileSize(file.size)})</span>
+                                    </a>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : '';
+
                     return `
                         <div class="question-card">
                             <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
@@ -2548,6 +2798,7 @@
                             </div>
                             <p style="color: var(--text-light); font-size: 14px; margin-bottom: 8px;"><strong>Од:</strong> ${q.user.full_name}</p>
                             <p style="color: var(--text-light); margin-bottom: 12px;">${q.question_text}</p>
+                            ${attachmentsSection}
                             ${answer ? `
                                 <div style="margin-top: 16px; padding-top: 16px; border-top: 2px solid var(--border);">
                                     <p style="font-weight: 600; color: var(--success); margin-bottom: 8px;">Вашиот одговор:</p>
