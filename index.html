@@ -2934,6 +2934,16 @@
         // Load Expert Questions Function - UPDATED (Fixed null handling)
         async function loadExpertQuestions() {
             try {
+                console.log('Loading expert questions...');
+                console.log('Current user:', window.currentUser);
+                console.log('Doctor specialization:', window.currentUser.specialization);
+                
+                // DEBUG: Check all questions in database
+                const { data: allQuestions } = await supabaseClient
+                    .from('questions')
+                    .select('id, title, specialty, specialty_name');
+                console.log('ALL questions in database:', allQuestions);
+                
                 // Get only questions in expert's specialty
                 const { data: questions, error } = await supabaseClient
                     .from('questions')
@@ -2949,6 +2959,8 @@
                     `)
                     .eq('specialty', window.currentUser.specialization)
                     .order('created_at', { ascending: false });
+
+                console.log('Questions query result:', { questions, error });
 
                 if (error) throw error;
 
@@ -2967,6 +2979,9 @@
 
                 // Filter out questions with invalid user data and separate answered/unanswered
                 const validQuestions = questions.filter(q => q.user && q.user.full_name);
+                console.log('Valid questions after filtering:', validQuestions.length);
+                console.log('First valid question:', validQuestions[0]);
+                
                 const unansweredQuestions = validQuestions.filter(q => !q.answers || q.answers.length === 0);
                 const answeredQuestions = validQuestions.filter(q => q.answers && q.answers.length > 0);
 
