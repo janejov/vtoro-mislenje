@@ -110,19 +110,22 @@
 
         .auth-buttons {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .btn-signin {
             background: transparent;
             color: var(--primary);
             border: none;
-            padding: 10px 20px;
+            padding: 10px 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             border-radius: 8px;
+            font-size: 14px;
+            white-space: nowrap;
         }
 
         .btn-signin:hover {
@@ -133,17 +136,24 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 24px;
+            padding: 10px 20px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             border-radius: 8px;
+            font-size: 14px;
+            white-space: nowrap;
         }
 
         .btn-register:hover {
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
+        }
+        
+        .btn-register[onclick*="doctor"]:hover {
+            background: #0D9F6E;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
         .language-switcher {
@@ -895,6 +905,17 @@
             .mobile-menu-btn {
                 display: block;
             }
+            
+            .auth-buttons {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
+            
+            .auth-buttons button {
+                width: 100%;
+                justify-content: center;
+            }
 
             .hero-container {
                 grid-template-columns: 1fr;
@@ -1179,6 +1200,7 @@
                     <button class="btn-signin" onclick="openSignin('user')" data-i18n="navLogin">Најава</button>
                     <button class="btn-signin" onclick="openSignin('doctor')" style="border-left: 2px solid var(--border);" data-i18n="navDoctorLogin">Најава за лекари</button>
                     <button class="btn-register" onclick="openRegister('user')" data-i18n="navRegister">Регистрација</button>
+                    <button class="btn-register" onclick="openRegister('doctor')" style="background: var(--success);" data-i18n="navDoctorRegister">Регистрација за лекари</button>
                 </div>
             </div>
         </div>
