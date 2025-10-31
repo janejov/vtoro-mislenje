@@ -2978,15 +2978,13 @@
                     return;
                 }
 
-                // Filter out questions with invalid user data and separate answered/unanswered
-                const validQuestions = questions.filter(q => q.user && q.user.full_name);
-                console.log('Valid questions after filtering:', validQuestions.length);
-                console.log('First valid question:', validQuestions[0]);
-                
-                const unansweredQuestions = validQuestions.filter(q => !q.answers || q.answers.length === 0);
-                const answeredQuestions = validQuestions.filter(q => q.answers && q.answers.length > 0);
+                // Separate answered/unanswered questions (keep all questions regardless of user data)
+                const unansweredQuestions = questions.filter(q => !q.answers || q.answers.length === 0);
+                const answeredQuestions = questions.filter(q => q.answers && q.answers.length > 0);
+                console.log('Unanswered questions:', unansweredQuestions.length);
+                console.log('Answered questions:', answeredQuestions.length);
 
-                if (validQuestions.length === 0) {
+                if (questions.length === 0) {
                     container.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
                             <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
@@ -3020,12 +3018,9 @@
 
         // Helper function to render question card - NEW (Fixed null handling)
         function renderQuestionCard(q, isAnswered) {
-            // Safety check for user data
-            if (!q || !q.user || !q.user.full_name) {
-                console.warn('Question with invalid user data:', q?.id || 'unknown');
-                return ''; // Skip this question
-            }
-
+            // Get user name with fallback for deleted/missing users
+            const userName = q.user?.full_name || 'Непознат корисник (избришан профил)';
+            
             const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
             const statusBadge = isAnswered 
                 ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Одговорено</span>'
@@ -3076,7 +3071,7 @@
                     <div style="padding-right: 120px;">
                         <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
                         <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
-                            <span><strong>👤 Од:</strong> ${q.user?.full_name || 'Непознат корисник'}</span>
+                            <span><strong>👤 Од:</strong> ${userName}</span>
                             <span><strong>📅 Датум:</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
                         </div>
                     </div>
