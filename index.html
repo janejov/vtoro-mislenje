@@ -1552,6 +1552,25 @@
                     <div id="expertQuestions"></div>
                 </div>
             </div>
+
+            <!-- Admin Dashboard -->
+            <div id="adminDashboard" class="hidden">
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">🔐 Администрација - Одобрување на лекари</h3>
+                    
+                    <!-- Pending Approvals -->
+                    <div style="margin-bottom: 32px;">
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--warning);">⏳ Чека одобрување</h4>
+                        <div id="pendingDoctors"></div>
+                    </div>
+
+                    <!-- Approved Doctors -->
+                    <div>
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--success);">✓ Одобрени лекари</h4>
+                        <div id="approvedDoctors"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2452,22 +2471,30 @@
                     return;
                 }
 
+                // Check if doctor is approved
+                if (userData.role === 'expert' && userData.is_approved === false) {
+                    await supabaseClient.auth.signOut();
+                    showToast('warning', 'Профил во проверка', 'Вашиот профил сè уште чека одобрување од администраторот. Ќе бидете известени кога ќе биде одобрен.');
+                    return;
+                }
+
                 // Store current user
                 window.currentUser = userData;
                 
                 // Setup real-time subscriptions
                 if (userData.role === 'expert') {
                     window.questionSubscription = subscribeToQuestions();
-                } else {
+                } else if (userData.role === 'user') {
                     window.answerSubscription = subscribeToAnswers();
                 }
+                // Admin doesn't need real-time subscriptions
                 
                 // Hide landing page and show dashboard
                 document.getElementById('landingPage').classList.add('hidden');
                 document.getElementById('dashboardPage').classList.remove('hidden');
                 
                 // Show user info
-                const roleText = userData.role === 'user' ? 'Корисник' : 'Лекар';
+                const roleText = userData.role === 'user' ? 'Корисник' : (userData.role === 'admin' ? 'Администратор' : 'Лекар');
                 document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
                 document.getElementById('dashboardUserName').textContent = userData.full_name;
 
@@ -2475,6 +2502,10 @@
                 if (userData.role === 'user') {
                     document.getElementById('userDashboard').classList.remove('hidden');
                     loadUserQuestions();
+                } else if (userData.role === 'admin') {
+                    document.getElementById('adminDashboard').classList.remove('hidden');
+                    loadPendingDoctors();
+                    loadApprovedDoctors();
                 } else {
                     document.getElementById('expertDashboard').classList.remove('hidden');
                     loadExpertQuestions();
@@ -2574,6 +2605,7 @@
                     userData.hospital = formData.get('hospital');
                     userData.city = formData.get('city');
                     userData.license_number = formData.get('license');
+                    userData.is_approved = false; // Pending admin approval
                 }
 
                 console.log('Inserting user data:', userData);
@@ -2607,7 +2639,11 @@
                     }
                 }
 
-                showToast('success', 'Успешно!', 'Регистрацијата е успешна! Проверете го вашиот email за верификација. ✔');
+                if (currentModalType === 'doctor') {
+                    showToast('success', 'Успешно!', 'Регистрацијата е успешна! Проверете го вашиот email за верификација. Вашиот профил ќе биде прегледан од администраторот. ✔');
+                } else {
+                    showToast('success', 'Успешно!', 'Регистрацијата е успешна! Проверете го вашиот email за верификација. ✔');
+                }
                 closeRegister();
                 
                 // Clear form
@@ -3160,6 +3196,176 @@
             }
         }
 
+        // Admin Functions - Load Pending and Approved Doctors
+        async function loadPendingDoctors() {
+            try {
+                const { data: doctors, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('role', 'expert')
+                    .eq('is_approved', false)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('pendingDoctors');
+
+                if (!doctors || doctors.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                            <p>Нема лекари кои чекаат одобрување.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = doctors.map(doctor => `
+                    <div class="question-card" style="border-left: 4px solid var(--warning);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                            <div style="flex: 1;">
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${doctor.full_name}</h4>
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
+                                    <span><strong>📧 Email:</strong> ${doctor.email}</span>
+                                    <span><strong>📱 Телефон:</strong> ${doctor.phone || 'Не е внесен'}</span>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
+                                    <span><strong>🏥 Специјализација:</strong> ${doctor.specialization}</span>
+                                    <span><strong>📅 Искуство:</strong> ${doctor.experience} години</span>
+                                </div>
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light); margin-top: 4px;">
+                                    <span><strong>🏥 Болница:</strong> ${doctor.hospital}</span>
+                                    <span><strong>📍 Град:</strong> ${doctor.city}</span>
+                                </div>
+                                <div style="font-size: 14px; color: var(--text-light); margin-top: 4px;">
+                                    <strong>🆔 Лиценца:</strong> ${doctor.license_number}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-primary" onclick="approveDoctor('${doctor.id}')" style="background: var(--success); flex: 1;">
+                                ✓ Одобри
+                            </button>
+                            <button class="btn" onclick="rejectDoctor('${doctor.id}')" style="background: var(--danger); color: white; flex: 1;">
+                                ✗ Одбиј
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при вчитување: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function loadApprovedDoctors() {
+            try {
+                const { data: doctors, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('role', 'expert')
+                    .eq('is_approved', true)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const container = document.getElementById('approvedDoctors');
+
+                if (!doctors || doctors.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                            <p>Нема одобрени лекари засега.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = doctors.map(doctor => `
+                    <div class="question-card" style="border-left: 4px solid var(--success);">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div style="flex: 1;">
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${doctor.full_name}</h4>
+                                <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
+                                    <span><strong>📧</strong> ${doctor.email}</span>
+                                    <span><strong>🏥</strong> ${doctor.specialization}</span>
+                                    <span><strong>📅</strong> ${doctor.experience} год.</span>
+                                    <span><strong>🏥</strong> ${doctor.hospital}</span>
+                                </div>
+                            </div>
+                            <button class="btn" onclick="revokeApproval('${doctor.id}')" style="background: var(--warning); color: white;">
+                                Повлечи одобрување
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при вчитување: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function approveDoctor(doctorId) {
+            if (!confirm('Дали сте сигурни дека сакате да го одобрите овој лекар?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ is_approved: true })
+                    .eq('id', doctorId);
+
+                if (error) throw error;
+
+                showToast('success', 'Успешно!', 'Лекарот е одобрен.');
+                loadPendingDoctors();
+                loadApprovedDoctors();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при одобрување: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function rejectDoctor(doctorId) {
+            if (!confirm('Дали сте сигурни дека сакате да го одбиете овој лекар? Профилот ќе биде избришан.')) return;
+
+            try {
+                // Delete the user from users table
+                const { error: deleteUserError } = await supabaseClient
+                    .from('users')
+                    .delete()
+                    .eq('id', doctorId);
+
+                if (deleteUserError) throw deleteUserError;
+
+                // Note: You may also want to delete from Supabase Auth, but that requires admin API
+                // For now, just removing from users table will prevent login
+
+                showToast('success', 'Успешно!', 'Лекарот е одбиен и избришан.');
+                loadPendingDoctors();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при одбивање: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function revokeApproval(doctorId) {
+            if (!confirm('Дали сте сигурни дека сакате да го повлечете одобрувањето за овој лекар?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ is_approved: false })
+                    .eq('id', doctorId);
+
+                if (error) throw error;
+
+                showToast('success', 'Успешно!', 'Одобрувањето е повлечено.');
+                loadPendingDoctors();
+                loadApprovedDoctors();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при повлекување: ' + error.message);
+                console.error(error);
+            }
+        }
+
         // Real-time subscription functions - NEW
         // Subscribe to new questions for experts
         function subscribeToQuestions() {
@@ -3231,25 +3437,36 @@
                     .maybeSingle();
 
                 if (userData && !userError) {
+                    // Check if doctor is approved
+                    if (userData.role === 'expert' && userData.is_approved === false) {
+                        await supabaseClient.auth.signOut();
+                        showToast('warning', 'Профил во проверка', 'Вашиот профил сè уште чека одобрување од администраторот.');
+                        return;
+                    }
+
                     window.currentUser = userData;
                     
                     // Setup real-time subscriptions
                     if (userData.role === 'expert') {
                         window.questionSubscription = subscribeToQuestions();
-                    } else {
+                    } else if (userData.role === 'user') {
                         window.answerSubscription = subscribeToAnswers();
                     }
                     
                     document.getElementById('landingPage').classList.add('hidden');
                     document.getElementById('dashboardPage').classList.remove('hidden');
                     
-                    const roleText = userData.role === 'user' ? 'Корисник' : 'Лекар';
+                    const roleText = userData.role === 'user' ? 'Корисник' : (userData.role === 'admin' ? 'Администратор' : 'Лекар');
                     document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
                     document.getElementById('dashboardUserName').textContent = userData.full_name;
 
                     if (userData.role === 'user') {
                         document.getElementById('userDashboard').classList.remove('hidden');
                         loadUserQuestions();
+                    } else if (userData.role === 'admin') {
+                        document.getElementById('adminDashboard').classList.remove('hidden');
+                        loadPendingDoctors();
+                        loadApprovedDoctors();
                     } else {
                         document.getElementById('expertDashboard').classList.remove('hidden');
                         loadExpertQuestions();
