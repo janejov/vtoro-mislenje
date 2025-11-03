@@ -3081,6 +3081,17 @@
 
                 console.log('Questions query result:', { questions, error });
                 console.log('Number of questions found:', questions?.length || 0);
+                
+                // Debug: Log attachments for each question
+                if (questions && questions.length > 0) {
+                    questions.forEach(q => {
+                        console.log(`Question ${q.id} - Title: ${q.title}`);
+                        console.log(`  - Attachments:`, q.attachments);
+                        console.log(`  - Attachments type:`, typeof q.attachments);
+                        console.log(`  - Attachments is array:`, Array.isArray(q.attachments));
+                        console.log(`  - Attachments length:`, q.attachments?.length || 0);
+                    });
+                }
 
                 if (error) throw error;
 
@@ -3137,6 +3148,12 @@
 
         // Helper function to render question card - NEW (Fixed null handling)
         function renderQuestionCard(q, isAnswered) {
+            // Debug: Log question data to see if attachments are present
+            console.log('Rendering question:', q.id);
+            console.log('Question attachments:', q.attachments);
+            console.log('Attachments type:', typeof q.attachments);
+            console.log('Attachments length:', q.attachments?.length);
+            
             // Get user name with fallback for deleted/missing users
             const userName = q.user?.full_name || 'Непознат корисник (избришан профил)';
             
@@ -3453,6 +3470,20 @@
                     (payload) => {
                         console.log('New question received:', payload);
                         showToast('info', 'Ново прашање', 'Добивте ново прашање во вашата специјализација!');
+                        loadExpertQuestions();
+                    }
+                )
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'UPDATE',
+                        schema: 'public',
+                        table: 'questions',
+                        filter: `specialty=eq.${window.currentUser.specialization}`
+                    },
+                    (payload) => {
+                        console.log('Question updated with attachments:', payload);
+                        // Reload to show updated attachments
                         loadExpertQuestions();
                     }
                 )
