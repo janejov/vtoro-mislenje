@@ -2928,6 +2928,125 @@
             }
         }
 
+        // Delete Question Function (for patients - delete own questions)
+        async function deleteQuestion(questionId) {
+            if (!confirm('Дали сте сигурни дека сакате да го избришете ова прашање? Ова дејство не може да се врати.')) {
+                return;
+            }
+
+            try {
+                // First, delete any attachments from storage
+                const { data: question } = await supabaseClient
+                    .from('questions')
+                    .select('attachments')
+                    .eq('id', questionId)
+                    .single();
+
+                if (question && question.attachments && question.attachments.length > 0) {
+                    // Delete files from storage
+                    for (const file of question.attachments) {
+                        try {
+                            // Extract file path from URL
+                            const urlParts = file.url.split('/');
+                            const fileName = urlParts[urlParts.length - 1];
+                            const folder = urlParts[urlParts.length - 2];
+                            const filePath = `${folder}/${fileName}`;
+                            
+                            await supabaseClient.storage
+                                .from('question-attachments')
+                                .remove([filePath]);
+                        } catch (storageError) {
+                            console.error('Error deleting file:', storageError);
+                        }
+                    }
+                }
+
+                // Delete any answers associated with this question
+                const { error: answersError } = await supabaseClient
+                    .from('answers')
+                    .delete()
+                    .eq('question_id', questionId);
+
+                if (answersError) {
+                    console.error('Error deleting answers:', answersError);
+                }
+
+                // Delete the question
+                const { error } = await supabaseClient
+                    .from('questions')
+                    .delete()
+                    .eq('id', questionId)
+                    .eq('user_id', window.currentUser.id); // Ensure user can only delete their own questions
+
+                if (error) throw error;
+
+                showToast('success', 'Избришано!', 'Прашањето е успешно избришано.');
+                loadUserQuestions();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при бришење: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        // Delete Question Function (for doctors - delete any question in their specialty)
+        async function deleteQuestionAsDoctor(questionId) {
+            if (!confirm('Дали сте сигурни дека сакате да го избришете ова прашање? Ова дејство не може да се врати.')) {
+                return;
+            }
+
+            try {
+                // First, delete any attachments from storage
+                const { data: question } = await supabaseClient
+                    .from('questions')
+                    .select('attachments')
+                    .eq('id', questionId)
+                    .single();
+
+                if (question && question.attachments && question.attachments.length > 0) {
+                    // Delete files from storage
+                    for (const file of question.attachments) {
+                        try {
+                            // Extract file path from URL
+                            const urlParts = file.url.split('/');
+                            const fileName = urlParts[urlParts.length - 1];
+                            const folder = urlParts[urlParts.length - 2];
+                            const filePath = `${folder}/${fileName}`;
+                            
+                            await supabaseClient.storage
+                                .from('question-attachments')
+                                .remove([filePath]);
+                        } catch (storageError) {
+                            console.error('Error deleting file:', storageError);
+                        }
+                    }
+                }
+
+                // Delete any answers associated with this question
+                const { error: answersError } = await supabaseClient
+                    .from('answers')
+                    .delete()
+                    .eq('question_id', questionId);
+
+                if (answersError) {
+                    console.error('Error deleting answers:', answersError);
+                }
+
+                // Delete the question
+                const { error } = await supabaseClient
+                    .from('questions')
+                    .delete()
+                    .eq('id', questionId);
+
+                if (error) throw error;
+
+                showToast('success', 'Избришано!', 'Прашањето е успешно избришано.');
+                loadExpertQuestions();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при бришење: ' + error.message);
+                console.error(error);
+            }
+        }
+
         // Load User Questions Function - UPDATED
         async function loadUserQuestions() {
             try {
@@ -3028,8 +3147,16 @@
 
                     return `
                         <div class="question-card" style="position: relative;">
-                            <div style="position: absolute; top: 16px; right: 16px;">${statusBadge}</div>
-                            <div style="padding-right: 140px;">
+                            <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; align-items: center;">
+                                ${statusBadge}
+                                <button onclick="deleteQuestion('${q.id}')" 
+                                        style="background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;"
+                                        onmouseover="this.style.background='#DC2626'"
+                                        onmouseout="this.style.background='var(--danger)'">
+                                    🗑️ Избриши
+                                </button>
+                            </div>
+                            <div style="padding-right: 260px;">
                                 <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
                                 <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
                                     <span><strong>📂 Област:</strong> ${q.specialty_name || q.specialty}</span>
@@ -3203,8 +3330,16 @@
 
             return `
                 <div class="question-card" style="position: relative;">
-                    <div style="position: absolute; top: 16px; right: 16px;">${statusBadge}</div>
-                    <div style="padding-right: 120px;">
+                    <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; align-items: center;">
+                        ${statusBadge}
+                        <button onclick="deleteQuestionAsDoctor('${q.id}')" 
+                                style="background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;"
+                                onmouseover="this.style.background='#DC2626'"
+                                onmouseout="this.style.background='var(--danger)'">
+                            🗑️ Избриши
+                        </button>
+                    </div>
+                    <div style="padding-right: 240px;">
                         <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
                         <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
                             <span><strong>👤 Од:</strong> ${userName}</span>
