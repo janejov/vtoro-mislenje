@@ -1,9 +1,7 @@
 {
   "name": "vtoro-mislenje",
   "version": "1.0.0",
-  "description": "Medical consultation platform",
   "dependencies": {
     "resend": "^3.0.0"
   }
 }
-```
