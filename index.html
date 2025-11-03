@@ -2796,6 +2796,66 @@
             showToast('success', 'Одјава', 'Успешно се одјавивте.');
         }
 
+        // Send email notification to doctors with attachment information
+        async function sendDoctorNotification(questionData, attachments) {
+            try {
+                // Get all approved doctors in the specialty
+                const { data: doctors, error: doctorsError } = await supabaseClient
+                    .from('users')
+                    .select('email, full_name')
+                    .eq('role', 'expert')
+                    .eq('specialization', questionData.specialty)
+                    .eq('is_approved', true);
+
+                if (doctorsError) throw doctorsError;
+                if (!doctors || doctors.length === 0) return;
+
+                // Format attachments HTML
+                const attachmentsHTML = attachments && attachments.length > 0 ? `
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #1a202c;">📎 Прикачени документи:</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            ${attachments.map(file => `
+                                <li style="margin-bottom: 8px;">
+                                    <a href="${file.url}" 
+                                       style="color: #0066CC; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 8px;"
+                                       target="_blank">
+                                        ${getFileIcon(file.type)} ${file.name} <span style="color: #718096; font-size: 13px;">(${formatFileSize(file.size)})</span>
+                                    </a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+
+                // Prepare email data for each doctor
+                for (const doctor of doctors) {
+                    const emailData = {
+                        to: doctor.email,
+                        subject: `Ново прашање: ${questionData.title}`,
+                        patientName: window.currentUser.full_name,
+                        questionTitle: questionData.title,
+                        specialty: questionData.specialty_name,
+                        questionText: questionData.question_text,
+                        attachmentsHTML: attachmentsHTML,
+                        questionId: questionData.id
+                    };
+
+                    // Send to your backend API endpoint
+                    await fetch('/api/send-notification', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(emailData)
+                    });
+                }
+            } catch (error) {
+                console.error('Error in sendDoctorNotification:', error);
+                throw error;
+            }
+        }
+
         // Submit Question Function
         async function submitQuestion() {
             const title = document.getElementById('questionTitle').value.trim();
@@ -2827,9 +2887,10 @@
                 if (questionError) throw questionError;
 
                 // Upload files if any
+                let uploadedFiles = [];
                 if (selectedFiles.length > 0) {
                     showToast('info', 'Се прикачуваат фајлови...', 'Ве молиме почекајте...');
-                    const uploadedFiles = await uploadFiles(questionData.id);
+                    uploadedFiles = await uploadFiles(questionData.id);
                     
                     // Update question with attachment URLs
                     if (uploadedFiles.length > 0) {
@@ -2842,6 +2903,14 @@
                             console.error('Error updating attachments:', updateError);
                         }
                     }
+                }
+
+                // Send email notification to doctors with attachments
+                try {
+                    await sendDoctorNotification(questionData, uploadedFiles);
+                } catch (emailError) {
+                    console.error('Error sending email notification:', emailError);
+                    // Don't block the user if email fails
                 }
 
                 // Clear form
