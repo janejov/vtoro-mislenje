@@ -2856,6 +2856,78 @@
             }
         }
 
+        // Send email notification to patient when doctor answers
+        async function sendPatientNotification(questionId, answerData, question) {
+            try {
+                // Get patient details and full question info
+                const { data: fullQuestion, error: questionError } = await supabaseClient
+                    .from('questions')
+                    .select(`
+                        *,
+                        user:user_id (email, full_name)
+                    `)
+                    .eq('id', questionId)
+                    .single();
+
+                if (questionError) throw questionError;
+                if (!fullQuestion || !fullQuestion.user) return;
+
+                // Get doctor details
+                const doctorName = window.currentUser.full_name;
+                const doctorSpecialization = window.currentUser.specialization;
+                const doctorHospital = window.currentUser.hospital || 'Медицинска установа';
+                const doctorExperience = window.currentUser.experience || '?';
+
+                // Format attachments HTML if any
+                const attachmentsHTML = fullQuestion.attachments && fullQuestion.attachments.length > 0 ? `
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #1a202c;">📎 Вашите прикачени документи:</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            ${fullQuestion.attachments.map(file => `
+                                <li style="margin-bottom: 8px;">
+                                    <a href="${file.url}" 
+                                       style="color: #0066CC; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 8px;"
+                                       target="_blank">
+                                        ${getFileIcon(file.type)} ${file.name} <span style="color: #718096; font-size: 13px;">(${formatFileSize(file.size)})</span>
+                                    </a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+
+                // Prepare email data
+                const emailData = {
+                    to: fullQuestion.user.email,
+                    subject: `Одговор на вашето прашање: ${fullQuestion.title}`,
+                    patientName: fullQuestion.user.full_name,
+                    questionTitle: fullQuestion.title,
+                    questionText: fullQuestion.question_text,
+                    doctorName: doctorName,
+                    doctorSpecialization: doctorSpecialization,
+                    doctorHospital: doctorHospital,
+                    doctorExperience: doctorExperience,
+                    answerText: answerData.answer_text,
+                    attachmentsHTML: attachmentsHTML,
+                    questionId: questionId,
+                    isAnswer: true // Flag to indicate this is an answer notification
+                };
+
+                // Send to backend API endpoint
+                await fetch('/api/send-notification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(emailData)
+                });
+
+            } catch (error) {
+                console.error('Error in sendPatientNotification:', error);
+                throw error;
+            }
+        }
+
         // Submit Question Function
         async function submitQuestion() {
             const title = document.getElementById('questionTitle').value.trim();
@@ -3407,6 +3479,14 @@
                             message: `Добивте одговор на прашањето: "${question.title}"`,
                             related_question_id: questionId
                         }]);
+                }
+
+                // Send email notification to patient about new answer
+                try {
+                    await sendPatientNotification(questionId, answerData, question);
+                } catch (emailError) {
+                    console.error('Error sending patient email notification:', emailError);
+                    // Don't block the answer submission if email fails
                 }
 
                 showToast('success', 'Успешно!', 'Одговорот е успешно испратен!');
