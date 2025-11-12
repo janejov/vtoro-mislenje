@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     console.log('Received notification request');
     console.log('Environment check:', {
       hasApiKey: !!process.env.re_AdYbP4KH_J1jYCL39uN24HcdhmsySzDii,
-      hasFromEmail: !!process.env.janejovanov@gmail.com
+      hasFromEmail: !!process.env.info@vtoromislenje.com
     });
 
     const body = req.body;
@@ -143,7 +143,7 @@ export default async function handler(req, res) {
 
     // Send email using Resend
     const result = await resend.emails.send({
-      from: process.env.janejovanov@gmail.com || 'notifications@vtoromislenje.com',
+      from: process.env.info@vtoromislenje.com || 'info@vtoromislenje.com',
       to: to,
       subject: subject,
       html: emailHTML,
