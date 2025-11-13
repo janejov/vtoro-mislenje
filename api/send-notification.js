@@ -21,24 +21,24 @@ export default async function handler(req, res) {
     // Log that we received the request
     console.log('Received notification request');
     console.log('Environment check:', {
-      hasApiKey: !!process.env.RESEND_API_KEY,
-      hasFromEmail: !!process.env.FROM_EMAIL
+      hasApiKey: !!process.env.re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd,
+      hasFromEmail: !!process.env.info@vtoromislenje.com
     });
 
     const body = req.body;
     
     // Check if Resend API key is configured
-    if (!process.env.RESEND_API_KEY) {
-      console.error('RESEND_API_KEY not found in environment variables');
+    if (!process.env.re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd) {
+      console.error('re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd not found in environment variables');
       return res.status(500).json({ 
         error: 'Resend API key not configured',
-        hint: 'Set RESEND_API_KEY in Vercel environment variables'
+        hint: 'Set re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd in Vercel environment variables'
       });
     }
 
     // Import Resend dynamically
     const { Resend } = await import('resend');
-    const resend = new Resend(process.env.RESEND_API_KEY);
+    const resend = new Resend(process.env.re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd);
 
     const {
       to,
