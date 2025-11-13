@@ -1,11 +1,13 @@
-// Test API endpoint - verifies basic functionality works
+// Email notification API endpoint for Vtoro Mislenje
+// Sends emails via Resend API
+
 export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle OPTIONS request
+  // Handle OPTIONS request (for CORS preflight)
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
@@ -19,23 +21,24 @@ export default async function handler(req, res) {
     // Log that we received the request
     console.log('Received notification request');
     console.log('Environment check:', {
-      hasApiKey: !!process.env.re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd,
-      hasFromEmail: !!process.env.info@vtoromislenje.com
+      hasApiKey: !!process.env.RESEND_API_KEY,
+      hasFromEmail: !!process.env.FROM_EMAIL
     });
 
     const body = req.body;
     
-    // Check if Resend is configured
-    if (!process.env.re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd) {
+    // Check if Resend API key is configured
+    if (!process.env.RESEND_API_KEY) {
+      console.error('RESEND_API_KEY not found in environment variables');
       return res.status(500).json({ 
         error: 'Resend API key not configured',
-        hint: 'Set re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd in Vercel environment variables'
+        hint: 'Set RESEND_API_KEY in Vercel environment variables'
       });
     }
 
     // Import Resend dynamically
     const { Resend } = await import('resend');
-    const resend = new Resend(process.env.re_jTivnSRj_48cYUhHj6qK9wiRXVBEi3YPd);
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
     const {
       to,
@@ -57,14 +60,15 @@ export default async function handler(req, res) {
     if (!to || !subject) {
       return res.status(400).json({ 
         error: 'Missing required fields',
-        required: ['to', 'subject']
+        required: ['to', 'subject'],
+        received: { to: !!to, subject: !!subject }
       });
     }
 
     // Determine email type
     const isAnswerEmail = isAnswer === true;
 
-    // Create simple email HTML
+    // Create email HTML
     let emailHTML;
 
     if (isAnswerEmail) {
@@ -72,35 +76,44 @@ export default async function handler(req, res) {
       emailHTML = `
         <!DOCTYPE html>
         <html>
-        <head><meta charset="UTF-8"></head>
-        <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;">
-          <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px;">
-            <h1 style="color: #10B981; margin-top: 0;">✓ Одговор на вашето прашање</h1>
-            <h2 style="color: #333;">${questionTitle || 'Прашање'}</h2>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; margin: 0;">
+          <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h1 style="color: #10B981; margin-top: 0; font-size: 24px;">✅ Одговор на вашето прашање</h1>
+            <h2 style="color: #333; font-size: 20px;">${questionTitle || 'Прашање'}</h2>
             
-            <div style="background: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <div style="background: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #e5e7eb;">
               <p style="margin: 0; color: #666;"><strong>Вашето прашање:</strong></p>
-              <p style="margin: 10px 0 0 0;">${questionText || ''}</p>
+              <p style="margin: 10px 0 0 0; color: #374151;">${questionText || ''}</p>
             </div>
 
             ${attachmentsHTML || ''}
 
-            <div style="background: #d1fae5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <div style="background: #d1fae5; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #10B981;">
               <p style="margin: 0; color: #059669;"><strong>Одговор од:</strong></p>
-              <p style="margin: 5px 0;"><strong>${doctorName || 'Доктор'}</strong></p>
-              <p style="margin: 0; color: #666; font-size: 14px;">${doctorSpecialization || ''} • ${doctorHospital || ''} • ${doctorExperience || ''} год.</p>
+              <p style="margin: 5px 0; color: #065f46; font-size: 16px;"><strong>${doctorName || 'Доктор'}</strong></p>
+              <p style="margin: 0; color: #6b7280; font-size: 14px;">${doctorSpecialization || ''} • ${doctorHospital || ''} • ${doctorExperience || ''} год.</p>
             </div>
 
-            <div style="background: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0;">
+            <div style="background: #f0fdf4; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #86efac;">
               <p style="margin: 0; color: #059669;"><strong>✓ Одговор:</strong></p>
-              <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${answerText || ''}</p>
+              <p style="margin: 10px 0 0 0; white-space: pre-wrap; color: #374151; line-height: 1.6;">${answerText || ''}</p>
             </div>
 
             <div style="text-align: center; margin-top: 30px;">
               <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://vtoromislenje.com'}" 
-                 style="background: #10B981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                 style="background: #10B981; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600;">
                 Видете повеќе →
               </a>
+            </div>
+
+            <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin: 30px 0 0 0; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; color: #92400e; font-size: 13px;">
+                <strong>⚠️ Важна напомена:</strong> Овој одговор претставува стручно мислење и не замена за директна медицинска консултација. Ве молиме консултирајте се со вашиот лекар пред да преземете било какви чекори.
+              </p>
             </div>
           </div>
         </body>
@@ -111,29 +124,39 @@ export default async function handler(req, res) {
       emailHTML = `
         <!DOCTYPE html>
         <html>
-        <head><meta charset="UTF-8"></head>
-        <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5;">
-          <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px;">
-            <h1 style="color: #0066CC; margin-top: 0;">🩺 Ново прашање</h1>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; margin: 0;">
+          <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <h1 style="color: #0066CC; margin-top: 0; font-size: 24px;">🩺 Ново прашање</h1>
             
-            <div style="background: #f0f9ff; padding: 15px; border-radius: 5px; margin: 20px 0;">
-              <p style="margin: 0;"><strong>Пациент:</strong> ${patientName || 'Непознат'}</p>
-              <p style="margin: 5px 0 0 0;"><strong>Област:</strong> ${specialty || 'Општо'}</p>
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #0066CC;">
+              <p style="margin: 0; color: #1e40af;"><strong>Пациент:</strong> ${patientName || 'Непознат'}</p>
+              <p style="margin: 5px 0 0 0; color: #1e40af;"><strong>Област:</strong> ${specialty || 'Општо'}</p>
+              <p style="margin: 5px 0 0 0; color: #6b7280; font-size: 14px;"><strong>Датум:</strong> ${new Date().toLocaleString('mk-MK')}</p>
             </div>
 
-            <h2 style="color: #333;">${questionTitle || 'Прашање'}</h2>
+            <h2 style="color: #333; font-size: 20px;">${questionTitle || 'Прашање'}</h2>
             
-            <div style="background: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0;">
-              <p style="margin: 0; white-space: pre-wrap;">${questionText || ''}</p>
+            <div style="background: #f9fafb; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #e5e7eb;">
+              <p style="margin: 0; white-space: pre-wrap; color: #374151; line-height: 1.6;">${questionText || ''}</p>
             </div>
 
             ${attachmentsHTML || ''}
 
             <div style="text-align: center; margin-top: 30px;">
               <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://vtoromislenje.com'}" 
-                 style="background: #0066CC; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                 style="background: #0066CC; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600;">
                 Одговори →
               </a>
+            </div>
+
+            <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin: 30px 0 0 0; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; color: #92400e; font-size: 13px;">
+                Ве молиме одговорете на прашањето во рок од 48 часа за да обезбедите навремена помош на пациентот.
+              </p>
             </div>
           </div>
         </body>
@@ -141,16 +164,26 @@ export default async function handler(req, res) {
       `;
     }
 
+    // Get FROM_EMAIL from environment or use default
+    const fromEmail = process.env.FROM_EMAIL || 'info@vtoromislenje.com';
+
+    console.log('Attempting to send email:', {
+      from: fromEmail,
+      to: to,
+      subject: subject,
+      isAnswer: isAnswerEmail
+    });
+
     // Send email using Resend
     const result = await resend.emails.send({
-      from: process.env.info@vtoromislenje.com || 'info@vtoromislenje.com',
+      from: fromEmail,
       to: to,
       subject: subject,
       html: emailHTML,
     });
 
     if (result.error) {
-      console.error('Resend error:', result.error);
+      console.error('Resend API error:', result.error);
       return res.status(400).json({ 
         error: 'Failed to send email',
         details: result.error.message 
