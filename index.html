@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Второ мислење - Медицински консултации онлајн</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://js.stripe.com/v3/"></script>
     <style>
         * {
             margin: 0;
@@ -1134,6 +1135,46 @@
         .file-remove:hover {
             background: #DC2626;
         }
+
+        /* Plan Selection Cards */
+        .plan-card {
+            position: relative;
+        }
+        
+        .plan-card:hover {
+            border-color: var(--primary) !important;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 102, 204, 0.15);
+        }
+        
+        .plan-card.selected {
+            border-color: var(--success) !important;
+            background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%) !important;
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.25);
+        }
+        
+        .plan-card.selected::after {
+            content: "✓";
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--success);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            #planSelection {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1495,6 +1536,47 @@
                 <div class="glass-card">
                     <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Постави ново прашање</h3>
                     
+                    <!-- Plan Selection -->
+                    <div class="form-group">
+                        <label class="form-label" style="font-size: 18px; font-weight: 600; margin-bottom: 16px; display: block;">Изберете план</label>
+                        <div id="planSelection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
+                            <!-- Basic Plan -->
+                            <div class="plan-card" data-plan="basic" data-price="999" onclick="selectPlan('basic')" style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;">
+                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Основен</h4>
+                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">999 <span style="font-size: 16px; font-weight: 400;">МКД</span></div>
+                                <ul style="list-style: none; padding: 0; margin: 16px 0; text-align: left; font-size: 14px; color: var(--text-light);">
+                                    <li style="padding: 6px 0;">✓ 1 медицинско прашање</li>
+                                    <li style="padding: 6px 0;">✓ Одговор до 48 часа</li>
+                                    <li style="padding: 6px 0;">✓ Основна консултација</li>
+                                </ul>
+                            </div>
+                            <!-- Standard Plan -->
+                            <div class="plan-card" data-plan="standard" data-price="1899" onclick="selectPlan('standard')" style="border: 2px solid var(--primary); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center; background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%); position: relative;">
+                                <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;">Најпопуларно</div>
+                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Стандард</h4>
+                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">1,899 <span style="font-size: 16px; font-weight: 400;">МКД</span></div>
+                                <ul style="list-style: none; padding: 0; margin: 16px 0; text-align: left; font-size: 14px; color: var(--text-light);">
+                                    <li style="padding: 6px 0;">✓ 2 медицински прашања</li>
+                                    <li style="padding: 6px 0;">✓ Одговор до 24 часа</li>
+                                    <li style="padding: 6px 0;">✓ Детална консултација</li>
+                                    <li style="padding: 6px 0;">✓ Прикачување документи</li>
+                                </ul>
+                            </div>
+                            <!-- Premium Plan -->
+                            <div class="plan-card" data-plan="premium" data-price="3699" onclick="selectPlan('premium')" style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;">
+                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Премиум</h4>
+                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">3,699 <span style="font-size: 16px; font-weight: 400;">МКД</span></div>
+                                <ul style="list-style: none; padding: 0; margin: 16px 0; text-align: left; font-size: 14px; color: var(--text-light);">
+                                    <li style="padding: 6px 0;">✓ 4 медицински прашања</li>
+                                    <li style="padding: 6px 0;">✓ Одговор до 12 часа</li>
+                                    <li style="padding: 6px 0;">✓ Детална анализа</li>
+                                    <li style="padding: 6px 0;">✓ Приоритетна поддршка</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <input type="hidden" id="selectedPlan" value="">
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label">Наслов</label>
                         <input type="text" class="form-input" id="questionTitle" placeholder="Внесете наслов на прашањето">
@@ -1532,7 +1614,12 @@
                         <div id="fileList" style="margin-top: 12px;"></div>
                     </div>
 
-                    <button class="btn btn-primary" onclick="submitQuestion()">Испрати прашање</button>
+                    <button class="btn btn-primary" onclick="initiatePayment()" style="width: 100%; padding: 16px; font-size: 18px;">
+                        💳 Плати и испрати прашање
+                    </button>
+                    <p style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--text-light);">
+                        🔒 Сигурно плаќање преку Stripe
+                    </p>
                 </div>
 
                 <div class="glass-card">
@@ -2577,6 +2664,189 @@
         
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Initialize Stripe
+        const STRIPE_PUBLISHABLE_KEY = 'pk_test_51SlwjQ3xLShfBxlTcOe4ux6CxnQHPZSKJiTEP6wcmzSb4pq37NjUQWljB8Q0Dcfl2mubq2dE3IH59znkijqF2hPJ00oaX2g5fX';
+        const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+
+        // Pricing plans configuration
+        const PRICING_PLANS = {
+            basic: {
+                name: 'Основен',
+                price: 999,
+                questions: 1,
+                responseTime: '48 часа'
+            },
+            standard: {
+                name: 'Стандард',
+                price: 1899,
+                questions: 2,
+                responseTime: '24 часа'
+            },
+            premium: {
+                name: 'Премиум',
+                price: 3699,
+                questions: 4,
+                responseTime: '12 часа'
+            }
+        };
+
+        // Selected plan tracker
+        let selectedPlanId = null;
+
+        // Plan selection function
+        function selectPlan(planId) {
+            selectedPlanId = planId;
+            document.getElementById('selectedPlan').value = planId;
+            
+            // Update UI - remove selected from all, add to chosen one
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`.plan-card[data-plan="${planId}"]`).classList.add('selected');
+        }
+
+        // Initiate payment process
+        async function initiatePayment() {
+            // Validate plan selection
+            if (!selectedPlanId) {
+                showToast('error', 'Грешка', 'Ве молиме изберете план.');
+                return;
+            }
+
+            // Validate form fields
+            const title = document.getElementById('questionTitle').value.trim();
+            const specialty = document.getElementById('questionSpecialty').value;
+            const text = document.getElementById('questionText').value.trim();
+
+            if (!title || !specialty || !text) {
+                showToast('error', 'Грешка', 'Ве молиме пополнете ги сите полиња.');
+                return;
+            }
+
+            // Store question data in sessionStorage for after payment
+            const questionData = {
+                title: title,
+                specialty: specialty,
+                specialtyName: document.getElementById('questionSpecialty').selectedOptions[0].text,
+                text: text,
+                plan: selectedPlanId,
+                userId: window.currentUser.id,
+                userEmail: window.currentUser.email,
+                userName: window.currentUser.full_name
+            };
+            sessionStorage.setItem('pendingQuestion', JSON.stringify(questionData));
+
+            try {
+                showToast('info', 'Пренасочување...', 'Се пренасочувате кон страницата за плаќање...');
+
+                // Create checkout session via API
+                const response = await fetch('/api/create-checkout-session', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        plan: selectedPlanId,
+                        price: PRICING_PLANS[selectedPlanId].price,
+                        planName: PRICING_PLANS[selectedPlanId].name,
+                        userEmail: window.currentUser.email,
+                        userId: window.currentUser.id,
+                        questionTitle: title
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: data.sessionId
+                });
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при плаќање: ' + error.message);
+                console.error('Payment error:', error);
+            }
+        }
+
+        // Check for successful payment on page load
+        async function checkPaymentSuccess() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentSuccess = urlParams.get('payment_success');
+            const sessionId = urlParams.get('session_id');
+
+            if (paymentSuccess === 'true' && sessionId) {
+                // Get stored question data
+                const pendingQuestion = sessionStorage.getItem('pendingQuestion');
+                
+                if (pendingQuestion) {
+                    const questionData = JSON.parse(pendingQuestion);
+                    
+                    // Clear the URL parameters
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    // Submit the question
+                    await submitQuestionAfterPayment(questionData, sessionId);
+                    
+                    // Clear stored data
+                    sessionStorage.removeItem('pendingQuestion');
+                }
+            } else if (urlParams.get('payment_cancelled') === 'true') {
+                window.history.replaceState({}, document.title, window.location.pathname);
+                showToast('warning', 'Откажано', 'Плаќањето беше откажано. Обидете се повторно.');
+            }
+        }
+
+        // Submit question after successful payment
+        async function submitQuestionAfterPayment(questionData, sessionId) {
+            try {
+                showToast('info', 'Обработка...', 'Плаќањето е успешно! Се испраќа прашањето...');
+
+                // Insert the question
+                const { data: newQuestion, error: questionError } = await supabaseClient
+                    .from('questions')
+                    .insert([{
+                        title: questionData.title,
+                        specialty: questionData.specialty,
+                        specialty_name: questionData.specialtyName,
+                        question_text: questionData.text,
+                        user_id: questionData.userId,
+                        payment_status: 'paid',
+                        stripe_session_id: sessionId,
+                        plan_type: questionData.plan
+                    }])
+                    .select()
+                    .single();
+
+                if (questionError) throw questionError;
+
+                // Send notification to Super Admin
+                try {
+                    await sendSuperAdminNotification(newQuestion, []);
+                } catch (emailError) {
+                    console.error('Error sending notification:', emailError);
+                }
+
+                showToast('success', 'Успешно!', 'Плаќањето е успешно и прашањето е испратено!');
+                
+                // Reload questions
+                if (window.currentUser && window.currentUser.role === 'user') {
+                    loadUserQuestions();
+                }
+
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при испраќање на прашањето: ' + error.message);
+                console.error('Question submission error:', error);
+            }
+        }
 
         // Sign In Form Handler
         document.getElementById('signinForm').addEventListener('submit', async (e) => {
@@ -3940,6 +4210,8 @@
                     if (userData.role === 'user') {
                         document.getElementById('userDashboard').classList.remove('hidden');
                         loadUserQuestions();
+                        // Check for payment success after redirect
+                        checkPaymentSuccess();
                     } else if (userData.role === 'admin') {
                         document.getElementById('adminDashboard').classList.remove('hidden');
                         loadPendingDoctors();
