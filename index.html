@@ -1280,9 +1280,9 @@
         <div class="pricing-grid">
             <div class="pricing-card">
                 <h3 data-i18n="pricingBasicName">Основен</h3>
-                <div class="pricing-price">999 <span>МКД</span></div>
+                <div class="pricing-price">799 <span>МКД</span></div>
                 <ul class="pricing-features">
-                    <li data-i18n="pricingBasicFeature1">едно медицинско прашање</li>
+                    <li data-i18n="pricingBasicFeature1">1 медицинско прашање</li>
                     <li data-i18n="pricingBasicFeature2">Одговор до 48 часа</li>
                     <li data-i18n="pricingBasicFeature3">Основна консултација</li>
                     <li data-i18n="pricingBasicFeature4">Email нотификации</li>
@@ -1292,22 +1292,24 @@
             <div class="pricing-card featured">
                 <div class="pricing-badge" data-i18n="pricingStandardBadge">Најпопуларно</div>
                 <h3 data-i18n="pricingStandardName">Стандард</h3>
-                <div class="pricing-price">1,899 <span>МКД</span></div>
+                <div class="pricing-price">1,499 <span>МКД</span></div>
                 <ul class="pricing-features">
-                    <li data-i18n="pricingStandardFeature1">две медицински прашања</li>
+                    <li data-i18n="pricingStandardFeature1">2 медицински прашања</li>
                     <li data-i18n="pricingStandardFeature2">Одговор до 24 часа</li>
                     <li data-i18n="pricingStandardFeature3">Детална консултација</li>
                     <li data-i18n="pricingStandardFeature4">Прикачување документи</li>
+                    <li data-i18n="pricingStandardFeature5">Приоритетна поддршка</li>
                 </ul>
                 <a href="#contact" class="btn btn-primary" data-i18n="pricingStandardButton">Избери план</a>
             </div>
             <div class="pricing-card">
                 <h3 data-i18n="pricingPremiumName">Премиум</h3>
-                <div class="pricing-price">3,499 <span>МКД</span></div>
+                <div class="pricing-price">2,999 <span>МКД</span></div>
                 <ul class="pricing-features">
-                    <li data-i18n="pricingPremiumFeature1">четири медицински прашања</li>
+                    <li data-i18n="pricingPremiumFeature1">4 прашања</li>
                     <li data-i18n="pricingPremiumFeature2">Одговор до 24 часа</li>
                     <li data-i18n="pricingPremiumFeature3">Детална анализа</li>
+                    <li data-i18n="pricingPremiumFeature4">Видео консултација</li>
                     <li data-i18n="pricingPremiumFeature5">Следење на здравје</li>
                     <li data-i18n="pricingPremiumFeature6">24/7 Поддршка</li>
                 </ul>
@@ -1338,7 +1340,7 @@
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        <span data-i18n="faq2A">Времето за одговор зависи од изборот на план. Основниот план гарантира одговор во рок од 48 часа, Стандард планот до 24 часа, а Премиум планот до 24 часа. Многу прашања добиваат одговор и побрзо.</span>
+                        <span data-i18n="faq2A">Времето за одговор зависи од изборот на план. Основниот план гарантира одговор во рок од 48 часа, Стандард планот во 24 часа, а Премиум планот во 12 часа. Многу прашања добиваат одговор и побрзо.</span>
                     </div>
                 </div>
             </div>
@@ -1360,7 +1362,7 @@
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-content">
-                        <span data-i18n="faq4A">Да, зависно од планот што го изберете. Основниот план вклучува едно прашање, Стандардниот две прашања, а Премиум планот нуди четири прашања во период од триесет дена.</span>
+                        <span data-i18n="faq4A">Да, зависно од планот што го изберете. Основниот план вклучува едно прашање, Стандардниот 3 прашања, а Премиум планот нуди неограничени прашања во рамки на еден месец.</span>
                     </div>
                 </div>
             </div>
@@ -1454,7 +1456,7 @@
             <div class="footer-section">
                 <h4 data-i18n="footerContact">Контакт</h4>
                 <ul class="footer-links">
-                    <li><a href="mailto:janejovanov@gmail.com">janejovanov@gmail.com</a></li>
+                    <li><a href="/cdn-cgi/l/email-protection#046e656a616e6b72656a6b72446369656d682a676b69"><span class="__cf_email__" data-cfemail="cda7aca3a8a7a2bbaca3a2bb8daaa0aca4a1e3aea2a0">[email&#160;protected]</span></a></li>
                     <li><a href="tel:+420776595387">+420 776 595 387</a></li>
                 </ul>
             </div>
@@ -1567,6 +1569,78 @@
                         <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--success);">✓ Одобрени лекари</h4>
                         <div id="approvedDoctors"></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Super Admin Dashboard -->
+            <div id="superAdminDashboard" class="hidden">
+                <!-- Stats Overview -->
+                <div class="glass-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 16px;">👑 Супер Админ Контролна Табла</h3>
+                    <p style="opacity: 0.9;">Централизирано управување со прашања и одговори</p>
+                    <div id="superAdminStats" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px;">
+                        <div style="background: rgba(255,255,255,0.2); padding: 16px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: 700;" id="statPendingQuestions">0</div>
+                            <div style="font-size: 14px; opacity: 0.9;">Нови прашања</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 16px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: 700;" id="statAssignedQuestions">0</div>
+                            <div style="font-size: 14px; opacity: 0.9;">Доделени</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 16px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: 700;" id="statPendingAnswers">0</div>
+                            <div style="font-size: 14px; opacity: 0.9;">Чекаат одобрување</div>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.2); padding: 16px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 32px; font-weight: 700;" id="statCompletedQuestions">0</div>
+                            <div style="font-size: 14px; opacity: 0.9;">Завршени</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- New Questions - Need to be assigned -->
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: var(--warning); color: white; padding: 8px 12px; border-radius: 8px; font-size: 16px;">📥</span>
+                        Нови прашања - За доделување
+                    </h3>
+                    <div id="superAdminPendingQuestions"></div>
+                </div>
+
+                <!-- Assigned Questions - Waiting for doctor answer -->
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: var(--primary); color: white; padding: 8px 12px; border-radius: 8px; font-size: 16px;">👨‍⚕️</span>
+                        Доделени на лекари - Чекаат одговор
+                    </h3>
+                    <div id="superAdminAssignedQuestions"></div>
+                </div>
+
+                <!-- Answers Pending Approval -->
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: #8B5CF6; color: white; padding: 8px 12px; border-radius: 8px; font-size: 16px;">✍️</span>
+                        Одговори за одобрување
+                    </h3>
+                    <div id="superAdminPendingAnswers"></div>
+                </div>
+
+                <!-- Completed Questions -->
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: var(--success); color: white; padding: 8px 12px; border-radius: 8px; font-size: 16px;">✓</span>
+                        Завршени прашања
+                    </h3>
+                    <div id="superAdminCompletedQuestions"></div>
+                </div>
+
+                <!-- Approved Doctors List for Assignment -->
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: #10B981; color: white; padding: 8px 12px; border-radius: 8px; font-size: 16px;">👨‍⚕️</span>
+                        Листа на одобрени лекари
+                    </h3>
+                    <div id="superAdminDoctorsList"></div>
                 </div>
             </div>
         </div>
@@ -1702,6 +1776,83 @@
         </div>
     </div>
 
+    <!-- Super Admin: Assign Question Modal -->
+    <div id="assignQuestionModal" class="modal-overlay hidden" onclick="closeAssignModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2>📋 Додели прашање на лекар</h2>
+                <button class="modal-close" onclick="closeAssignModal()">×</button>
+            </div>
+            <div style="padding: 24px;">
+                <div id="assignQuestionDetails" style="margin-bottom: 24px; padding: 16px; background: var(--bg-light); border-radius: 12px;"></div>
+                
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 600;">Избери лекар</label>
+                    <select id="assignDoctorSelect" class="form-input" style="padding: 12px;">
+                        <option value="">-- Избери лекар --</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 600;">Забелешка за лекарот (опционално)</label>
+                    <textarea id="assignNote" class="form-input" rows="3" placeholder="Внесете дополнителни инструкции за лекарот..."></textarea>
+                </div>
+                
+                <input type="hidden" id="assignQuestionId">
+                
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn btn-primary" style="flex: 1;" onclick="confirmAssignQuestion()">
+                        ✓ Додели на лекар
+                    </button>
+                    <button class="btn btn-outline" style="flex: 1;" onclick="closeAssignModal()">
+                        Откажи
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Super Admin: Review Answer Modal -->
+    <div id="reviewAnswerModal" class="modal-overlay hidden" onclick="closeReviewModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2>✍️ Преглед и одобрување на одговор</h2>
+                <button class="modal-close" onclick="closeReviewModal()">×</button>
+            </div>
+            <div style="padding: 24px;">
+                <!-- Question Details -->
+                <div id="reviewQuestionDetails" style="margin-bottom: 24px; padding: 16px; background: var(--bg-light); border-radius: 12px;"></div>
+                
+                <!-- Doctor's Answer -->
+                <div style="margin-bottom: 24px;">
+                    <label class="form-label" style="font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        <span style="background: var(--primary); color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">👨‍⚕️</span>
+                        Одговор од лекар
+                    </label>
+                    <div id="reviewDoctorAnswer" style="padding: 16px; background: #E0F2FE; border-radius: 12px; border-left: 4px solid var(--primary);"></div>
+                </div>
+                
+                <!-- Editable Answer -->
+                <div class="form-group">
+                    <label class="form-label" style="font-weight: 600;">Финален одговор (може да се измени)</label>
+                    <textarea id="reviewFinalAnswer" class="form-input" rows="6" placeholder="Одговорот ќе биде испратен до пациентот..."></textarea>
+                </div>
+                
+                <input type="hidden" id="reviewQuestionId">
+                <input type="hidden" id="reviewAnswerId">
+                
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn btn-primary" style="flex: 1; background: var(--success);" onclick="approveAndSendAnswer()">
+                        ✓ Одобри и испрати до пациент
+                    </button>
+                    <button class="btn btn-outline" style="flex: 1;" onclick="closeReviewModal()">
+                        Откажи
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Terms Modal -->
     <div id="termsModal" class="modal-overlay hidden" onclick="closeTerms(event)">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -1742,7 +1893,7 @@
                 <p>Платформата обезбедува информативни совети, но НЕ е замена за директен лекарски преглед, итна медицинска помош, или дијагноза и третман.</p>
 
                 <h3>5. Контакт</h3>
-                <p>Email: <strong>janejovanov@gmail.com</strong> • Телефон: <strong>+420 776 595 387</strong></p>
+                <p>Email: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="82e8e3ece7e8edf4e3ecedf4c2e5efe3ebeeace1edef">[email&#160;protected]</a></strong> • Телефон: <strong>+420 776 595 387</strong></p>
             </div>
         </div>
     </div>
@@ -1780,13 +1931,13 @@
                 </ul>
 
                 <h3>5. Контакт</h3>
-                <p>Email: <strong>janejovanov@gmail.com</strong> • Телефон: <strong>+420 776 595 387</strong></p>
+                <p>Email: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7a101b141f10150c1b14150c3a1d171b131654191517">[email&#160;protected]</a></strong> • Телефон: <strong>+420 776 595 387</strong></p>
             </div>
         </div>
     </div>
 
     <!-- Vercel Analytics -->
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
@@ -2484,6 +2635,8 @@
                     window.questionSubscription = subscribeToQuestions();
                 } else if (userData.role === 'user') {
                     window.answerSubscription = subscribeToAnswers();
+                } else if (userData.role === 'super_admin') {
+                    window.superAdminSubscription = subscribeToSuperAdmin();
                 }
                 // Admin doesn't need real-time subscriptions
                 
@@ -2492,7 +2645,9 @@
                 document.getElementById('dashboardPage').classList.remove('hidden');
                 
                 // Show user info
-                const roleText = userData.role === 'user' ? 'Корисник' : (userData.role === 'admin' ? 'Администратор' : 'Лекар');
+                const roleText = userData.role === 'user' ? 'Корисник' : 
+                                 (userData.role === 'admin' ? 'Администратор' : 
+                                 (userData.role === 'super_admin' ? 'Супер Админ' : 'Лекар'));
                 document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
                 document.getElementById('dashboardUserName').textContent = userData.full_name;
 
@@ -2504,6 +2659,9 @@
                     document.getElementById('adminDashboard').classList.remove('hidden');
                     loadPendingDoctors();
                     loadApprovedDoctors();
+                } else if (userData.role === 'super_admin') {
+                    document.getElementById('superAdminDashboard').classList.remove('hidden');
+                    loadSuperAdminDashboard();
                 } else {
                     document.getElementById('expertDashboard').classList.remove('hidden');
                     loadExpertQuestions();
@@ -2784,6 +2942,10 @@
                 await window.answerSubscription.unsubscribe();
                 window.answerSubscription = null;
             }
+            if (window.superAdminSubscription) {
+                await window.superAdminSubscription.unsubscribe();
+                window.superAdminSubscription = null;
+            }
             
             await supabaseClient.auth.signOut();
             window.currentUser = null;
@@ -2791,6 +2953,8 @@
             document.getElementById('dashboardPage').classList.add('hidden');
             document.getElementById('userDashboard').classList.add('hidden');
             document.getElementById('expertDashboard').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('superAdminDashboard').classList.add('hidden');
             showToast('success', 'Одјава', 'Успешно се одјавивте.');
         }
 
@@ -2975,11 +3139,11 @@
                     }
                 }
 
-                // Send email notification to doctors with attachments
+                // Send email notification to Super Admin (centralized flow)
                 try {
-                    await sendDoctorNotification(questionData, uploadedFiles);
+                    await sendSuperAdminNotification(questionData, uploadedFiles);
                 } catch (emailError) {
-                    console.error('Error sending email notification:', emailError);
+                    console.error('Error sending Super Admin notification:', emailError);
                     // Don't block the user if email fails
                 }
 
@@ -3764,12 +3928,16 @@
                         window.questionSubscription = subscribeToQuestions();
                     } else if (userData.role === 'user') {
                         window.answerSubscription = subscribeToAnswers();
+                    } else if (userData.role === 'super_admin') {
+                        window.superAdminSubscription = subscribeToSuperAdmin();
                     }
                     
                     document.getElementById('landingPage').classList.add('hidden');
                     document.getElementById('dashboardPage').classList.remove('hidden');
                     
-                    const roleText = userData.role === 'user' ? 'Корисник' : (userData.role === 'admin' ? 'Администратор' : 'Лекар');
+                    const roleText = userData.role === 'user' ? 'Корисник' : 
+                                     (userData.role === 'admin' ? 'Администратор' : 
+                                     (userData.role === 'super_admin' ? 'Супер Админ' : 'Лекар'));
                     document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
                     document.getElementById('dashboardUserName').textContent = userData.full_name;
 
@@ -3780,13 +3948,541 @@
                         document.getElementById('adminDashboard').classList.remove('hidden');
                         loadPendingDoctors();
                         loadApprovedDoctors();
-                    } else {
+                    } else if (userData.role === 'super_admin') {
+                        document.getElementById('superAdminDashboard').classList.remove('hidden');
+                        loadSuperAdminDashboard();
+                    } else if (userData.role === 'expert') {
                         document.getElementById('expertDashboard').classList.remove('hidden');
                         loadExpertQuestions();
                     }
                 }
             }
         })();
+
+        // ============================================
+        // SUPER ADMIN FUNCTIONS
+        // ============================================
+        
+        // Super Admin Email - used for notifications
+        const SUPER_ADMIN_EMAIL = 'vtoromislenje001@gmail.com';
+
+        // Send notification to Super Admin about new question
+        async function sendSuperAdminNotification(questionData, attachments) {
+            try {
+                const attachmentsHTML = attachments && attachments.length > 0 ? `
+                    <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <h3 style="margin: 0 0 10px 0; font-size: 16px; color: #1a202c;">📎 Прикачени документи:</h3>
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            ${attachments.map(file => `
+                                <li style="margin-bottom: 8px;">
+                                    <a href="${file.url}" style="color: #0066CC; text-decoration: none; font-weight: 500;">
+                                        ${getFileIcon(file.type)} ${file.name} (${formatFileSize(file.size)})
+                                    </a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : '';
+
+                const emailData = {
+                    to: SUPER_ADMIN_EMAIL,
+                    subject: `[НОВО ПРАШАЊЕ] ${questionData.title}`,
+                    patientName: window.currentUser.full_name,
+                    patientEmail: window.currentUser.email,
+                    questionTitle: questionData.title,
+                    specialty: questionData.specialty_name,
+                    questionText: questionData.question_text,
+                    attachmentsHTML: attachmentsHTML,
+                    questionId: questionData.id,
+                    isSuperAdminNotification: true
+                };
+
+                await fetch('/api/send-notification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(emailData)
+                });
+            } catch (error) {
+                console.error('Error sending Super Admin notification:', error);
+            }
+        }
+
+        // Subscribe to real-time updates for Super Admin
+        function subscribeToSuperAdmin() {
+            const subscription = supabaseClient
+                .channel('super_admin_updates')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'questions' },
+                    (payload) => {
+                        showToast('info', 'Ново прашање', 'Примено е ново прашање од пациент!');
+                        loadSuperAdminDashboard();
+                    }
+                )
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'answers' },
+                    (payload) => {
+                        showToast('info', 'Нов одговор', 'Лекар испрати одговор за преглед!');
+                        loadSuperAdminDashboard();
+                    }
+                )
+                .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'questions' },
+                    (payload) => { loadSuperAdminDashboard(); }
+                )
+                .subscribe();
+            return subscription;
+        }
+
+        // Load Super Admin Dashboard
+        async function loadSuperAdminDashboard() {
+            try {
+                // Load all questions with their data
+                const { data: questions, error } = await supabaseClient
+                    .from('questions')
+                    .select(`
+                        *,
+                        user:user_id (full_name, email),
+                        assigned_doctor:assigned_expert_id (full_name, specialization, email),
+                        answers (
+                            id,
+                            answer_text,
+                            created_at,
+                            is_approved,
+                            expert:expert_id (full_name, specialization)
+                        )
+                    `)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                // Categorize questions
+                const pendingQuestions = questions.filter(q => q.status === 'pending_review' || (!q.status && !q.assigned_expert_id));
+                const assignedQuestions = questions.filter(q => q.status === 'assigned' || (q.assigned_expert_id && (!q.answers || q.answers.length === 0)));
+                const pendingAnswers = questions.filter(q => q.answers && q.answers.length > 0 && q.answers.some(a => !a.is_approved));
+                const completedQuestions = questions.filter(q => q.status === 'completed' || (q.answers && q.answers.length > 0 && q.answers.every(a => a.is_approved)));
+
+                // Update stats
+                document.getElementById('statPendingQuestions').textContent = pendingQuestions.length;
+                document.getElementById('statAssignedQuestions').textContent = assignedQuestions.length;
+                document.getElementById('statPendingAnswers').textContent = pendingAnswers.length;
+                document.getElementById('statCompletedQuestions').textContent = completedQuestions.length;
+
+                // Render sections
+                renderPendingQuestions(pendingQuestions);
+                renderAssignedQuestions(assignedQuestions);
+                renderPendingAnswers(pendingAnswers);
+                renderCompletedQuestions(completedQuestions);
+                
+                // Load doctors list
+                await loadDoctorsList();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при вчитување: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        // Render pending questions (need assignment)
+        function renderPendingQuestions(questions) {
+            const container = document.getElementById('superAdminPendingQuestions');
+            if (questions.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);"><p>Нема нови прашања за доделување.</p></div>';
+                return;
+            }
+            container.innerHTML = questions.map(q => renderSuperAdminQuestionCard(q, 'pending')).join('');
+        }
+
+        // Render assigned questions (waiting for doctor)
+        function renderAssignedQuestions(questions) {
+            const container = document.getElementById('superAdminAssignedQuestions');
+            if (questions.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);"><p>Нема доделени прашања.</p></div>';
+                return;
+            }
+            container.innerHTML = questions.map(q => renderSuperAdminQuestionCard(q, 'assigned')).join('');
+        }
+
+        // Render pending answers (need approval)
+        function renderPendingAnswers(questions) {
+            const container = document.getElementById('superAdminPendingAnswers');
+            if (questions.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);"><p>Нема одговори за одобрување.</p></div>';
+                return;
+            }
+            container.innerHTML = questions.map(q => renderSuperAdminQuestionCard(q, 'pending_approval')).join('');
+        }
+
+        // Render completed questions
+        function renderCompletedQuestions(questions) {
+            const container = document.getElementById('superAdminCompletedQuestions');
+            if (questions.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);"><p>Нема завршени прашања.</p></div>';
+                return;
+            }
+            // Show only last 10
+            container.innerHTML = questions.slice(0, 10).map(q => renderSuperAdminQuestionCard(q, 'completed')).join('');
+        }
+
+        // Render question card for Super Admin
+        function renderSuperAdminQuestionCard(q, type) {
+            const userName = q.user?.full_name || 'Непознат корисник';
+            const userEmail = q.user?.email || '';
+            const doctorName = q.assigned_doctor?.full_name || 'Не е доделен';
+            const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
+            
+            const attachmentsHTML = q.attachments && q.attachments.length > 0 ? `
+                <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
+                    <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи (${q.attachments.length}):</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                        ${q.attachments.map(file => `
+                            <a href="${file.url}" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 13px; padding: 6px 10px; background: var(--bg-light); border-radius: 6px;">
+                                ${getFileIcon(file.type)} ${file.name}
+                            </a>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : '';
+
+            let actionButtons = '';
+            let statusBadge = '';
+
+            if (type === 'pending') {
+                statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">📥 Ново</span>';
+                actionButtons = `<button class="btn btn-primary" onclick="openAssignModal('${q.id}')" style="margin-top: 16px;">📋 Додели на лекар</button>`;
+            } else if (type === 'assigned') {
+                statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #DBEAFE; color: #1D4ED8;">👨‍⚕️ Доделено</span>';
+                actionButtons = `<div style="margin-top: 12px; padding: 12px; background: #DBEAFE; border-radius: 8px;">
+                    <p style="font-size: 14px;"><strong>Доделено на:</strong> ${doctorName}</p>
+                    <p style="font-size: 13px; color: var(--text-light);">Се чека одговор од лекарот...</p>
+                </div>`;
+            } else if (type === 'pending_approval') {
+                statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #E9D5FF; color: #7C3AED;">✍️ За одобрување</span>';
+                actionButtons = `<button class="btn btn-primary" onclick="openReviewModal('${q.id}')" style="margin-top: 16px; background: #8B5CF6;">✓ Прегледај и одобри</button>`;
+            } else if (type === 'completed') {
+                statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Завршено</span>';
+            }
+
+            const answerPreview = answer ? `
+                <div style="margin-top: 12px; padding: 12px; background: ${type === 'completed' ? '#D1FAE5' : '#E0F2FE'}; border-radius: 8px; border-left: 4px solid ${type === 'completed' ? 'var(--success)' : 'var(--primary)'};">
+                    <p style="font-weight: 600; font-size: 14px; margin-bottom: 8px;">Одговор од ${answer.expert?.full_name || 'Лекар'}:</p>
+                    <p style="font-size: 14px; color: var(--text-dark); line-height: 1.5;">${answer.answer_text.substring(0, 200)}${answer.answer_text.length > 200 ? '...' : ''}</p>
+                </div>
+            ` : '';
+
+            return `
+                <div class="question-card" style="border-left: 4px solid ${type === 'pending' ? 'var(--warning)' : type === 'assigned' ? 'var(--primary)' : type === 'pending_approval' ? '#8B5CF6' : 'var(--success)'};">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                        <div style="flex: 1;">
+                            <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${q.title}</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
+                                <span><strong>👤 Пациент:</strong> ${userName}</span>
+                                <span><strong>📧</strong> ${userEmail}</span>
+                                <span><strong>📂 Област:</strong> ${q.specialty_name || q.specialty}</span>
+                                <span><strong>📅</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
+                            </div>
+                        </div>
+                        ${statusBadge}
+                    </div>
+                    <div style="padding: 12px; background: white; border-radius: 8px;">
+                        <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${q.question_text}</p>
+                    </div>
+                    ${attachmentsHTML}
+                    ${answerPreview}
+                    ${actionButtons}
+                </div>
+            `;
+        }
+
+        // Load approved doctors list
+        async function loadDoctorsList() {
+            try {
+                const { data: doctors, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('role', 'expert')
+                    .eq('is_approved', true)
+                    .order('full_name');
+
+                if (error) throw error;
+
+                const container = document.getElementById('superAdminDoctorsList');
+                if (!doctors || doctors.length === 0) {
+                    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-light);"><p>Нема одобрени лекари.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+                        ${doctors.map(d => `
+                            <div style="padding: 16px; background: white; border-radius: 12px; border: 1px solid var(--border);">
+                                <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">${d.full_name}</h4>
+                                <p style="font-size: 14px; color: var(--text-light);">🏥 ${d.specialization}</p>
+                                <p style="font-size: 14px; color: var(--text-light);">📧 ${d.email}</p>
+                                <p style="font-size: 14px; color: var(--text-light);">📅 ${d.experience} год. искуство</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading doctors list:', error);
+            }
+        }
+
+        // Open assign question modal
+        async function openAssignModal(questionId) {
+            try {
+                // Get question details
+                const { data: question, error } = await supabaseClient
+                    .from('questions')
+                    .select('*, user:user_id (full_name, email)')
+                    .eq('id', questionId)
+                    .single();
+
+                if (error) throw error;
+
+                // Get approved doctors for this specialty
+                const { data: doctors } = await supabaseClient
+                    .from('users')
+                    .select('id, full_name, specialization, email')
+                    .eq('role', 'expert')
+                    .eq('is_approved', true)
+                    .order('full_name');
+
+                // Populate modal
+                document.getElementById('assignQuestionId').value = questionId;
+                document.getElementById('assignQuestionDetails').innerHTML = `
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">${question.title}</h4>
+                    <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
+                        <strong>Пациент:</strong> ${question.user?.full_name || 'Непознат'} (${question.user?.email || ''})
+                    </p>
+                    <p style="font-size: 14px; color: var(--text-light);"><strong>Област:</strong> ${question.specialty_name || question.specialty}</p>
+                `;
+
+                // Populate doctor select - prioritize matching specialty
+                const matchingDoctors = doctors.filter(d => d.specialization === question.specialty);
+                const otherDoctors = doctors.filter(d => d.specialization !== question.specialty);
+                
+                let optionsHTML = '<option value="">-- Избери лекар --</option>';
+                if (matchingDoctors.length > 0) {
+                    optionsHTML += '<optgroup label="✓ Соодветна специјализација">';
+                    matchingDoctors.forEach(d => {
+                        optionsHTML += `<option value="${d.id}">${d.full_name} - ${d.specialization}</option>`;
+                    });
+                    optionsHTML += '</optgroup>';
+                }
+                if (otherDoctors.length > 0) {
+                    optionsHTML += '<optgroup label="Други лекари">';
+                    otherDoctors.forEach(d => {
+                        optionsHTML += `<option value="${d.id}">${d.full_name} - ${d.specialization}</option>`;
+                    });
+                    optionsHTML += '</optgroup>';
+                }
+                document.getElementById('assignDoctorSelect').innerHTML = optionsHTML;
+
+                // Show modal
+                document.getElementById('assignQuestionModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при отворање: ' + error.message);
+            }
+        }
+
+        function closeAssignModal(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('assignQuestionModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Confirm question assignment
+        async function confirmAssignQuestion() {
+            const questionId = document.getElementById('assignQuestionId').value;
+            const doctorId = document.getElementById('assignDoctorSelect').value;
+            const note = document.getElementById('assignNote').value;
+
+            if (!doctorId) {
+                showToast('error', 'Грешка', 'Ве молиме изберете лекар.');
+                return;
+            }
+
+            try {
+                // Update question with assignment
+                const { error: updateError } = await supabaseClient
+                    .from('questions')
+                    .update({
+                        assigned_expert_id: doctorId,
+                        status: 'assigned',
+                        admin_note: note,
+                        assigned_at: new Date().toISOString()
+                    })
+                    .eq('id', questionId);
+
+                if (updateError) throw updateError;
+
+                // Get doctor and question details for notification
+                const { data: doctor } = await supabaseClient
+                    .from('users')
+                    .select('email, full_name')
+                    .eq('id', doctorId)
+                    .single();
+
+                const { data: question } = await supabaseClient
+                    .from('questions')
+                    .select('*, user:user_id (full_name)')
+                    .eq('id', questionId)
+                    .single();
+
+                // Send email notification to doctor
+                if (doctor) {
+                    await fetch('/api/send-notification', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            to: doctor.email,
+                            subject: `[ДОДЕЛЕНО] Ново прашање за одговор: ${question.title}`,
+                            doctorName: doctor.full_name,
+                            questionTitle: question.title,
+                            questionText: question.question_text,
+                            patientName: question.user?.full_name || 'Пациент',
+                            adminNote: note,
+                            questionId: questionId,
+                            isDoctorAssignment: true
+                        })
+                    });
+                }
+
+                showToast('success', 'Успешно!', 'Прашањето е доделено на лекарот.');
+                closeAssignModal();
+                loadSuperAdminDashboard();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при доделување: ' + error.message);
+            }
+        }
+
+        // Open review answer modal
+        async function openReviewModal(questionId) {
+            try {
+                const { data: question, error } = await supabaseClient
+                    .from('questions')
+                    .select(`
+                        *,
+                        user:user_id (full_name, email),
+                        answers (
+                            id,
+                            answer_text,
+                            created_at,
+                            expert:expert_id (full_name, specialization)
+                        )
+                    `)
+                    .eq('id', questionId)
+                    .single();
+
+                if (error) throw error;
+
+                const answer = question.answers[0];
+                
+                document.getElementById('reviewQuestionId').value = questionId;
+                document.getElementById('reviewAnswerId').value = answer.id;
+                
+                document.getElementById('reviewQuestionDetails').innerHTML = `
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">${question.title}</h4>
+                    <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
+                        <strong>Пациент:</strong> ${question.user?.full_name || 'Непознат'} (${question.user?.email || ''})
+                    </p>
+                    <p style="font-size: 14px; color: var(--text-dark); line-height: 1.5; margin-top: 12px; padding: 12px; background: white; border-radius: 8px;">${question.question_text}</p>
+                `;
+
+                document.getElementById('reviewDoctorAnswer').innerHTML = `
+                    <p style="font-size: 14px; margin-bottom: 8px;"><strong>Од:</strong> ${answer.expert?.full_name || 'Лекар'} (${answer.expert?.specialization || ''})</p>
+                    <p style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
+                `;
+
+                document.getElementById('reviewFinalAnswer').value = answer.answer_text;
+
+                document.getElementById('reviewAnswerModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при отворање: ' + error.message);
+            }
+        }
+
+        function closeReviewModal(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('reviewAnswerModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Approve and send answer to patient
+        async function approveAndSendAnswer() {
+            const questionId = document.getElementById('reviewQuestionId').value;
+            const answerId = document.getElementById('reviewAnswerId').value;
+            const finalAnswer = document.getElementById('reviewFinalAnswer').value.trim();
+
+            if (!finalAnswer) {
+                showToast('error', 'Грешка', 'Одговорот не може да биде празен.');
+                return;
+            }
+
+            try {
+                // Update answer with final text and mark as approved
+                const { error: answerError } = await supabaseClient
+                    .from('answers')
+                    .update({
+                        answer_text: finalAnswer,
+                        is_approved: true,
+                        approved_at: new Date().toISOString(),
+                        approved_by: window.currentUser.id
+                    })
+                    .eq('id', answerId);
+
+                if (answerError) throw answerError;
+
+                // Update question status
+                const { error: questionError } = await supabaseClient
+                    .from('questions')
+                    .update({ status: 'completed' })
+                    .eq('id', questionId);
+
+                if (questionError) throw questionError;
+
+                // Get patient details and send notification
+                const { data: question } = await supabaseClient
+                    .from('questions')
+                    .select(`
+                        *,
+                        user:user_id (full_name, email),
+                        answers (expert:expert_id (full_name, specialization, hospital, experience))
+                    `)
+                    .eq('id', questionId)
+                    .single();
+
+                const answer = question.answers[0];
+
+                // Send email to patient
+                if (question.user?.email) {
+                    await fetch('/api/send-notification', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            to: question.user.email,
+                            subject: `Одговор на вашето прашање: ${question.title}`,
+                            patientName: question.user.full_name,
+                            questionTitle: question.title,
+                            questionText: question.question_text,
+                            answerText: finalAnswer,
+                            doctorName: answer.expert?.full_name || 'Медицински стручњак',
+                            doctorSpecialization: answer.expert?.specialization || '',
+                            doctorHospital: answer.expert?.hospital || '',
+                            isPatientAnswer: true
+                        })
+                    });
+                }
+
+                showToast('success', 'Успешно!', 'Одговорот е одобрен и испратен до пациентот.');
+                closeReviewModal();
+                loadSuperAdminDashboard();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при одобрување: ' + error.message);
+            }
+        }
+
     </script>
 </body>
 </html>
