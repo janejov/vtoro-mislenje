@@ -4321,7 +4321,7 @@
                 if (error) throw error;
 
                 // Categorize questions
-                const pendingQuestions = questions.filter(q => q.status === 'pending_review' || (!q.status && !q.assigned_expert_id));
+                const pendingQuestions = questions.filter(q => q.status === 'pending_review' || q.status === 'pending' || (!q.status && !q.assigned_expert_id));
                 const assignedQuestions = questions.filter(q => q.status === 'assigned' || (q.assigned_expert_id && (!q.answers || q.answers.length === 0)));
                 const pendingAnswers = questions.filter(q => q.answers && q.answers.length > 0 && q.answers.some(a => !a.is_approved));
                 const completedQuestions = questions.filter(q => q.status === 'completed' || (q.answers && q.answers.length > 0 && q.answers.every(a => a.is_approved)));
