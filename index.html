@@ -3683,15 +3683,32 @@
                 console.log('Loading expert questions...');
                 console.log('Current user:', window.currentUser);
                 console.log('Doctor specialization:', window.currentUser.specialization);
+                console.log('Doctor ID:', window.currentUser.id);
                 
-                // DEBUG: Check all questions in database
-                const { data: allQuestions } = await supabaseClient
+                // Get questions that are either:
+                // 1. Assigned specifically to this doctor, OR
+                // 2. In the doctor's specialty (and not assigned to someone else)
+                
+                // First, get questions assigned to this doctor
+                const { data: assignedQuestions, error: assignedError } = await supabaseClient
                     .from('questions')
-                    .select('id, title, specialty, specialty_name, user_id');
-                console.log('ALL questions in database:', allQuestions);
-                
-                // Get only questions in expert's specialty (using left join to include all questions)
-                const { data: questions, error } = await supabaseClient
+                    .select(`
+                        *,
+                        user:user_id (full_name, email),
+                        answers!left (
+                            id,
+                            answer_text,
+                            created_at,
+                            expert:expert_id (full_name)
+                        )
+                    `)
+                    .eq('assigned_expert_id', window.currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                console.log('Assigned questions:', assignedQuestions, 'Error:', assignedError);
+
+                // Then, get unassigned questions in doctor's specialty
+                const { data: specialtyQuestions, error: specialtyError } = await supabaseClient
                     .from('questions')
                     .select(`
                         *,
@@ -3704,53 +3721,47 @@
                         )
                     `)
                     .eq('specialty', window.currentUser.specialization)
+                    .is('assigned_expert_id', null)
                     .order('created_at', { ascending: false });
 
-                console.log('Questions query result:', { questions, error });
-                console.log('Number of questions found:', questions?.length || 0);
-                
-                // Debug: Log attachments for each question
-                if (questions && questions.length > 0) {
-                    questions.forEach(q => {
-                        console.log(`Question ${q.id} - Title: ${q.title}`);
-                        console.log(`  - Attachments:`, q.attachments);
-                        console.log(`  - Attachments type:`, typeof q.attachments);
-                        console.log(`  - Attachments is array:`, Array.isArray(q.attachments));
-                        console.log(`  - Attachments length:`, q.attachments?.length || 0);
-                    });
-                }
+                console.log('Specialty questions (unassigned):', specialtyQuestions, 'Error:', specialtyError);
 
-                if (error) throw error;
+                if (assignedError) throw assignedError;
+                if (specialtyError) throw specialtyError;
+
+                // Combine and deduplicate questions
+                const allQuestions = [...(assignedQuestions || [])];
+                const assignedIds = new Set(allQuestions.map(q => q.id));
+                
+                (specialtyQuestions || []).forEach(q => {
+                    if (!assignedIds.has(q.id)) {
+                        allQuestions.push(q);
+                    }
+                });
+
+                // Sort by created_at descending
+                allQuestions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+                console.log('Total questions for doctor:', allQuestions.length);
 
                 const container = document.getElementById('expertQuestions');
 
-                if (questions.length === 0) {
+                if (allQuestions.length === 0) {
                     container.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
                             <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
                             <h3>Нема прашања</h3>
-                            <p>Моментално нема прашања за вашата специјализација (${window.currentUser.specialization}).</p>
+                            <p>Моментално нема прашања за вашата специјализација (${window.currentUser.specialization}) или доделени на вас.</p>
                         </div>
                     `;
                     return;
                 }
 
-                // Separate answered/unanswered questions (keep all questions regardless of user data)
-                const unansweredQuestions = questions.filter(q => !q.answers || q.answers.length === 0);
-                const answeredQuestions = questions.filter(q => q.answers && q.answers.length > 0);
+                // Separate answered/unanswered questions
+                const unansweredQuestions = allQuestions.filter(q => !q.answers || q.answers.length === 0);
+                const answeredQuestions = allQuestions.filter(q => q.answers && q.answers.length > 0);
                 console.log('Unanswered questions:', unansweredQuestions.length);
                 console.log('Answered questions:', answeredQuestions.length);
-
-                if (questions.length === 0) {
-                    container.innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
-                            <div style="font-size: 48px; margin-bottom: 16px;">📋</div>
-                            <h3>Нема валидни прашања</h3>
-                            <p>Моментално нема прашања со валидни податоци за вашата специјализација.</p>
-                        </div>
-                    `;
-                    return;
-                }
 
                 let html = '';
 
