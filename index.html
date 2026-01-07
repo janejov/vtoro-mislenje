@@ -3562,6 +3562,7 @@
                             id,
                             answer_text,
                             created_at,
+                            is_approved,
                             expert:expert_id (
                                 full_name,
                                 specialization,
@@ -3577,6 +3578,13 @@
                 console.log('Number of user questions found:', questions?.length || 0);
 
                 if (error) throw error;
+
+                // Filter answers to only show approved ones to users
+                questions.forEach(q => {
+                    if (q.answers && q.answers.length > 0) {
+                        q.answers = q.answers.filter(a => a.is_approved === true);
+                    }
+                });
 
                 const container = document.getElementById('userQuestions');
 
