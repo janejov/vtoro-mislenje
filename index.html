@@ -4320,23 +4320,27 @@
 
                 if (error) throw error;
 
-                // If user data is missing (due to RLS), fetch it separately
+                // If user data is missing (possibly due to RLS), try to fetch it separately
                 const questionsWithMissingUsers = questions.filter(q => q.user_id && !q.user);
                 if (questionsWithMissingUsers.length > 0) {
-                    const userIds = [...new Set(questionsWithMissingUsers.map(q => q.user_id))];
-                    const { data: users, error: usersError } = await supabaseClient
-                        .from('users')
-                        .select('id, full_name, email')
-                        .in('id', userIds);
-                    
-                    if (!usersError && users) {
-                        const userMap = {};
-                        users.forEach(u => { userMap[u.id] = u; });
-                        questions.forEach(q => {
-                            if (q.user_id && !q.user && userMap[q.user_id]) {
-                                q.user = userMap[q.user_id];
-                            }
-                        });
+                    try {
+                        const userIds = [...new Set(questionsWithMissingUsers.map(q => q.user_id))];
+                        const { data: users } = await supabaseClient
+                            .from('users')
+                            .select('id, full_name, email')
+                            .in('id', userIds);
+                        
+                        if (users && users.length > 0) {
+                            const userMap = {};
+                            users.forEach(u => { userMap[u.id] = u; });
+                            questions.forEach(q => {
+                                if (q.user_id && !q.user && userMap[q.user_id]) {
+                                    q.user = userMap[q.user_id];
+                                }
+                            });
+                        }
+                    } catch (userFetchError) {
+                        console.log('Could not fetch additional user data:', userFetchError);
                     }
                 }
 
@@ -4409,9 +4413,9 @@
 
         // Render question card for Super Admin
         function renderSuperAdminQuestionCard(q, type) {
-            // Get user info with fallback to user_id if user object is missing
-            const userName = q.user?.full_name || (q.user_id ? `Корисник ID: ${q.user_id.substring(0, 8)}...` : 'Непознат корисник');
-            const userEmail = q.user?.email || (q.user_id ? '(email недостапен)' : '');
+            // Get user info - show user_id as fallback if user object is missing
+            const userName = q.user?.full_name || (q.user_id ? `ID: ${q.user_id.substring(0, 8)}...` : 'Непознат корисник');
+            const userEmail = q.user?.email || '';
             const doctorName = q.assigned_doctor?.full_name || 'Не е доделен';
             const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
             
