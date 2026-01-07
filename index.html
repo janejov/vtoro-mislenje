@@ -1533,10 +1533,24 @@
 
             <!-- User Dashboard -->
             <div id="userDashboard" class="hidden">
+                <!-- Question Credits Display -->
+                <div id="creditsDisplay" class="glass-card hidden" style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border: 2px solid var(--success); margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="font-size: 20px; font-weight: 700; color: #065F46; margin-bottom: 8px;">🎟️ Имате достапни прашања!</h3>
+                            <p style="color: #047857; font-size: 16px;">Преостанати прашања: <strong id="creditsCount" style="font-size: 24px;">0</strong></p>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="color: #065F46; font-size: 14px;">Можете да поставите прашање без дополнително плаќање.</p>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="glass-card">
                     <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Постави ново прашање</h3>
                     
-                    <!-- Plan Selection -->
+                    <!-- Plan Selection - hidden when user has credits -->
+                    <div id="planSelectionSection">
                     <div class="form-group">
                         <label class="form-label" style="font-size: 18px; font-weight: 600; margin-bottom: 16px; display: block;">Изберете план</label>
                         <div id="planSelection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
@@ -1576,6 +1590,7 @@
                         </div>
                         <input type="hidden" id="selectedPlan" value="">
                     </div>
+                    </div> <!-- End planSelectionSection -->
 
                     <div class="form-group">
                         <label class="form-label">Наслов</label>
@@ -1614,8 +1629,11 @@
                         <div id="fileList" style="margin-top: 12px;"></div>
                     </div>
 
-                    <button class="btn btn-primary" onclick="initiatePayment()" style="width: 100%; padding: 16px; font-size: 18px;">
+                    <button id="paymentSubmitBtn" class="btn btn-primary" onclick="initiatePayment()" style="width: 100%; padding: 16px; font-size: 18px;">
                         💳 Плати и испрати прашање
+                    </button>
+                    <button id="creditSubmitBtn" class="btn btn-primary hidden" onclick="submitQuestionWithCredits()" style="width: 100%; padding: 16px; font-size: 18px; background: var(--success);">
+                        ✓ Испрати прашање (од достапни кредити)
                     </button>
                     <p style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--text-light);">
                         🔒 Сигурно плаќање преку Stripe
@@ -2693,6 +2711,142 @@
 
         // Selected plan tracker
         let selectedPlanId = null;
+        let userCredits = 0;
+
+        // Load and display user credits
+        async function loadUserCredits() {
+            if (!window.currentUser || window.currentUser.role !== 'user') return;
+            
+            try {
+                const { data: userData, error } = await supabaseClient
+                    .from('users')
+                    .select('question_credits')
+                    .eq('id', window.currentUser.id)
+                    .single();
+                
+                if (error) throw error;
+                
+                userCredits = userData?.question_credits || 0;
+                updateCreditsDisplay();
+            } catch (error) {
+                console.error('Error loading credits:', error);
+                userCredits = 0;
+                updateCreditsDisplay();
+            }
+        }
+
+        // Update the credits display in UI
+        function updateCreditsDisplay() {
+            const creditsDisplay = document.getElementById('creditsDisplay');
+            const creditsCount = document.getElementById('creditsCount');
+            const planSelectionSection = document.getElementById('planSelectionSection');
+            const paymentSubmitBtn = document.getElementById('paymentSubmitBtn');
+            const creditSubmitBtn = document.getElementById('creditSubmitBtn');
+            
+            if (!creditsDisplay) return;
+            
+            if (userCredits > 0) {
+                // User has credits - show credits display, hide plan selection
+                creditsDisplay.classList.remove('hidden');
+                creditsCount.textContent = userCredits;
+                planSelectionSection.style.display = 'none';
+                paymentSubmitBtn.classList.add('hidden');
+                creditSubmitBtn.classList.remove('hidden');
+            } else {
+                // No credits - hide credits display, show plan selection
+                creditsDisplay.classList.add('hidden');
+                planSelectionSection.style.display = 'block';
+                paymentSubmitBtn.classList.remove('hidden');
+                creditSubmitBtn.classList.add('hidden');
+            }
+        }
+
+        // Submit question using credits (no payment)
+        async function submitQuestionWithCredits() {
+            const title = document.getElementById('questionTitle').value.trim();
+            const specialty = document.getElementById('questionSpecialty').value;
+            const text = document.getElementById('questionText').value.trim();
+
+            if (!title || !specialty || !text) {
+                showToast('error', 'Грешка', 'Ве молиме пополнете ги сите полиња.');
+                return;
+            }
+
+            if (userCredits <= 0) {
+                showToast('error', 'Грешка', 'Немате достапни кредити. Ве молиме купете план.');
+                return;
+            }
+
+            try {
+                showToast('info', 'Обработка...', 'Се испраќа прашањето...');
+
+                const selectedOption = document.getElementById('questionSpecialty').selectedOptions[0];
+                const specialtyName = selectedOption.text;
+
+                // Insert the question
+                const { data: questionData, error: questionError } = await supabaseClient
+                    .from('questions')
+                    .insert([{
+                        title: title,
+                        specialty: specialty,
+                        specialty_name: specialtyName,
+                        question_text: text,
+                        user_id: window.currentUser.id,
+                        payment_status: 'paid',
+                        plan_type: 'credit'
+                    }])
+                    .select()
+                    .single();
+
+                if (questionError) throw questionError;
+
+                // Deduct credit from user
+                const { error: creditError } = await supabaseClient
+                    .from('users')
+                    .update({ question_credits: userCredits - 1 })
+                    .eq('id', window.currentUser.id);
+
+                if (creditError) throw creditError;
+
+                // Upload files if any
+                let uploadedFiles = [];
+                if (selectedFiles && selectedFiles.length > 0) {
+                    showToast('info', 'Се прикачуваат фајлови...', 'Ве молиме почекајте...');
+                    uploadedFiles = await uploadFiles(questionData.id);
+                    
+                    if (uploadedFiles.length > 0) {
+                        await supabaseClient
+                            .from('questions')
+                            .update({ attachments: uploadedFiles })
+                            .eq('id', questionData.id);
+                    }
+                }
+
+                // Send notification to Super Admin
+                try {
+                    await sendSuperAdminNotification(questionData, uploadedFiles);
+                } catch (emailError) {
+                    console.error('Error sending notification:', emailError);
+                }
+
+                // Clear form
+                document.getElementById('questionTitle').value = '';
+                document.getElementById('questionSpecialty').value = '';
+                document.getElementById('questionText').value = '';
+                selectedFiles = [];
+                displayFileList();
+
+                // Update credits display
+                userCredits -= 1;
+                updateCreditsDisplay();
+
+                showToast('success', 'Успешно!', 'Прашањето е успешно испратено!');
+                loadUserQuestions();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при испраќање: ' + error.message);
+                console.error(error);
+            }
+        }
 
         // Plan selection function
         function selectPlan(planId) {
@@ -2810,6 +2964,11 @@
             try {
                 showToast('info', 'Обработка...', 'Плаќањето е успешно! Се испраќа прашањето...');
 
+                // Get the plan details
+                const plan = PRICING_PLANS[questionData.plan];
+                const totalQuestions = plan ? plan.questions : 1;
+                const remainingCredits = totalQuestions - 1; // -1 because we're submitting one question now
+
                 // Insert the question
                 const { data: newQuestion, error: questionError } = await supabaseClient
                     .from('questions')
@@ -2828,6 +2987,30 @@
 
                 if (questionError) throw questionError;
 
+                // Add remaining credits to user account
+                if (remainingCredits > 0) {
+                    // Get current credits
+                    const { data: userData } = await supabaseClient
+                        .from('users')
+                        .select('question_credits')
+                        .eq('id', questionData.userId)
+                        .single();
+                    
+                    const currentCredits = userData?.question_credits || 0;
+                    
+                    // Update with new credits
+                    const { error: creditError } = await supabaseClient
+                        .from('users')
+                        .update({ question_credits: currentCredits + remainingCredits })
+                        .eq('id', questionData.userId);
+                    
+                    if (creditError) {
+                        console.error('Error adding credits:', creditError);
+                    } else {
+                        console.log(`Added ${remainingCredits} credits to user account`);
+                    }
+                }
+
                 // Send notification to Super Admin
                 try {
                     await sendSuperAdminNotification(newQuestion, []);
@@ -2835,11 +3018,12 @@
                     console.error('Error sending notification:', emailError);
                 }
 
-                showToast('success', 'Успешно!', 'Плаќањето е успешно и прашањето е испратено!');
+                showToast('success', 'Успешно!', `Плаќањето е успешно и прашањето е испратено!${remainingCredits > 0 ? ` Имате уште ${remainingCredits} прашања на располагање.` : ''}`);
                 
-                // Reload questions
+                // Reload questions and credits
                 if (window.currentUser && window.currentUser.role === 'user') {
                     loadUserQuestions();
+                    loadUserCredits();
                 }
 
             } catch (error) {
@@ -2921,6 +3105,7 @@
                 if (userData.role === 'user') {
                     document.getElementById('userDashboard').classList.remove('hidden');
                     loadUserQuestions();
+                    loadUserCredits();
                 } else if (userData.role === 'admin') {
                     document.getElementById('adminDashboard').classList.remove('hidden');
                     loadPendingDoctors();
@@ -4229,6 +4414,7 @@
                     if (userData.role === 'user') {
                         document.getElementById('userDashboard').classList.remove('hidden');
                         loadUserQuestions();
+                        loadUserCredits();
                         // Check for payment success after redirect
                         checkPaymentSuccess();
                     } else if (userData.role === 'admin') {
