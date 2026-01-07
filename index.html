@@ -2878,21 +2878,63 @@
                 return;
             }
 
-            // Store question data in sessionStorage for after payment
-            const questionData = {
-                title: title,
-                specialty: specialty,
-                specialtyName: document.getElementById('questionSpecialty').selectedOptions[0].text,
-                text: text,
-                plan: selectedPlanId,
-                userId: window.currentUser.id,
-                userEmail: window.currentUser.email,
-                userName: window.currentUser.full_name
-            };
-            sessionStorage.setItem('pendingQuestion', JSON.stringify(questionData));
-
             try {
+                // Upload files BEFORE payment redirect (if any files selected)
+                let uploadedFiles = [];
+                if (selectedFiles && selectedFiles.length > 0) {
+                    showToast('info', 'Се прикачуваат фајлови...', 'Ве молиме почекајте...');
+                    
+                    // Create a temporary ID for the upload folder
+                    const tempUploadId = `pending_${window.currentUser.id}_${Date.now()}`;
+                    
+                    for (let file of selectedFiles) {
+                        try {
+                            const fileExt = file.name.split('.').pop();
+                            const fileName = `${tempUploadId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+                            
+                            const { data, error } = await supabaseClient.storage
+                                .from('question-attachments')
+                                .upload(fileName, file);
+                            
+                            if (error) {
+                                console.error('File upload error:', error);
+                                throw error;
+                            }
+                            
+                            // Get public URL
+                            const { data: urlData } = supabaseClient.storage
+                                .from('question-attachments')
+                                .getPublicUrl(fileName);
+                            
+                            uploadedFiles.push({
+                                name: file.name,
+                                url: urlData.publicUrl,
+                                type: file.type,
+                                size: file.size,
+                                storagePath: fileName
+                            });
+                        } catch (error) {
+                            console.error('Error uploading file:', file.name, error);
+                            showToast('warning', 'Предупредување', `Грешка при прикачување на "${file.name}"`);
+                        }
+                    }
+                }
+
                 showToast('info', 'Пренасочување...', 'Се пренасочувате кон страницата за плаќање...');
+
+                // Store question data in sessionStorage for after payment
+                const questionData = {
+                    title: title,
+                    specialty: specialty,
+                    specialtyName: document.getElementById('questionSpecialty').selectedOptions[0].text,
+                    text: text,
+                    plan: selectedPlanId,
+                    userId: window.currentUser.id,
+                    userEmail: window.currentUser.email,
+                    userName: window.currentUser.full_name,
+                    attachments: uploadedFiles // Store the uploaded file URLs
+                };
+                sessionStorage.setItem('pendingQuestion', JSON.stringify(questionData));
 
                 // Create checkout session via API
                 const response = await fetch('/api/create-checkout-session', {
@@ -2969,7 +3011,10 @@
                 const totalQuestions = plan ? plan.questions : 1;
                 const remainingCredits = totalQuestions - 1; // -1 because we're submitting one question now
 
-                // Insert the question
+                // Get pre-uploaded attachments from questionData
+                const attachments = questionData.attachments || [];
+
+                // Insert the question with attachments
                 const { data: newQuestion, error: questionError } = await supabaseClient
                     .from('questions')
                     .insert([{
@@ -2980,7 +3025,8 @@
                         user_id: questionData.userId,
                         payment_status: 'paid',
                         stripe_session_id: sessionId,
-                        plan_type: questionData.plan
+                        plan_type: questionData.plan,
+                        attachments: attachments.length > 0 ? attachments : null
                     }])
                     .select()
                     .single();
@@ -3011,9 +3057,9 @@
                     }
                 }
 
-                // Send notification to Super Admin
+                // Send notification to Super Admin with attachments
                 try {
-                    await sendSuperAdminNotification(newQuestion, []);
+                    await sendSuperAdminNotification(newQuestion, attachments);
                 } catch (emailError) {
                     console.error('Error sending notification:', emailError);
                 }
