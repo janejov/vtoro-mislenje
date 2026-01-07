@@ -4320,6 +4320,26 @@
 
                 if (error) throw error;
 
+                // If user data is missing (due to RLS), fetch it separately
+                const questionsWithMissingUsers = questions.filter(q => q.user_id && !q.user);
+                if (questionsWithMissingUsers.length > 0) {
+                    const userIds = [...new Set(questionsWithMissingUsers.map(q => q.user_id))];
+                    const { data: users, error: usersError } = await supabaseClient
+                        .from('users')
+                        .select('id, full_name, email')
+                        .in('id', userIds);
+                    
+                    if (!usersError && users) {
+                        const userMap = {};
+                        users.forEach(u => { userMap[u.id] = u; });
+                        questions.forEach(q => {
+                            if (q.user_id && !q.user && userMap[q.user_id]) {
+                                q.user = userMap[q.user_id];
+                            }
+                        });
+                    }
+                }
+
                 // Categorize questions
                 const pendingQuestions = questions.filter(q => q.status === 'pending_review' || q.status === 'pending' || (!q.status && !q.assigned_expert_id));
                 const assignedQuestions = questions.filter(q => q.status === 'assigned' || (q.assigned_expert_id && (!q.answers || q.answers.length === 0)));
@@ -4389,8 +4409,9 @@
 
         // Render question card for Super Admin
         function renderSuperAdminQuestionCard(q, type) {
-            const userName = q.user?.full_name || 'Непознат корисник';
-            const userEmail = q.user?.email || '';
+            // Get user info with fallback to user_id if user object is missing
+            const userName = q.user?.full_name || (q.user_id ? `Корисник ID: ${q.user_id.substring(0, 8)}...` : 'Непознат корисник');
+            const userEmail = q.user?.email || (q.user_id ? '(email недостапен)' : '');
             const doctorName = q.assigned_doctor?.full_name || 'Не е доделен';
             const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
             
