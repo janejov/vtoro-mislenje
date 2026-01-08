@@ -2491,18 +2491,23 @@
                 e.target.reset();
                 document.getElementById('charCount').textContent = '0';
 
-                // Also save to Supabase (optional)
-                if (window.supabase) {
-                    await window.supabase
-                        .from('contact_submissions')
-                        .insert([{
-                            name: formData.get('name'),
-                            email: formData.get('email'),
-                            phone: formData.get('phone'),
-                            subject: formData.get('subject'),
-                            message: formData.get('message'),
-                            created_at: new Date().toISOString()
-                        }]);
+                // Also save to Supabase (optional - only if table exists)
+                try {
+                    if (typeof supabaseClient !== 'undefined') {
+                        await supabaseClient
+                            .from('contact_submissions')
+                            .insert([{
+                                name: formData.get('name'),
+                                email: formData.get('email'),
+                                phone: formData.get('phone'),
+                                subject: formData.get('subject'),
+                                message: formData.get('message'),
+                                created_at: new Date().toISOString()
+                            }]);
+                    }
+                } catch (dbError) {
+                    // Silently ignore if table doesn't exist - email was already sent
+                    console.log('Contact not saved to database (table may not exist):', dbError);
                 }
 
             } catch (error) {
