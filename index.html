@@ -187,6 +187,57 @@
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
 
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .google-btn:hover {
+            background: #f5f5f5;
+            border-color: #ccc;
+        }
+
+        .google-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .divider-text {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .divider-text::before {
+            margin-right: 10px;
+        }
+
+        .divider-text::after {
+            margin-left: 10px;
+        }
+
         .language-switcher {
             display: flex;
             flex-direction: column;
@@ -1793,6 +1844,19 @@
                 <button class="modal-close" onclick="closeSignin()">×</button>
             </div>
             <form id="signinForm" class="contact-form" style="max-width: 100%;">
+                <!-- Google Sign In Button -->
+                <button type="button" class="google-btn" onclick="signInWithGoogle()">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    <span data-i18n="googleSignIn">Најави се со Google</span>
+                </button>
+                
+                <div class="divider-text" data-i18n="orDivider">или</div>
+                
                 <div class="form-group">
                     <label for="signin-email">Email адреса</label>
                     <input type="email" id="signin-email" name="email" required placeholder="vasa.email@primer.com">
@@ -1819,6 +1883,20 @@
                 <button class="modal-close" onclick="closeRegister()">×</button>
             </div>
             <form id="registerForm" class="contact-form" style="max-width: 100%;">
+                <!-- Google Sign Up Button (hidden for doctors) -->
+                <div id="googleRegisterBtn">
+                    <button type="button" class="google-btn" onclick="signInWithGoogle()">
+                        <svg viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span data-i18n="googleRegister">Регистрирај се со Google</span>
+                    </button>
+                    <div class="divider-text" data-i18n="orDivider">или</div>
+                </div>
+                
                 <div class="form-group">
                     <label for="register-name">Име и презиме</label>
                     <input type="text" id="register-name" name="name" required placeholder="Јане Јованов">
@@ -2099,6 +2177,9 @@
                 navDoctorPrompt: 'Сте лекар?',
                 navDoctorLoginLink: 'Најава',
                 navDoctorRegisterLink: 'Регистрација',
+                googleSignIn: 'Најави се со Google',
+                googleRegister: 'Регистрирај се со Google',
+                orDivider: 'или',
                 heroTitle: 'Стручно медицинско мислење на еден клик',
                 heroSubtitle: 'Добијте професионални одговори на вашите здравствени прашања од сертифицирани лекари, брзо и доверливо.',
                 heroButton1: 'Поставете прашање',
@@ -2183,6 +2264,9 @@
                 navDoctorPrompt: 'Jeni mjek?',
                 navDoctorLoginLink: 'Hyrje',
                 navDoctorRegisterLink: 'Regjistrimi',
+                googleSignIn: 'Hyr me Google',
+                googleRegister: 'Regjistrohu me Google',
+                orDivider: 'ose',
                 heroTitle: 'Mendim mjekësor profesional me një klikim',
                 heroSubtitle: 'Merrni përgjigje profesionale për pyetjet tuaja shëndetësore nga mjekë të certifikuar, shpejt dhe në mënyrë konfidenciale.',
                 heroButton1: 'Bëni një pyetje',
@@ -2267,6 +2351,9 @@
                 navDoctorPrompt: 'Are you a doctor?',
                 navDoctorLoginLink: 'Login',
                 navDoctorRegisterLink: 'Register',
+                googleSignIn: 'Sign in with Google',
+                googleRegister: 'Register with Google',
+                orDivider: 'or',
                 heroTitle: 'Expert medical opinion at one click',
                 heroSubtitle: 'Get professional answers to your health questions from certified doctors, quickly and confidentially.',
                 heroButton1: 'Ask a question',
@@ -2597,6 +2684,26 @@
         // Modal type tracking
         let currentModalType = 'user'; // 'user' or 'doctor'
 
+        // Google Sign In
+        async function signInWithGoogle() {
+            try {
+                showToast('info', 'Пренасочување...', 'Се пренасочувате кон Google...');
+                
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
+                
+                if (error) throw error;
+                
+            } catch (error) {
+                console.error('Google sign-in error:', error);
+                showToast('error', 'Грешка', 'Грешка при најава со Google: ' + error.message);
+            }
+        }
+
         function openSignin(type = 'user') {
             currentModalType = type;
             document.getElementById('signinModal').classList.remove('hidden');
@@ -2625,10 +2732,13 @@
             // Show/hide doctor fields and update title
             const doctorFields = document.getElementById('doctorFields');
             const modalTitle = document.getElementById('registerModalTitle');
+            const googleRegisterBtn = document.getElementById('googleRegisterBtn');
             
             if (type === 'doctor') {
                 doctorFields.classList.remove('hidden');
                 modalTitle.textContent = 'Регистрација за лекари';
+                // Hide Google button for doctors (they need to fill in specialty info)
+                if (googleRegisterBtn) googleRegisterBtn.classList.add('hidden');
                 // Make doctor fields required
                 document.getElementById('doctor-specialty').required = true;
                 document.getElementById('doctor-experience').required = true;
@@ -2638,6 +2748,8 @@
             } else {
                 doctorFields.classList.add('hidden');
                 modalTitle.textContent = 'Регистрација';
+                // Show Google button for regular users
+                if (googleRegisterBtn) googleRegisterBtn.classList.remove('hidden');
                 // Make doctor fields not required
                 document.getElementById('doctor-specialty').required = false;
                 document.getElementById('doctor-experience').required = false;
