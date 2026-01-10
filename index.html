@@ -1651,11 +1651,16 @@
             <div class="nav-container">
                 <a href="#" class="logo-link" onclick="return false;">
                     <span class="logo-icon">⚕️</span>
-                    <span>Второ мислење</span>
+                    <span data-i18n="siteName">Второ мислење</span>
                 </a>
                 <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="language-switcher" style="flex-direction: row; padding: 4px 8px;">
+                        <button class="lang-btn active" onclick="switchLanguage('mk')">МК</button>
+                        <button class="lang-btn" onclick="switchLanguage('sq')">SQ</button>
+                        <button class="lang-btn" onclick="switchLanguage('en')">EN</button>
+                    </div>
                     <span id="dashboardUserName" style="color: var(--text-light); font-weight: 500;"></span>
-                    <button class="btn btn-primary" onclick="logout()">Одјави се</button>
+                    <button class="btn btn-primary" onclick="logout()" data-i18n="dashLogout">Одјави се</button>
                 </div>
             </div>
         </nav>
@@ -1664,7 +1669,7 @@
             <div class="glass-card">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
-                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Добредојдовте назад!</h2>
+                        <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" data-i18n="dashWelcome">Добредојдовте назад!</h2>
                         <p id="userDisplay" style="color: var(--text-light);"></p>
                     </div>
                 </div>
@@ -1676,26 +1681,26 @@
                 <div id="creditsDisplay" class="glass-card hidden" style="background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%); border: 2px solid var(--success); margin-bottom: 24px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <h3 style="font-size: 20px; font-weight: 700; color: #065F46; margin-bottom: 8px;">🎟️ Имате достапни прашања!</h3>
-                            <p style="color: #047857; font-size: 16px;">Преостанати прашања: <strong id="creditsCount" style="font-size: 24px;">0</strong></p>
+                            <h3 style="font-size: 20px; font-weight: 700; color: #065F46; margin-bottom: 8px;" data-i18n="dashCreditsTitle">🎟️ Имате достапни прашања!</h3>
+                            <p style="color: #047857; font-size: 16px;"><span data-i18n="dashCreditsRemaining">Преостанати прашања:</span> <strong id="creditsCount" style="font-size: 24px;">0</strong></p>
                         </div>
                         <div style="text-align: right;">
-                            <p style="color: #065F46; font-size: 14px;">Можете да поставите прашање без дополнително плаќање.</p>
+                            <p style="color: #065F46; font-size: 14px;" data-i18n="dashCreditsInfo">Можете да поставите прашање без дополнително плаќање.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="glass-card">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Постави ново прашање</h3>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashNewQuestion">Постави ново прашање</h3>
                     
                     <!-- Plan Selection - hidden when user has credits -->
                     <div id="planSelectionSection">
                     <div class="form-group">
-                        <label class="form-label" style="font-size: 18px; font-weight: 600; margin-bottom: 16px; display: block;">Изберете план</label>
+                        <label class="form-label" style="font-size: 18px; font-weight: 600; margin-bottom: 16px; display: block;" data-i18n="dashSelectPlan">Изберете план</label>
                         <div id="planSelection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
                             <!-- Basic Plan -->
                             <div class="plan-card" data-plan="basic" data-price="999" onclick="selectPlan('basic')" style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;">
-                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Основен</h4>
+                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;" data-i18n="pricingBasicTitle">Основен</h4>
                                 <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">999 <span style="font-size: 16px; font-weight: 400;">МКД</span></div>
                                 <ul style="list-style: none; padding: 0; margin: 16px 0; text-align: left; font-size: 14px; color: var(--text-light);">
                                     <li style="padding: 6px 0;">✓ 1 медицинско прашање</li>
@@ -1757,30 +1762,30 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Детали</label>
-                        <textarea class="form-input" id="questionText" rows="4" placeholder="Опишете го вашето прашање детално..."></textarea>
+                        <label class="form-label" data-i18n="dashYourQuestion">Детали</label>
+                        <textarea class="form-input" id="questionText" rows="4" placeholder="Опишете го вашето прашање детално..." data-i18n-placeholder="dashQuestionPlaceholder"></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Прикачи документи (опционално)</label>
-                        <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">Можете да прикачите медицински документи, слики, резултати од анализи (максимум 5 фајлови, до 10MB секој)</p>
+                        <label class="form-label" data-i18n="dashAttachments">Прикачи документи (опционално)</label>
+                        <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;" data-i18n="dashAttachmentsInfo">Можете да прикачите медицински документи, слики, резултати од анализи (максимум 5 фајлови, до 10MB секој)</p>
                         <input type="file" id="questionFiles" multiple accept="image/*,.pdf,.doc,.docx" class="form-input" style="padding: 10px;">
                         <div id="fileList" style="margin-top: 12px;"></div>
                     </div>
 
-                    <button id="paymentSubmitBtn" class="btn btn-primary" onclick="initiatePayment()" style="width: 100%; padding: 16px; font-size: 18px;">
+                    <button id="paymentSubmitBtn" class="btn btn-primary" onclick="initiatePayment()" style="width: 100%; padding: 16px; font-size: 18px;" data-i18n="dashPayAndSubmit">
                         💳 Плати и испрати прашање
                     </button>
-                    <button id="creditSubmitBtn" class="btn btn-primary hidden" onclick="submitQuestionWithCredits()" style="width: 100%; padding: 16px; font-size: 18px; background: var(--success);">
+                    <button id="creditSubmitBtn" class="btn btn-primary hidden" onclick="submitQuestionWithCredits()" style="width: 100%; padding: 16px; font-size: 18px; background: var(--success);" data-i18n="dashSubmitQuestion">
                         ✓ Испрати прашање (од достапни кредити)
                     </button>
-                    <p style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--text-light);">
+                    <p style="text-align: center; margin-top: 12px; font-size: 14px; color: var(--text-light);" data-i18n="dashSecurePayment">
                         🔒 Сигурно плаќање преку Stripe
                     </p>
                 </div>
 
                 <div class="glass-card">
-                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;">Мои прашања</h3>
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px;" data-i18n="dashPreviousQuestions">Мои прашања</h3>
                     <div id="userQuestions"></div>
                 </div>
             </div>
@@ -2503,7 +2508,34 @@
                 footerPrivacy: 'Политика за приватност',
                 footerTerms: 'Услови за користење',
                 footerContact: 'Контакт',
-                footerRights: '© 2025 Второ мислење. Сите права задржани.'
+                footerRights: '© 2025 Второ мислење. Сите права задржани.',
+                // Dashboard translations
+                dashLogout: 'Одјави се',
+                dashWelcome: 'Добредојдовте назад!',
+                dashCreditsTitle: '🎟️ Имате достапни прашања!',
+                dashCreditsRemaining: 'Преостанати прашања:',
+                dashCreditsInfo: 'Можете да поставите прашање без дополнително плаќање.',
+                dashNewQuestion: 'Постави ново прашање',
+                dashSelectPlan: 'Изберете план',
+                dashYourQuestion: 'Вашето прашање',
+                dashQuestionPlaceholder: 'Опишете ги детално вашите симптоми или здравствени прашања...',
+                dashAttachments: 'Прикачете документи (опционално)',
+                dashAttachmentsInfo: 'Можете да прикачите медицински наоди, резултати од анализи, слики итн.',
+                dashChooseFiles: 'Изберете датотеки',
+                dashSelectedFiles: 'Избрани датотеки:',
+                dashSubmitQuestion: 'Испрати прашање',
+                dashPayAndSubmit: 'Плати и испрати',
+                dashSecurePayment: '🔒 Сигурно плаќање преку Stripe',
+                dashPreviousQuestions: 'Претходни прашања',
+                dashNoQuestions: 'Немате претходни прашања.',
+                dashStatus: 'Статус',
+                dashStatusPending: 'Чека одговор',
+                dashStatusAnswered: 'Одговорено',
+                dashViewAnswer: 'Види одговор',
+                dashUserRole: 'Корисник',
+                dashDoctorRole: 'Лекар',
+                dashAdminRole: 'Администратор',
+                dashSuperAdminRole: 'Супер Админ'
             },
             sq: {
                 siteName: 'Mendimi i dytë',
@@ -2590,7 +2622,34 @@
                 footerPrivacy: 'Politika e privatësisë',
                 footerTerms: 'Kushtet e përdorimit',
                 footerContact: 'Kontakti',
-                footerRights: '© 2025 Mendimi i dytë. Të gjitha të drejtat e rezervuara.'
+                footerRights: '© 2025 Mendimi i dytë. Të gjitha të drejtat e rezervuara.',
+                // Dashboard translations
+                dashLogout: 'Dilni',
+                dashWelcome: 'Mirësevini përsëri!',
+                dashCreditsTitle: '🎟️ Keni pyetje të disponueshme!',
+                dashCreditsRemaining: 'Pyetje të mbetura:',
+                dashCreditsInfo: 'Mund të bëni një pyetje pa pagesë shtesë.',
+                dashNewQuestion: 'Bëni pyetje të re',
+                dashSelectPlan: 'Zgjidhni planin',
+                dashYourQuestion: 'Pyetja juaj',
+                dashQuestionPlaceholder: 'Përshkruani në detaje simptomat ose pyetjet tuaja shëndetësore...',
+                dashAttachments: 'Bashkëngjitni dokumente (opsionale)',
+                dashAttachmentsInfo: 'Mund të bashkëngjitni gjetje mjekësore, rezultate analizash, imazhe etj.',
+                dashChooseFiles: 'Zgjidhni skedarët',
+                dashSelectedFiles: 'Skedarët e zgjedhur:',
+                dashSubmitQuestion: 'Dërgo pyetjen',
+                dashPayAndSubmit: 'Paguaj dhe dërgo',
+                dashSecurePayment: '🔒 Pagesë e sigurt përmes Stripe',
+                dashPreviousQuestions: 'Pyetjet e mëparshme',
+                dashNoQuestions: 'Nuk keni pyetje të mëparshme.',
+                dashStatus: 'Statusi',
+                dashStatusPending: 'Pret përgjigje',
+                dashStatusAnswered: 'Përgjigjur',
+                dashViewAnswer: 'Shiko përgjigjen',
+                dashUserRole: 'Përdorues',
+                dashDoctorRole: 'Mjek',
+                dashAdminRole: 'Administrator',
+                dashSuperAdminRole: 'Super Admin'
             },
             en: {
                 siteName: 'Second Opinion',
@@ -2677,7 +2736,34 @@
                 footerPrivacy: 'Privacy policy',
                 footerTerms: 'Terms of service',
                 footerContact: 'Contact',
-                footerRights: '© 2025 Second Opinion. All rights reserved.'
+                footerRights: '© 2025 Second Opinion. All rights reserved.',
+                // Dashboard translations
+                dashLogout: 'Log out',
+                dashWelcome: 'Welcome back!',
+                dashCreditsTitle: '🎟️ You have available questions!',
+                dashCreditsRemaining: 'Remaining questions:',
+                dashCreditsInfo: 'You can ask a question without additional payment.',
+                dashNewQuestion: 'Ask a new question',
+                dashSelectPlan: 'Select a plan',
+                dashYourQuestion: 'Your question',
+                dashQuestionPlaceholder: 'Describe your symptoms or health questions in detail...',
+                dashAttachments: 'Attach documents (optional)',
+                dashAttachmentsInfo: 'You can attach medical findings, test results, images, etc.',
+                dashChooseFiles: 'Choose files',
+                dashSelectedFiles: 'Selected files:',
+                dashSubmitQuestion: 'Submit question',
+                dashPayAndSubmit: 'Pay and submit',
+                dashSecurePayment: '🔒 Secure payment via Stripe',
+                dashPreviousQuestions: 'Previous questions',
+                dashNoQuestions: 'You have no previous questions.',
+                dashStatus: 'Status',
+                dashStatusPending: 'Awaiting answer',
+                dashStatusAnswered: 'Answered',
+                dashViewAnswer: 'View answer',
+                dashUserRole: 'User',
+                dashDoctorRole: 'Doctor',
+                dashAdminRole: 'Administrator',
+                dashSuperAdminRole: 'Super Admin'
             }
         };
 
@@ -2685,9 +2771,16 @@
         function switchLanguage(lang) {
             currentLanguage = lang;
             
-            // Update active button
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            // Save preference to localStorage
+            localStorage.setItem('preferredLanguage', lang);
+            
+            // Update active button (for all language switchers)
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.trim() === (lang === 'mk' ? 'МК' : (lang === 'sq' ? 'SQ' : 'EN'))) {
+                    btn.classList.add('active');
+                }
+            });
             
             // Update all translated elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -2708,7 +2801,54 @@
 
             // Update HTML lang attribute
             document.documentElement.lang = lang;
+            
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang] && translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
         }
+        
+        // Load saved language preference on page load
+        function loadSavedLanguage() {
+            const savedLang = localStorage.getItem('preferredLanguage');
+            if (savedLang && ['mk', 'sq', 'en'].includes(savedLang)) {
+                currentLanguage = savedLang;
+                // Update UI without needing event.target
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if (btn.textContent.trim() === (savedLang === 'mk' ? 'МК' : (savedLang === 'sq' ? 'SQ' : 'EN'))) {
+                        btn.classList.add('active');
+                    }
+                });
+                // Apply translations
+                document.querySelectorAll('[data-i18n]').forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if (translations[savedLang] && translations[savedLang][key]) {
+                        if (el.tagName === 'BUTTON' && el.querySelector('.faq-icon')) {
+                            const icon = el.querySelector('.faq-icon');
+                            el.textContent = translations[savedLang][key];
+                            el.appendChild(icon);
+                        } else {
+                            el.textContent = translations[savedLang][key];
+                        }
+                    }
+                });
+                // Apply placeholder translations
+                document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-placeholder');
+                    if (translations[savedLang] && translations[savedLang][key]) {
+                        el.placeholder = translations[savedLang][key];
+                    }
+                });
+                document.documentElement.lang = savedLang;
+            }
+        }
+        
+        // Call on page load
+        document.addEventListener('DOMContentLoaded', loadSavedLanguage);
 
         // Toast Notification System
         function showToast(type, title, message) {
