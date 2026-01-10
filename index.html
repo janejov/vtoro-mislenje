@@ -111,29 +111,41 @@
 
         .auth-buttons {
             display: flex;
-            gap: 6px;
+            flex-direction: column;
+            gap: 8px;
             align-items: center;
-            flex-wrap: wrap;
+        }
+
+        .auth-buttons > div:first-of-type {
+            display: flex;
+            gap: 8px;
+        }
+
+        .doctor-links {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .doctor-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .doctor-links a:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+
+        .doctor-links .divider {
+            color: var(--border);
         }
 
         .btn-signin {
-            background: transparent;
-            color: var(--primary);
-            border: none;
-            padding: 8px 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 6px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        .btn-signin:hover {
-            background: var(--bg-light);
-        }
-
-        .btn-register {
             background: var(--primary);
             color: white;
             border: none;
@@ -146,8 +158,26 @@
             white-space: nowrap;
         }
 
-        .btn-register:hover {
+        .btn-signin:hover {
             background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 6px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .btn-register:hover {
+            background: #059669;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 102, 204, 0.3);
         }
@@ -912,11 +942,16 @@
                 flex-direction: column;
                 width: 100%;
                 gap: 10px;
+                align-items: center;
             }
             
             .auth-buttons button {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .doctor-links {
+                margin-top: 5px;
             }
 
             .hero-container {
@@ -1203,9 +1238,13 @@
                 </div>
                 <div class="auth-buttons">
                     <button class="btn-signin" onclick="openSignin('user')" data-i18n="navLogin">Најава</button>
-                    <button class="btn-signin" onclick="openSignin('doctor')" style="border-left: 2px solid var(--border);" data-i18n="navDoctorLogin">Најава за лекари</button>
                     <button class="btn-register" onclick="openRegister('user')" data-i18n="navRegister">Регистрација</button>
-                    <button class="btn-register" onclick="openRegister('doctor')" style="background: var(--success);" data-i18n="navDoctorRegister">Регистрација за лекари</button>
+                    <div class="doctor-links">
+                        <span data-i18n="navDoctorPrompt">Сте лекар?</span>
+                        <a href="#" onclick="openSignin('doctor'); return false;" data-i18n="navDoctorLoginLink">Најава</a>
+                        <span class="divider">|</span>
+                        <a href="#" onclick="openRegister('doctor'); return false;" data-i18n="navDoctorRegisterLink">Регистрација</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2055,6 +2094,9 @@
                 navContact: 'Контакт',
                 navLogin: 'Најава',
                 navRegister: 'Регистрација',
+                navDoctorPrompt: 'Сте лекар?',
+                navDoctorLoginLink: 'Најава',
+                navDoctorRegisterLink: 'Регистрација',
                 heroTitle: 'Стручно медицинско мислење на еден клик',
                 heroSubtitle: 'Добијте професионални одговори на вашите здравствени прашања од сертифицирани лекари, брзо и доверливо.',
                 heroButton1: 'Поставете прашање',
@@ -2136,6 +2178,9 @@
                 navContact: 'Kontakti',
                 navLogin: 'Hyrje',
                 navRegister: 'Regjistrimi',
+                navDoctorPrompt: 'Jeni mjek?',
+                navDoctorLoginLink: 'Hyrje',
+                navDoctorRegisterLink: 'Regjistrimi',
                 heroTitle: 'Mendim mjekësor profesional me një klikim',
                 heroSubtitle: 'Merrni përgjigje profesionale për pyetjet tuaja shëndetësore nga mjekë të certifikuar, shpejt dhe në mënyrë konfidenciale.',
                 heroButton1: 'Bëni një pyetje',
@@ -2217,6 +2262,9 @@
                 navContact: 'Contact',
                 navLogin: 'Login',
                 navRegister: 'Register',
+                navDoctorPrompt: 'Are you a doctor?',
+                navDoctorLoginLink: 'Login',
+                navDoctorRegisterLink: 'Register',
                 heroTitle: 'Expert medical opinion at one click',
                 heroSubtitle: 'Get professional answers to your health questions from certified doctors, quickly and confidentially.',
                 heroButton1: 'Ask a question',
