@@ -1700,36 +1700,21 @@
                         <div id="planSelection" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;">
                             <!-- Basic Plan -->
                             <div class="plan-card" data-plan="basic" data-price="999" onclick="selectPlan('basic')" style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;">
-                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;" data-i18n="pricingBasicTitle">Основен</h4>
-                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">999 <span style="font-size: 16px; font-weight: 400;">МКД</span></div>
-                                <ul style="list-style: none; padding: 0; margin: 16px 0; text-align: left; font-size: 14px; color: var(--text-light);">
-                                    <li style="padding: 6px 0;">✓ 1 медицинско прашање</li>
-                                    <li style="padding: 6px 0;">✓ Одговор до 48 часа</li>
-                                    <li style="padding: 6px 0;">✓ Основна консултација</li>
-                                </ul>
+                                <h4 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;" data-i18n="dashPlan1Question">1 прашање</h4>
+                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">999 <span style="font-size: 14px; font-weight: 400;" data-i18n="dashCurrency">ден.</span></div>
                             </div>
                             <!-- Standard Plan -->
                             <div class="plan-card" data-plan="standard" data-price="1899" onclick="selectPlan('standard')" style="border: 2px solid var(--primary); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center; background: linear-gradient(135deg, #F0F7FF 0%, #E6F2FF 100%); position: relative;">
-                                <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;">Најпопуларно</div>
-                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Стандард</h4>
-                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">1,899 <span style="font-size: 16px; font-weight: 400;">МКД</span></div>
-                                <ul style="list-style: none; padding: 0; margin: 16px 0; text-align: left; font-size: 14px; color: var(--text-light);">
-                                    <li style="padding: 6px 0;">✓ 2 медицински прашања</li>
-                                    <li style="padding: 6px 0;">✓ Одговор до 24 часа</li>
-                                    <li style="padding: 6px 0;">✓ Детална консултација</li>
-                                    <li style="padding: 6px 0;">✓ Прикачување документи</li>
-                                </ul>
+                                <div style="position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;" data-i18n="dashMostPopular">Најпопуларно</div>
+                                <h4 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;" data-i18n="dashPlan2Questions">2 прашања</h4>
+                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">1,899 <span style="font-size: 14px; font-weight: 400;" data-i18n="dashCurrency">ден.</span></div>
+                                <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;" data-i18n="dashPlan2Price">949,50 ден./прашање</p>
                             </div>
                             <!-- Premium Plan -->
                             <div class="plan-card" data-plan="premium" data-price="3699" onclick="selectPlan('premium')" style="border: 2px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center;">
-                                <h4 style="font-size: 18px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">Премиум</h4>
-                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">3,699 <span style="font-size: 16px; font-weight: 400;">МКД</span></div>
-                                <ul style="list-style: none; padding: 0; margin: 16px 0; text-align: left; font-size: 14px; color: var(--text-light);">
-                                    <li style="padding: 6px 0;">✓ 4 медицински прашања</li>
-                                    <li style="padding: 6px 0;">✓ Одговор до 12 часа</li>
-                                    <li style="padding: 6px 0;">✓ Детална анализа</li>
-                                    <li style="padding: 6px 0;">✓ Приоритетна поддршка</li>
-                                </ul>
+                                <h4 style="font-size: 16px; font-weight: 600; color: var(--text-dark); margin-bottom: 8px;" data-i18n="dashPlan4Questions">4 прашања</h4>
+                                <div style="font-size: 32px; font-weight: 800; color: var(--primary); margin: 12px 0;">3,699 <span style="font-size: 14px; font-weight: 400;" data-i18n="dashCurrency">ден.</span></div>
+                                <p style="font-size: 13px; color: var(--text-light); margin-top: 8px;" data-i18n="dashPlan4Price">924,75 ден./прашање</p>
                             </div>
                         </div>
                         <input type="hidden" id="selectedPlan" value="">
@@ -2554,7 +2539,25 @@
                 specPsychiatry: 'Психијатрија',
                 specPulmonology: 'Пулмологија',
                 specUrology: 'Урологија',
-                specOther: 'Друго'
+                specOther: 'Друго',
+                dashPlan1Question: '1 прашање',
+                dashPlan2Questions: '2 прашања',
+                dashPlan4Questions: '4 прашања',
+                dashCurrency: 'ден.',
+                dashMostPopular: 'Најпопуларно',
+                dashPlan2Price: '949,50 ден./прашање',
+                dashPlan4Price: '924,75 ден./прашање',
+                dashAnswerFrom: 'Одговор од',
+                dashMedicalExpert: 'Медицински стручњак',
+                dashSpecialist: 'Специјалист',
+                dashMedicalInstitution: 'Медицинска установа',
+                dashYearsExperience: 'години искуство',
+                dashQuestionSent: 'Вашето прашање е испратено до специјалисти.',
+                dashAnswerSoon: 'Ќе добиете одговор наскоро.',
+                dashDelete: 'Избриши',
+                dashSpecialtyLabel: 'Област',
+                dashDateLabel: 'Датум',
+                dashAttachedDocs: 'Прикачени документи'
             },
             sq: {
                 siteName: 'Mendimi i dytë',
@@ -2687,7 +2690,25 @@
                 specPsychiatry: 'Psikiatri',
                 specPulmonology: 'Pulmonologji',
                 specUrology: 'Urologji',
-                specOther: 'Tjetër'
+                specOther: 'Tjetër',
+                dashPlan1Question: '1 pyetje',
+                dashPlan2Questions: '2 pyetje',
+                dashPlan4Questions: '4 pyetje',
+                dashCurrency: 'den.',
+                dashMostPopular: 'Më popullorja',
+                dashPlan2Price: '949,50 den./pyetje',
+                dashPlan4Price: '924,75 den./pyetje',
+                dashAnswerFrom: 'Përgjigje nga',
+                dashMedicalExpert: 'Ekspert mjekësor',
+                dashSpecialist: 'Specialist',
+                dashMedicalInstitution: 'Institucion mjekësor',
+                dashYearsExperience: 'vite përvojë',
+                dashQuestionSent: 'Pyetja juaj u dërgua tek specialistët.',
+                dashAnswerSoon: 'Do të merrni përgjigje së shpejti.',
+                dashDelete: 'Fshi',
+                dashSpecialtyLabel: 'Specialiteti',
+                dashDateLabel: 'Data',
+                dashAttachedDocs: 'Dokumente të bashkëngjitura'
             },
             en: {
                 siteName: 'Second Opinion',
@@ -2820,7 +2841,25 @@
                 specPsychiatry: 'Psychiatry',
                 specPulmonology: 'Pulmonology',
                 specUrology: 'Urology',
-                specOther: 'Other'
+                specOther: 'Other',
+                dashPlan1Question: '1 question',
+                dashPlan2Questions: '2 questions',
+                dashPlan4Questions: '4 questions',
+                dashCurrency: 'MKD',
+                dashMostPopular: 'Most popular',
+                dashPlan2Price: '949.50 MKD/question',
+                dashPlan4Price: '924.75 MKD/question',
+                dashAnswerFrom: 'Answer from',
+                dashMedicalExpert: 'Medical expert',
+                dashSpecialist: 'Specialist',
+                dashMedicalInstitution: 'Medical institution',
+                dashYearsExperience: 'years experience',
+                dashQuestionSent: 'Your question was sent to specialists.',
+                dashAnswerSoon: 'You will receive an answer soon.',
+                dashDelete: 'Delete',
+                dashSpecialtyLabel: 'Specialty',
+                dashDateLabel: 'Date',
+                dashAttachedDocs: 'Attached documents'
             }
         };
 
@@ -4451,6 +4490,7 @@
 
                 const statusAnswered = translations[currentLanguage]?.dashStatusAnswered || 'Одговорено';
                 const statusPending = translations[currentLanguage]?.dashStatusPending || 'Се чека одговор';
+                const attachedDocsLabel = translations[currentLanguage]?.dashAttachedDocs || 'Прикачени документи';
                 
                 container.innerHTML = questions.map(q => {
                     const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
@@ -4461,7 +4501,7 @@
                     // Display attachments if any
                     const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
                         <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
-                            <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи:</p>
+                            <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 ${attachedDocsLabel}:</p>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 ${q.attachments.map(file => `
                                     <a href="${file.url}" target="_blank" rel="noopener noreferrer" 
@@ -4477,22 +4517,37 @@
                         </div>
                     ` : '';
                     
+                    // Get translations for dynamic content
+                    const t = {
+                        answerFrom: translations[currentLanguage]?.dashAnswerFrom || 'Одговор од',
+                        medicalExpert: translations[currentLanguage]?.dashMedicalExpert || 'Медицински стручњак',
+                        specialist: translations[currentLanguage]?.dashSpecialist || 'Специјалист',
+                        medicalInstitution: translations[currentLanguage]?.dashMedicalInstitution || 'Медицинска установа',
+                        yearsExperience: translations[currentLanguage]?.dashYearsExperience || 'години искуство',
+                        questionSent: translations[currentLanguage]?.dashQuestionSent || 'Вашето прашање е испратено до специјалисти.',
+                        answerSoon: translations[currentLanguage]?.dashAnswerSoon || 'Ќе добиете одговор наскоро.',
+                        delete: translations[currentLanguage]?.dashDelete || 'Избриши',
+                        specialty: translations[currentLanguage]?.dashSpecialtyLabel || 'Област',
+                        date: translations[currentLanguage]?.dashDateLabel || 'Датум',
+                        attachedDocs: translations[currentLanguage]?.dashAttachedDocs || 'Прикачени документи'
+                    };
+                    
                     const answerSection = answer ? `
                         <div style="margin-top: 16px; padding: 16px; background: #D1FAE5; border-radius: 8px; border-left: 4px solid var(--success);">
                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
                                 <div>
                                     <p style="font-weight: 600; color: var(--success); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
                                         <span style="font-size: 20px;">✓</span>
-                                        <span>Одговор од ${answer.expert?.full_name || 'Медицински стручњак'}</span>
+                                        <span>${t.answerFrom} ${answer.expert?.full_name || t.medicalExpert}</span>
                                     </p>
                                     ${answer.expert ? `
                                         <p style="font-size: 13px; color: var(--text-light);">
-                                            ${answer.expert.specialization || 'Специјалист'} • ${answer.expert.hospital || 'Медицинска установа'} • ${answer.expert.experience || '?'} години искуство
+                                            ${answer.expert.specialization || t.specialist} • ${answer.expert.hospital || t.medicalInstitution} • ${answer.expert.experience || '?'} ${t.yearsExperience}
                                         </p>
                                     ` : ''}
                                 </div>
                                 <span style="font-size: 12px; color: var(--text-light); white-space: nowrap;">
-                                    ${new Date(answer.created_at).toLocaleDateString('mk-MK', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                    ${new Date(answer.created_at).toLocaleDateString(currentLanguage === 'en' ? 'en-GB' : (currentLanguage === 'sq' ? 'sq-AL' : 'mk-MK'), { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </span>
                             </div>
                             <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
@@ -4500,8 +4555,7 @@
                     ` : `
                         <div style="margin-top: 16px; padding: 12px; background: #FEF3C7; border-radius: 8px; border-left: 4px solid var(--warning);">
                             <p style="color: var(--text-dark); font-size: 14px;">
-                                ⏳ Вашето прашање е испратено до специјалисти од областа <strong>${q.specialty_name}</strong>. 
-                                Ќе добиете одговор наскоро.
+                                ⏳ ${t.questionSent} ${t.answerSoon}
                             </p>
                         </div>
                     `;
@@ -4514,14 +4568,14 @@
                                         style="background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;"
                                         onmouseover="this.style.background='#DC2626'"
                                         onmouseout="this.style.background='var(--danger)'">
-                                    🗑️ Избриши
+                                    🗑️ ${t.delete}
                                 </button>
                             </div>
                             <div style="padding-right: 260px;">
                                 <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
                                 <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
-                                    <span><strong>📂 Област:</strong> ${q.specialty_name || q.specialty}</span>
-                                    <span><strong>📅 Датум:</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
+                                    <span><strong>📂 ${t.specialty}:</strong> ${q.specialty_name || q.specialty}</span>
+                                    <span><strong>📅 ${t.date}:</strong> ${new Date(q.created_at).toLocaleDateString(currentLanguage === 'en' ? 'en-GB' : (currentLanguage === 'sq' ? 'sq-AL' : 'mk-MK'))}</span>
                                 </div>
                             </div>
                             <div style="padding: 12px; background: white; border-radius: 8px; margin-bottom: 12px;">
