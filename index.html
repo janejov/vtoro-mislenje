@@ -4572,11 +4572,41 @@
             const { data: { session } } = await supabaseClient.auth.getSession();
             if (session && session.user) {
                 // User is logged in, fetch their data and show dashboard
-                const { data: userData, error: userError } = await supabaseClient
+                let { data: userData, error: userError } = await supabaseClient
                     .from('users')
                     .select('*')
                     .eq('id', session.user.id)
                     .maybeSingle();
+
+                // If user doesn't exist in users table (e.g., Google sign-in), create them
+                if (!userData && !userError) {
+                    const googleUser = session.user;
+                    const fullName = googleUser.user_metadata?.full_name || 
+                                     googleUser.user_metadata?.name || 
+                                     googleUser.email.split('@')[0];
+                    
+                    const { data: newUser, error: createError } = await supabaseClient
+                        .from('users')
+                        .insert([{
+                            id: googleUser.id,
+                            email: googleUser.email,
+                            full_name: fullName,
+                            role: 'user',
+                            is_approved: true
+                        }])
+                        .select()
+                        .single();
+                    
+                    if (createError) {
+                        console.error('Error creating user record:', createError);
+                        showToast('error', 'Грешка', 'Грешка при креирање на профил.');
+                        await supabaseClient.auth.signOut();
+                        return;
+                    }
+                    
+                    userData = newUser;
+                    showToast('success', 'Добредојдовте!', 'Вашиот профил е успешно креиран.');
+                }
 
                 if (userData && !userError) {
                     // Check if doctor is approved
