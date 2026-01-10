@@ -1737,27 +1737,27 @@
                     </div> <!-- End planSelectionSection -->
 
                     <div class="form-group">
-                        <label class="form-label">Наслов</label>
-                        <input type="text" class="form-input" id="questionTitle" placeholder="Внесете наслов на прашањето">
+                        <label class="form-label" data-i18n="dashTitle">Наслов</label>
+                        <input type="text" class="form-input" id="questionTitle" placeholder="Внесете наслов на прашањето" data-i18n-placeholder="dashTitlePlaceholder">
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">Медицинска област</label>
+                        <label class="form-label" data-i18n="dashSpecialty">Медицинска област</label>
                         <select class="form-input" id="questionSpecialty">
-                            <option value="">Изберете медицинска област</option>
-                            <option value="cardiology">Кардиологија</option>
-                            <option value="dermatology">Дерматологија</option>
-                            <option value="endocrinology">Ендокринологија</option>
-                            <option value="gastroenterology">Гастроентерологија</option>
-                            <option value="gynecology">Гинекологија</option>
-                            <option value="neurology">Неврологија</option>
-                            <option value="oncology">Онкологија</option>
-                            <option value="orthopedics">Ортопедија</option>
-                            <option value="pediatrics">Педијатрија</option>
-                            <option value="psychiatry">Психијатрија</option>
-                            <option value="pulmonology">Пулмологија</option>
-                            <option value="urology">Урологија</option>
-                            <option value="other">Друго</option>
+                            <option value="" data-i18n="dashSelectSpecialty">Изберете медицинска област</option>
+                            <option value="cardiology" data-i18n="specCardiology">Кардиологија</option>
+                            <option value="dermatology" data-i18n="specDermatology">Дерматологија</option>
+                            <option value="endocrinology" data-i18n="specEndocrinology">Ендокринологија</option>
+                            <option value="gastroenterology" data-i18n="specGastroenterology">Гастроентерологија</option>
+                            <option value="gynecology" data-i18n="specGynecology">Гинекологија</option>
+                            <option value="neurology" data-i18n="specNeurology">Неврологија</option>
+                            <option value="oncology" data-i18n="specOncology">Онкологија</option>
+                            <option value="orthopedics" data-i18n="specOrthopedics">Ортопедија</option>
+                            <option value="pediatrics" data-i18n="specPediatrics">Педијатрија</option>
+                            <option value="psychiatry" data-i18n="specPsychiatry">Психијатрија</option>
+                            <option value="pulmonology" data-i18n="specPulmonology">Пулмологија</option>
+                            <option value="urology" data-i18n="specUrology">Урологија</option>
+                            <option value="other" data-i18n="specOther">Друго</option>
                         </select>
                     </div>
 
@@ -2524,18 +2524,37 @@
                 dashChooseFiles: 'Изберете датотеки',
                 dashSelectedFiles: 'Избрани датотеки:',
                 dashSubmitQuestion: 'Испрати прашање',
-                dashPayAndSubmit: 'Плати и испрати',
+                dashPayAndSubmit: '💳 Плати и испрати прашање',
                 dashSecurePayment: '🔒 Сигурно плаќање преку Stripe',
                 dashPreviousQuestions: 'Претходни прашања',
                 dashNoQuestions: 'Немате претходни прашања.',
+                dashNoQuestionsTitle: 'Немате прашања засега',
+                dashNoQuestionsSubtitle: 'Поставете прашање за да добиете стручно медицинско мислење.',
                 dashStatus: 'Статус',
-                dashStatusPending: 'Чека одговор',
+                dashStatusPending: 'Се чека одговор',
                 dashStatusAnswered: 'Одговорено',
                 dashViewAnswer: 'Види одговор',
                 dashUserRole: 'Корисник',
                 dashDoctorRole: 'Лекар',
                 dashAdminRole: 'Администратор',
-                dashSuperAdminRole: 'Супер Админ'
+                dashSuperAdminRole: 'Супер Админ',
+                dashTitle: 'Наслов',
+                dashTitlePlaceholder: 'Внесете наслов на прашањето',
+                dashSpecialty: 'Медицинска област',
+                dashSelectSpecialty: 'Изберете медицинска област',
+                specCardiology: 'Кардиологија',
+                specDermatology: 'Дерматологија',
+                specEndocrinology: 'Ендокринологија',
+                specGastroenterology: 'Гастроентерологија',
+                specGynecology: 'Гинекологија',
+                specNeurology: 'Неврологија',
+                specOncology: 'Онкологија',
+                specOrthopedics: 'Ортопедија',
+                specPediatrics: 'Педијатрија',
+                specPsychiatry: 'Психијатрија',
+                specPulmonology: 'Пулмологија',
+                specUrology: 'Урологија',
+                specOther: 'Друго'
             },
             sq: {
                 siteName: 'Mendimi i dytë',
@@ -2638,10 +2657,12 @@
                 dashChooseFiles: 'Zgjidhni skedarët',
                 dashSelectedFiles: 'Skedarët e zgjedhur:',
                 dashSubmitQuestion: 'Dërgo pyetjen',
-                dashPayAndSubmit: 'Paguaj dhe dërgo',
+                dashPayAndSubmit: '💳 Paguaj dhe dërgo pyetjen',
                 dashSecurePayment: '🔒 Pagesë e sigurt përmes Stripe',
                 dashPreviousQuestions: 'Pyetjet e mëparshme',
                 dashNoQuestions: 'Nuk keni pyetje të mëparshme.',
+                dashNoQuestionsTitle: 'Nuk keni pyetje ende',
+                dashNoQuestionsSubtitle: 'Bëni një pyetje për të marrë mendim profesional mjekësor.',
                 dashStatus: 'Statusi',
                 dashStatusPending: 'Pret përgjigje',
                 dashStatusAnswered: 'Përgjigjur',
@@ -2649,7 +2670,24 @@
                 dashUserRole: 'Përdorues',
                 dashDoctorRole: 'Mjek',
                 dashAdminRole: 'Administrator',
-                dashSuperAdminRole: 'Super Admin'
+                dashSuperAdminRole: 'Super Admin',
+                dashTitle: 'Titulli',
+                dashTitlePlaceholder: 'Shkruani titullin e pyetjes',
+                dashSpecialty: 'Specialiteti mjekësor',
+                dashSelectSpecialty: 'Zgjidhni specialitetin mjekësor',
+                specCardiology: 'Kardiologji',
+                specDermatology: 'Dermatologji',
+                specEndocrinology: 'Endokrinologji',
+                specGastroenterology: 'Gastroenterologji',
+                specGynecology: 'Gjinekologji',
+                specNeurology: 'Neurologji',
+                specOncology: 'Onkologji',
+                specOrthopedics: 'Ortopedi',
+                specPediatrics: 'Pediatri',
+                specPsychiatry: 'Psikiatri',
+                specPulmonology: 'Pulmonologji',
+                specUrology: 'Urologji',
+                specOther: 'Tjetër'
             },
             en: {
                 siteName: 'Second Opinion',
@@ -2752,10 +2790,12 @@
                 dashChooseFiles: 'Choose files',
                 dashSelectedFiles: 'Selected files:',
                 dashSubmitQuestion: 'Submit question',
-                dashPayAndSubmit: 'Pay and submit',
+                dashPayAndSubmit: '💳 Pay and submit question',
                 dashSecurePayment: '🔒 Secure payment via Stripe',
                 dashPreviousQuestions: 'Previous questions',
                 dashNoQuestions: 'You have no previous questions.',
+                dashNoQuestionsTitle: 'No questions yet',
+                dashNoQuestionsSubtitle: 'Ask a question to get professional medical advice.',
                 dashStatus: 'Status',
                 dashStatusPending: 'Awaiting answer',
                 dashStatusAnswered: 'Answered',
@@ -2763,7 +2803,24 @@
                 dashUserRole: 'User',
                 dashDoctorRole: 'Doctor',
                 dashAdminRole: 'Administrator',
-                dashSuperAdminRole: 'Super Admin'
+                dashSuperAdminRole: 'Super Admin',
+                dashTitle: 'Title',
+                dashTitlePlaceholder: 'Enter question title',
+                dashSpecialty: 'Medical specialty',
+                dashSelectSpecialty: 'Select medical specialty',
+                specCardiology: 'Cardiology',
+                specDermatology: 'Dermatology',
+                specEndocrinology: 'Endocrinology',
+                specGastroenterology: 'Gastroenterology',
+                specGynecology: 'Gynecology',
+                specNeurology: 'Neurology',
+                specOncology: 'Oncology',
+                specOrthopedics: 'Orthopedics',
+                specPediatrics: 'Pediatrics',
+                specPsychiatry: 'Psychiatry',
+                specPulmonology: 'Pulmonology',
+                specUrology: 'Urology',
+                specOther: 'Other'
             }
         };
 
@@ -3696,10 +3753,14 @@
                 document.getElementById('landingPage').classList.add('hidden');
                 document.getElementById('dashboardPage').classList.remove('hidden');
                 
-                // Show user info
-                const roleText = userData.role === 'user' ? 'Корисник' : 
-                                 (userData.role === 'admin' ? 'Администратор' : 
-                                 (userData.role === 'super_admin' ? 'Супер Админ' : 'Лекар'));
+                // Show user info with translated role
+                const roleTranslations = {
+                    user: translations[currentLanguage]?.dashUserRole || 'Корисник',
+                    admin: translations[currentLanguage]?.dashAdminRole || 'Администратор',
+                    super_admin: translations[currentLanguage]?.dashSuperAdminRole || 'Супер Админ',
+                    doctor: translations[currentLanguage]?.dashDoctorRole || 'Лекар'
+                };
+                const roleText = roleTranslations[userData.role] || roleTranslations['user'];
                 document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
                 document.getElementById('dashboardUserName').textContent = userData.full_name;
 
@@ -4376,21 +4437,26 @@
                 const container = document.getElementById('userQuestions');
 
                 if (questions.length === 0) {
+                    const noQuestionsTitle = translations[currentLanguage]?.dashNoQuestionsTitle || 'Немате прашања засега';
+                    const noQuestionsSubtitle = translations[currentLanguage]?.dashNoQuestionsSubtitle || 'Поставете прашање за да добиете стручно медицинско мислење.';
                     container.innerHTML = `
                         <div style="text-align: center; padding: 60px 20px; color: var(--text-light);">
                             <div style="font-size: 48px; margin-bottom: 16px;">🔭</div>
-                            <h3>Немате прашања засега</h3>
-                            <p>Поставете прашање за да добиете стручно медицинско мислење.</p>
+                            <h3>${noQuestionsTitle}</h3>
+                            <p>${noQuestionsSubtitle}</p>
                         </div>
                     `;
                     return;
                 }
 
+                const statusAnswered = translations[currentLanguage]?.dashStatusAnswered || 'Одговорено';
+                const statusPending = translations[currentLanguage]?.dashStatusPending || 'Се чека одговор';
+                
                 container.innerHTML = questions.map(q => {
                     const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
                     const statusBadge = answer 
-                        ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Одговорено</span>'
-                        : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">⏳ Се чека одговор</span>';
+                        ? `<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ ${statusAnswered}</span>`
+                        : `<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">⏳ ${statusPending}</span>`;
                     
                     // Display attachments if any
                     const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
@@ -5037,9 +5103,15 @@
                     document.getElementById('landingPage').classList.add('hidden');
                     document.getElementById('dashboardPage').classList.remove('hidden');
                     
-                    const roleText = userData.role === 'user' ? 'Корисник' : 
-                                     (userData.role === 'admin' ? 'Администратор' : 
-                                     (userData.role === 'super_admin' ? 'Супер Админ' : 'Лекар'));
+                    // Use translated role text
+                    const roleTranslations2 = {
+                        user: translations[currentLanguage]?.dashUserRole || 'Корисник',
+                        admin: translations[currentLanguage]?.dashAdminRole || 'Администратор',
+                        super_admin: translations[currentLanguage]?.dashSuperAdminRole || 'Супер Админ',
+                        doctor: translations[currentLanguage]?.dashDoctorRole || 'Лекар',
+                        expert: translations[currentLanguage]?.dashDoctorRole || 'Лекар'
+                    };
+                    const roleText = roleTranslations2[userData.role] || roleTranslations2['user'];
                     document.getElementById('userDisplay').textContent = `${userData.full_name} (${roleText})`;
                     document.getElementById('dashboardUserName').textContent = userData.full_name;
 
