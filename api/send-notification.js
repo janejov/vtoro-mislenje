@@ -62,7 +62,13 @@ export default async function handler(req, res) {
       isSuperAdminNotification,
       isDoctorAssignment,
       isPatientAnswer,
-      adminNote
+      adminNote,
+      // NEW: Doctor registration notification
+      isDoctorRegistration,
+      doctorEmail,
+      doctorPhone,
+      doctorCity,
+      doctorLicense
     } = body;
 
     // Validate required fields
@@ -124,6 +130,86 @@ export default async function handler(req, res) {
 
             <p style="text-align: center; color: #6b7280; font-size: 13px; margin-top: 20px;">
               ID на прашање: ${questionId || 'N/A'}
+            </p>
+          </div>
+        </body>
+        </html>
+      `;
+    }
+    // ============================================
+    // TYPE 1.5: Doctor Registration Notification
+    // ============================================
+    else if (isDoctorRegistration) {
+      emailHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        </head>
+        <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f5f5f5; margin: 0;">
+          <div style="max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <h1 style="margin: 0; font-size: 24px;">👨‍⚕️ Нов лекар бара одобрување</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">Регистрација на нов лекар</p>
+            </div>
+            
+            <div style="background: #fef3c7; padding: 15px; border-radius: 5px; margin: 20px 0; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; color: #92400e;"><strong>⚡ Потребна акција:</strong> Прегледајте ги податоците и одобрете/одбијте го лекарот</p>
+            </div>
+
+            <h2 style="color: #333; font-size: 20px; margin-top: 25px;">Податоци за лекарот:</h2>
+
+            <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280; width: 140px;"><strong>👤 Име и презиме:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorName || 'Не е внесено'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280;"><strong>📧 Email:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorEmail || 'Не е внесен'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280;"><strong>📱 Телефон:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorPhone || 'Не е внесен'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280;"><strong>🏥 Специјализација:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorSpecialization || 'Не е внесена'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280;"><strong>📅 Искуство:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorExperience || '0'} години</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280;"><strong>🏥 Болница:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorHospital || 'Не е внесена'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280;"><strong>📍 Град:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorCity || 'Не е внесен'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 8px 0; color: #6b7280;"><strong>🆔 Лиценца:</strong></td>
+                  <td style="padding: 8px 0; color: #1e40af;">${doctorLicense || 'Не е внесена'}</td>
+                </tr>
+              </table>
+            </div>
+
+            <p style="color: #6b7280; font-size: 14px; margin: 20px 0;">
+              📅 Датум на регистрација: ${new Date().toLocaleString('mk-MK')}
+            </p>
+
+            <div style="text-align: center; margin-top: 30px;">
+              <a href="${appUrl}" 
+                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: 600;">
+                Отвори Контролна Табла →
+              </a>
+            </div>
+
+            <p style="text-align: center; color: #9ca3af; font-size: 12px; margin-top: 30px;">
+              Овој email е автоматски генериран од системот Второ Мислење.
             </p>
           </div>
         </body>
@@ -343,7 +429,8 @@ export default async function handler(req, res) {
       from: fromEmail,
       to: to,
       subject: subject,
-      type: isSuperAdminNotification ? 'super_admin' : 
+      type: isDoctorRegistration ? 'doctor_registration' :
+            isSuperAdminNotification ? 'super_admin' : 
             isDoctorAssignment ? 'doctor_assignment' : 
             isPatientAnswer ? 'patient_answer' :
             isAnswer ? 'legacy_answer' : 'legacy_doctor'
