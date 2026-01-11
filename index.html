@@ -329,6 +329,94 @@
             to { transform: rotate(360deg); }
         }
 
+        /* Cookie Banner */
+        .cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            max-width: 380px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            z-index: 10000;
+            animation: cookieSlideIn 0.4s ease;
+        }
+
+        @keyframes cookieSlideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .cookie-banner.hidden {
+            display: none;
+        }
+
+        .cookie-content {
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .cookie-icon {
+            font-size: 32px;
+        }
+
+        .cookie-text h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .cookie-text p {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .cookie-text a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .cookie-text a:hover {
+            text-decoration: underline;
+        }
+
+        .cookie-btn {
+            width: 100%;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: var(--primary);
+            color: white;
+        }
+
+        .cookie-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        @media (max-width: 480px) {
+            .cookie-banner {
+                left: 10px;
+                right: 10px;
+                max-width: none;
+                bottom: 10px;
+            }
+        }
+
         /* Toast Notifications */
         .toast {
             position: fixed;
@@ -2557,7 +2645,11 @@
                 dashDelete: 'Избриши',
                 dashSpecialtyLabel: 'Област',
                 dashDateLabel: 'Датум',
-                dashAttachedDocs: 'Прикачени документи'
+                dashAttachedDocs: 'Прикачени документи',
+                cookieTitle: 'Колачиња',
+                cookieText: 'Користиме колачиња за автентикација и безбедни плаќања. Со продолжување, ја прифаќате нашата',
+                cookiePolicyLink: 'Политика за приватност',
+                cookieAccept: 'Прифати'
             },
             sq: {
                 siteName: 'Mendimi i dytë',
@@ -2708,7 +2800,11 @@
                 dashDelete: 'Fshi',
                 dashSpecialtyLabel: 'Specialiteti',
                 dashDateLabel: 'Data',
-                dashAttachedDocs: 'Dokumente të bashkëngjitura'
+                dashAttachedDocs: 'Dokumente të bashkëngjitura',
+                cookieTitle: 'Cookies',
+                cookieText: 'Ne përdorim cookies për autentifikim dhe pagesa të sigurta. Duke vazhduar, ju pranoni',
+                cookiePolicyLink: 'Politikën e privatësisë',
+                cookieAccept: 'Prano'
             },
             en: {
                 siteName: 'Second Opinion',
@@ -2859,7 +2955,11 @@
                 dashDelete: 'Delete',
                 dashSpecialtyLabel: 'Specialty',
                 dashDateLabel: 'Date',
-                dashAttachedDocs: 'Attached documents'
+                dashAttachedDocs: 'Attached documents',
+                cookieTitle: 'Cookies',
+                cookieText: 'We use cookies for authentication and secure payments. By continuing, you accept our',
+                cookiePolicyLink: 'Privacy Policy',
+                cookieAccept: 'Accept'
             }
         };
 
@@ -5735,6 +5835,38 @@
             }
         }
 
+    </script>
+
+    <!-- Cookie Banner -->
+    <div id="cookieBanner" class="cookie-banner hidden">
+        <div class="cookie-content">
+            <span class="cookie-icon">🍪</span>
+            <div class="cookie-text">
+                <h4 data-i18n="cookieTitle">Колачиња</h4>
+                <p><span data-i18n="cookieText">Користиме колачиња за автентикација и безбедни плаќања. Со продолжување, ја прифаќате нашата</span> <a href="#" onclick="openPrivacy(); return false;" data-i18n="cookiePolicyLink">Политика за приватност</a>.</p>
+            </div>
+            <button class="cookie-btn" onclick="acceptCookies()" data-i18n="cookieAccept">Прифати</button>
+        </div>
+    </div>
+
+    <script>
+        // Cookie consent management
+        function checkCookieConsent() {
+            const consent = localStorage.getItem('cookieConsent');
+            if (!consent) {
+                document.getElementById('cookieBanner').classList.remove('hidden');
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookieBanner').classList.add('hidden');
+        }
+
+        // Check cookie consent on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkCookieConsent, 1000); // Show after 1 second
+        });
     </script>
 </body>
 </html>
