@@ -550,28 +550,42 @@
 
         .feature-card {
             padding: 40px;
-            background: var(--bg-light);
-            border-radius: 16px;
+            background: white;
+            border-radius: 20px;
             transition: all 0.3s;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
         }
 
         .feature-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
         }
 
         .feature-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--primary);
-            color: white;
-            border-radius: 12px;
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
             margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         }
+
+        .feature-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: white;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .feature-icon-1 { background: linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%); }
+        .feature-icon-2 { background: linear-gradient(135deg, #10B981 0%, #059669 100%); }
+        .feature-icon-3 { background: linear-gradient(135deg, #8B5CF6 0%, #6D28D9 100%); }
+        .feature-icon-4 { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+        .feature-icon-5 { background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%); }
+        .feature-icon-6 { background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%); }
 
         .feature-card h3 {
             font-size: 24px;
@@ -1487,32 +1501,44 @@
         <h2 class="section-title" data-i18n="featuresTitle">Зошто да нѐ изберете?</h2>
         <div class="features-grid">
             <div class="feature-card">
-                <div class="feature-icon">⚡</div>
+                <div class="feature-icon feature-icon-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
                 <h3 data-i18n="feature1Title">Брзи одговори</h3>
                 <p data-i18n="feature1Text">Добијте професионален одговор од сертифициран лекар во рок од 24-48 часа.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">🔒</div>
+                <div class="feature-icon feature-icon-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
                 <h3 data-i18n="feature2Title">100% Доверливо</h3>
                 <p data-i18n="feature2Text">Вашите податоци се целосно заштитени и криптирани согласно меѓународните стандарди.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">👨‍⚕️</div>
+                <div class="feature-icon feature-icon-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+                </div>
                 <h3 data-i18n="feature3Title">Сертифицирани лекари</h3>
                 <p data-i18n="feature3Text">Сите наши лекари се лиценцирани професионалци со години искуство.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">💰</div>
+                <div class="feature-icon feature-icon-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                </div>
                 <h3 data-i18n="feature4Title">Достапни цени</h3>
                 <p data-i18n="feature4Text">Квалитетни медицински консултации по цени пристапни за секого.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📱</div>
+                <div class="feature-icon feature-icon-5">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </div>
                 <h3 data-i18n="feature5Title">Достапно 24/7</h3>
                 <p data-i18n="feature5Text">Поставете прашање во секое време, од каде било.</p>
             </div>
             <div class="feature-card">
-                <div class="feature-icon">📄</div>
+                <div class="feature-icon feature-icon-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                </div>
                 <h3 data-i18n="feature6Title">Прикачете документи</h3>
                 <p data-i18n="feature6Text">Споделете медицински снимки, резултати и документи за попрецизен одговор.</p>
             </div>
