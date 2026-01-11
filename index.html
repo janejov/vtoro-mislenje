@@ -1916,6 +1916,26 @@
                     </div>
                 </div>
 
+                <!-- Doctor Approvals Section -->
+                <div class="glass-card">
+                    <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                        <span style="background: var(--warning); color: white; padding: 8px 12px; border-radius: 8px; font-size: 16px;">👨‍⚕️</span>
+                        Одобрување на лекари
+                    </h3>
+                    
+                    <!-- Pending Doctor Approvals -->
+                    <div style="margin-bottom: 32px;">
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--warning);">⏳ Чекаат одобрување</h4>
+                        <div id="superAdminPendingDoctors"></div>
+                    </div>
+
+                    <!-- Approved Doctors -->
+                    <div>
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: var(--success);">✓ Одобрени лекари</h4>
+                        <div id="superAdminApprovedDoctors"></div>
+                    </div>
+                </div>
+
                 <!-- New Questions - Need to be assigned -->
                 <div class="glass-card">
                     <h3 style="font-size: 24px; font-weight: 700; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
@@ -4050,6 +4070,13 @@
 
                 if (currentModalType === 'doctor') {
                     showToast('success', 'Успешно!', 'Регистрацијата е успешна! Проверете го вашиот email за верификација. Вашиот профил ќе биде прегледан од администраторот. ✔');
+                    
+                    // Send email notification to Super Admin about new doctor registration
+                    try {
+                        await sendDoctorRegistrationNotification(userData);
+                    } catch (emailError) {
+                        console.error('Error sending doctor registration notification:', emailError);
+                    }
                 } else {
                     showToast('success', 'Успешно!', 'Регистрацијата е успешна! Проверете го вашиот email за верификација. ✔');
                 }
@@ -5121,6 +5148,168 @@
             }
         }
 
+        // Super Admin Doctor Approval Functions
+        async function loadSuperAdminDoctorApprovals() {
+            try {
+                // Load pending doctors
+                const { data: pendingDoctors, error: pendingError } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('role', 'expert')
+                    .eq('is_approved', false)
+                    .order('created_at', { ascending: false });
+
+                if (pendingError) throw pendingError;
+
+                const pendingContainer = document.getElementById('superAdminPendingDoctors');
+
+                if (!pendingDoctors || pendingDoctors.length === 0) {
+                    pendingContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                            <p>✓ Нема лекари кои чекаат одобрување.</p>
+                        </div>
+                    `;
+                } else {
+                    pendingContainer.innerHTML = pendingDoctors.map(doctor => `
+                        <div class="question-card" style="border-left: 4px solid var(--warning);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${doctor.full_name}</h4>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
+                                        <span><strong>📧 Email:</strong> ${doctor.email}</span>
+                                        <span><strong>📱 Телефон:</strong> ${doctor.phone || 'Не е внесен'}</span>
+                                    </div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
+                                        <span><strong>🏥 Специјализација:</strong> ${doctor.specialization}</span>
+                                        <span><strong>📅 Искуство:</strong> ${doctor.experience} години</span>
+                                    </div>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light); margin-top: 4px;">
+                                        <span><strong>🏥 Болница:</strong> ${doctor.hospital}</span>
+                                        <span><strong>📍 Град:</strong> ${doctor.city}</span>
+                                    </div>
+                                    <div style="font-size: 14px; color: var(--text-light); margin-top: 4px;">
+                                        <strong>🆔 Лиценца:</strong> ${doctor.license_number}
+                                    </div>
+                                    <div style="font-size: 12px; color: var(--text-light); margin-top: 8px;">
+                                        📅 Регистриран: ${new Date(doctor.created_at).toLocaleDateString('mk-MK')}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <button class="btn btn-primary" onclick="superAdminApproveDoctor('${doctor.id}')" style="background: var(--success); flex: 1;">
+                                    ✓ Одобри
+                                </button>
+                                <button class="btn" onclick="superAdminRejectDoctor('${doctor.id}')" style="background: var(--danger); color: white; flex: 1;">
+                                    ✗ Одбиј
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // Load approved doctors
+                const { data: approvedDoctors, error: approvedError } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('role', 'expert')
+                    .eq('is_approved', true)
+                    .order('created_at', { ascending: false });
+
+                if (approvedError) throw approvedError;
+
+                const approvedContainer = document.getElementById('superAdminApprovedDoctors');
+
+                if (!approvedDoctors || approvedDoctors.length === 0) {
+                    approvedContainer.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-light);">
+                            <p>Нема одобрени лекари засега.</p>
+                        </div>
+                    `;
+                } else {
+                    approvedContainer.innerHTML = approvedDoctors.map(doctor => `
+                        <div class="question-card" style="border-left: 4px solid var(--success);">
+                            <div style="display: flex; justify-content: space-between; align-items: start;">
+                                <div style="flex: 1;">
+                                    <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${doctor.full_name}</h4>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
+                                        <span><strong>📧</strong> ${doctor.email}</span>
+                                        <span><strong>🏥</strong> ${doctor.specialization}</span>
+                                        <span><strong>📅</strong> ${doctor.experience} год.</span>
+                                        <span><strong>🏥</strong> ${doctor.hospital}</span>
+                                    </div>
+                                </div>
+                                <button class="btn" onclick="superAdminRevokeApproval('${doctor.id}')" style="background: var(--warning); color: white;">
+                                    Повлечи одобрување
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при вчитување на лекари: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function superAdminApproveDoctor(doctorId) {
+            if (!confirm('Дали сте сигурни дека сакате да го одобрите овој лекар?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ is_approved: true })
+                    .eq('id', doctorId);
+
+                if (error) throw error;
+
+                showToast('success', 'Успешно!', 'Лекарот е одобрен.');
+                loadSuperAdminDoctorApprovals();
+                loadDoctorsList(); // Refresh doctors list too
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при одобрување: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function superAdminRejectDoctor(doctorId) {
+            if (!confirm('Дали сте сигурни дека сакате да го одбиете овој лекар? Профилот ќе биде избришан.')) return;
+
+            try {
+                const { error: deleteUserError } = await supabaseClient
+                    .from('users')
+                    .delete()
+                    .eq('id', doctorId);
+
+                if (deleteUserError) throw deleteUserError;
+
+                showToast('success', 'Успешно!', 'Лекарот е одбиен и избришан.');
+                loadSuperAdminDoctorApprovals();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при одбивање: ' + error.message);
+                console.error(error);
+            }
+        }
+
+        async function superAdminRevokeApproval(doctorId) {
+            if (!confirm('Дали сте сигурни дека сакате да го повлечете одобрувањето за овој лекар?')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ is_approved: false })
+                    .eq('id', doctorId);
+
+                if (error) throw error;
+
+                showToast('success', 'Успешно!', 'Одобрувањето е повлечено.');
+                loadSuperAdminDoctorApprovals();
+                loadDoctorsList();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при повлекување: ' + error.message);
+                console.error(error);
+            }
+        }
+
         // Real-time subscription functions - NEW
         // Subscribe to new questions for experts
         function subscribeToQuestions() {
@@ -5298,6 +5487,39 @@
         const SUPER_ADMIN_EMAIL = 'vtoromislenje001@gmail.com';
 
         // Send notification to Super Admin about new question
+        // Send notification to Super Admin about new doctor registration
+        async function sendDoctorRegistrationNotification(doctorData) {
+            try {
+                const emailData = {
+                    to: SUPER_ADMIN_EMAIL,
+                    subject: `[НОВ ЛЕКАР] ${doctorData.full_name} бара одобрување`,
+                    isDoctorRegistration: true,
+                    doctorName: doctorData.full_name,
+                    doctorEmail: doctorData.email,
+                    doctorPhone: doctorData.phone || 'Не е внесен',
+                    doctorSpecialization: doctorData.specialization,
+                    doctorExperience: doctorData.experience,
+                    doctorHospital: doctorData.hospital,
+                    doctorCity: doctorData.city,
+                    doctorLicense: doctorData.license_number
+                };
+
+                const response = await fetch('/api/send-notification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(emailData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send notification');
+                }
+
+                console.log('Doctor registration notification sent successfully');
+            } catch (error) {
+                console.error('Error sending doctor registration notification:', error);
+            }
+        }
+
         async function sendSuperAdminNotification(questionData, attachments) {
             try {
                 const attachmentsHTML = attachments && attachments.length > 0 ? `
@@ -5423,6 +5645,9 @@
                 
                 // Load doctors list
                 await loadDoctorsList();
+                
+                // Load doctor approvals for Super Admin
+                await loadSuperAdminDoctorApprovals();
             } catch (error) {
                 showToast('error', 'Грешка', 'Грешка при вчитување: ' + error.message);
                 console.error(error);
