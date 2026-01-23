@@ -2869,7 +2869,7 @@
                     <h3 style="color: var(--primary); margin-top: 12px;" data-i18n="aboutSubtitle">Второ мислење: Информативни онлајн медицински консултации</h3>
                 </div>
 
-                <p style="font-size: 17px; line-height: 1.8; margin-bottom: 24px;" data-i18n="aboutIntro">Добредојдовте на <strong>Второ мислење</strong> — платформа преку која можете да добиете информативно стручно мислење од лекари, директно, брзо и доверливо.</p>
+                <p style="font-size: 17px; line-height: 1.8; margin-bottom: 24px;" data-i18n-html="aboutIntro">Добредојдовте на <strong>Второ мислење</strong> — платформа преку која можете да добиете информативно стручно мислење од лекари, директно, брзо и доверливо.</p>
 
                 <h3 data-i18n="aboutHowStartedTitle">🚀 Како започнавме</h3>
                 <p data-i18n="aboutHowStartedText">Нашиот пат започна со желбата да им овозможиме на луѓето лесен пристап до информативни медицински мислења. Веруваме дека секој треба да има можност да се консултира со лекар за своите здравствени прашања, без непотребни одлагања, од удобноста на својот дом.</p>
@@ -2884,7 +2884,7 @@
                 <p data-i18n="aboutWhyChooseText">Со нас добивате пристап до информативни медицински консултации од удобноста на вашиот дом. Ставаме акцент на личен пристап и грижа за секој корисник.</p>
 
                 <div style="margin-top: 32px; padding: 20px; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 12px; border-left: 4px solid #F59E0B;">
-                    <p style="margin: 0; color: #92400E; font-size: 14px;" data-i18n="aboutDisclaimer"><strong>⚠️ Напомена:</strong> Мислењата добиени преку оваа платформа се информативни и не ја заменуваат консултацијата со вашиот матичен лекар.</p>
+                    <p style="margin: 0; color: #92400E; font-size: 14px;" data-i18n-html="aboutDisclaimer"><strong>⚠️ Напомена:</strong> Мислењата добиени преку оваа платформа се информативни и не ја заменуваат консултацијата со вашиот матичен лекар.</p>
                 </div>
             </div>
         </div>
@@ -3447,6 +3447,14 @@
                 }
             });
 
+            // Update all HTML translated elements (allows HTML tags like <strong>)
+            document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                const key = el.getAttribute('data-i18n-html');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+
             // Update HTML lang attribute
             document.documentElement.lang = lang;
             
@@ -3483,6 +3491,13 @@
                         } else {
                             el.textContent = translations[savedLang][key];
                         }
+                    }
+                });
+                // Apply HTML translations (allows HTML tags like <strong>)
+                document.querySelectorAll('[data-i18n-html]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-html');
+                    if (translations[savedLang] && translations[savedLang][key]) {
+                        el.innerHTML = translations[savedLang][key];
                     }
                 });
                 // Apply placeholder translations
