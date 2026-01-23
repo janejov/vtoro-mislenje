@@ -1443,6 +1443,7 @@
                 <a href="#pricing" class="nav-link" data-i18n="navPricing">Цени</a>
                 <a href="#faq" class="nav-link" data-i18n="navFaq">FAQ</a>
                 <a href="#contact" class="nav-link" data-i18n="navContact">Контакт</a>
+                <a href="#" class="nav-link" onclick="openAbout(); return false;" data-i18n="navAbout">За нас</a>
                 <div class="language-switcher">
                     <button class="lang-btn active" onclick="switchLanguage('mk')" title="Македонски">🇲🇰</button>
                     <button class="lang-btn" onclick="switchLanguage('sq')" title="Shqip">🇦🇱</button>
@@ -1741,6 +1742,7 @@
                     <li><a href="#how-it-works">Како функционира</a></li>
                     <li><a href="#pricing">Цени</a></li>
                     <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#" onclick="openAbout(); return false;" data-i18n="footerAbout">За нас</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -2854,6 +2856,40 @@
         </div>
     </div>
 
+    <!-- About Us Modal -->
+    <div id="aboutModal" class="modal-overlay hidden" onclick="closeAbout(event)">
+        <div class="modal-content modal-large" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="aboutModalTitle">За нас</h2>
+                <button class="modal-close" onclick="closeAbout()">×</button>
+            </div>
+            <div id="aboutContent" class="legal-content">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <span style="font-size: 48px;">⚕️</span>
+                    <h3 style="color: var(--primary); margin-top: 12px;" data-i18n="aboutSubtitle">Второ мислење: Информативни онлајн медицински консултации</h3>
+                </div>
+
+                <p style="font-size: 17px; line-height: 1.8; margin-bottom: 24px;" data-i18n="aboutIntro">Добредојдовте на <strong>Второ мислење</strong> — платформа преку која можете да добиете информативно стручно мислење од лекари, директно, брзо и доверливо.</p>
+
+                <h3 data-i18n="aboutHowStartedTitle">🚀 Како започнавме</h3>
+                <p data-i18n="aboutHowStartedText">Нашиот пат започна со желбата да им овозможиме на луѓето лесен пристап до информативни медицински мислења. Веруваме дека секој треба да има можност да се консултира со лекар за своите здравствени прашања, без непотребни одлагања, од удобноста на својот дом.</p>
+
+                <h3 data-i18n="aboutForWhomTitle">👥 За кого е наменета платформата</h3>
+                <p data-i18n="aboutForWhomText">Платформата е наменета за луѓе кои сакаат да добијат дополнително информативно мислење за своите здравствени прашања. Тие ценат пристап до професионалци кои можат да понудат второ мислење како дополнување на консултациите со нивниот матичен лекар.</p>
+
+                <h3 data-i18n="aboutDifferentTitle">✨ Што нè издвојува</h3>
+                <p data-i18n="aboutDifferentText">Се истакнуваме со брзи и доверливи консултации со лиценцирани лекари. Нашите вредности се засноваат на професионализам, транспарентност и достапност.</p>
+
+                <h3 data-i18n="aboutWhyChooseTitle">💙 Зошто да нè изберете</h3>
+                <p data-i18n="aboutWhyChooseText">Со нас добивате пристап до информативни медицински консултации од удобноста на вашиот дом. Ставаме акцент на личен пристап и грижа за секој корисник.</p>
+
+                <div style="margin-top: 32px; padding: 20px; background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-radius: 12px; border-left: 4px solid #F59E0B;">
+                    <p style="margin: 0; color: #92400E; font-size: 14px;" data-i18n="aboutDisclaimer"><strong>⚠️ Напомена:</strong> Мислењата добиени преку оваа платформа се информативни и не ја заменуваат консултацијата со вашиот матичен лекар.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Vercel Analytics -->
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -2873,6 +2909,7 @@
                 navPricing: 'Цени',
                 navFaq: 'FAQ',
                 navContact: 'Контакт',
+                navAbout: 'За нас',
                 navLogin: 'Најава',
                 navRegister: 'Регистрација',
                 navDoctorPrompt: 'Сте лекар?',
@@ -2885,6 +2922,18 @@
                 heroSubtitle: 'Добијте професионални одговори на вашите здравствени прашања од сертифицирани лекари, брзо и доверливо.',
                 heroButton1: 'Поставете прашање',
                 heroButton2: 'Како функционира',
+                footerAbout: 'За нас',
+                aboutSubtitle: 'Второ мислење: Информативни онлајн медицински консултации',
+                aboutIntro: 'Добредојдовте на <strong>Второ мислење</strong> — платформа преку која можете да добиете информативно стручно мислење од лекари, директно, брзо и доверливо.',
+                aboutHowStartedTitle: '🚀 Како започнавме',
+                aboutHowStartedText: 'Нашиот пат започна со желбата да им овозможиме на луѓето лесен пристап до информативни медицински мислења. Веруваме дека секој треба да има можност да се консултира со лекар за своите здравствени прашања, без непотребни одлагања, од удобноста на својот дом.',
+                aboutForWhomTitle: '👥 За кого е наменета платформата',
+                aboutForWhomText: 'Платформата е наменета за луѓе кои сакаат да добијат дополнително информативно мислење за своите здравствени прашања. Тие ценат пристап до професионалци кои можат да понудат второ мислење како дополнување на консултациите со нивниот матичен лекар.',
+                aboutDifferentTitle: '✨ Што нè издвојува',
+                aboutDifferentText: 'Се истакнуваме со брзи и доверливи консултации со лиценцирани лекари. Нашите вредности се засноваат на професионализам, транспарентност и достапност.',
+                aboutWhyChooseTitle: '💙 Зошто да нè изберете',
+                aboutWhyChooseText: 'Со нас добивате пристап до информативни медицински консултации од удобноста на вашиот дом. Ставаме акцент на личен пристап и грижа за секој корисник.',
+                aboutDisclaimer: '<strong>⚠️ Напомена:</strong> Мислењата добиени преку оваа платформа се информативни и не ја заменуваат консултацијата со вашиот матичен лекар.',
                 featuresTitle: 'Зошто да нѐ изберете?',
                 feature1Title: 'Брзи одговори',
                 feature1Text: 'Добијте професионален одговор од сертифициран лекар во рок од 24-48 часа.',
@@ -3030,6 +3079,7 @@
                 navPricing: 'Çmimet',
                 navFaq: 'FAQ',
                 navContact: 'Kontakti',
+                navAbout: 'Rreth nesh',
                 navLogin: 'Hyrje',
                 navRegister: 'Regjistrimi',
                 navDoctorPrompt: 'Jeni mjek?',
@@ -3042,6 +3092,18 @@
                 heroSubtitle: 'Merrni përgjigje profesionale për pyetjet tuaja shëndetësore nga mjekë të certifikuar, shpejt dhe në mënyrë konfidenciale.',
                 heroButton1: 'Bëni një pyetje',
                 heroButton2: 'Si funksionon',
+                footerAbout: 'Rreth nesh',
+                aboutSubtitle: 'Mendimi i dytë: Konsultime mjekësore informative online',
+                aboutIntro: 'Mirësevini në <strong>Mendimi i dytë</strong> — platformë përmes së cilës mund të merrni mendim profesional informativ nga mjekët, drejtpërdrejt, shpejt dhe në mënyrë konfidenciale.',
+                aboutHowStartedTitle: '🚀 Si filluam',
+                aboutHowStartedText: 'Rruga jonë filloi me dëshirën për t\'u mundësuar njerëzve qasje të lehtë në mendime mjekësore informative. Besojmë se secili duhet të ketë mundësi të konsultohet me mjek për pyetjet e tij shëndetësore, pa vonesa të panevojshme, nga rehatia e shtëpisë së tij.',
+                aboutForWhomTitle: '👥 Për kë është platforma',
+                aboutForWhomText: 'Platforma është e dedikuar për njerëzit që dëshirojnë të marrin mendim shtesë informativ për pyetjet e tyre shëndetësore. Ata vlerësojnë qasjen te profesionistët që mund të ofrojnë mendim të dytë si plotësim i konsultimeve me mjekun e tyre familjar.',
+                aboutDifferentTitle: '✨ Çfarë na dallon',
+                aboutDifferentText: 'Dallohemi me konsultime të shpejta dhe konfidenciale me mjekë të licensuar. Vlerat tona bazohen në profesionalizëm, transparencë dhe qasje.',
+                aboutWhyChooseTitle: '💙 Pse të na zgjidhni',
+                aboutWhyChooseText: 'Me ne fitoni qasje në konsultime mjekësore informative nga rehatia e shtëpisë suaj. Vëmë theks në qasje personale dhe kujdes për secilin përdorues.',
+                aboutDisclaimer: '<strong>⚠️ Shënim:</strong> Mendimet e marra përmes kësaj platforme janë informative dhe nuk e zëvendësojnë konsultimin me mjekun tuaj familjar.',
                 featuresTitle: 'Pse të na zgjidhni?',
                 feature1Title: 'Përgjigje të shpejta',
                 feature1Text: 'Merrni përgjigje profesionale nga një mjek i certifikuar brenda 24-48 orëve.',
@@ -3187,6 +3249,7 @@
                 navPricing: 'Pricing',
                 navFaq: 'FAQ',
                 navContact: 'Contact',
+                navAbout: 'About Us',
                 navLogin: 'Login',
                 navRegister: 'Register',
                 navDoctorPrompt: 'Are you a doctor?',
@@ -3199,6 +3262,18 @@
                 heroSubtitle: 'Get professional answers to your health questions from certified doctors, quickly and confidentially.',
                 heroButton1: 'Ask a question',
                 heroButton2: 'How it works',
+                footerAbout: 'About Us',
+                aboutSubtitle: 'Second Opinion: Informative Online Medical Consultations',
+                aboutIntro: 'Welcome to <strong>Second Opinion</strong> — a platform through which you can receive informative professional opinions from doctors, directly, quickly, and confidentially.',
+                aboutHowStartedTitle: '🚀 How We Started',
+                aboutHowStartedText: 'Our journey began with the desire to provide people with easy access to informative medical opinions. We believe everyone should have the opportunity to consult with a doctor about their health questions, without unnecessary delays, from the comfort of their home.',
+                aboutForWhomTitle: '👥 Who Is the Platform For',
+                aboutForWhomText: 'The platform is designed for people who want to receive additional informative opinions about their health questions. They value access to professionals who can offer a second opinion as a complement to consultations with their family doctor.',
+                aboutDifferentTitle: '✨ What Sets Us Apart',
+                aboutDifferentText: 'We stand out with fast and confidential consultations with licensed doctors. Our values are based on professionalism, transparency, and accessibility.',
+                aboutWhyChooseTitle: '💙 Why Choose Us',
+                aboutWhyChooseText: 'With us, you gain access to informative medical consultations from the comfort of your home. We emphasize a personal approach and care for each user.',
+                aboutDisclaimer: '<strong>⚠️ Note:</strong> Opinions received through this platform are informative and do not replace consultation with your family doctor.',
                 featuresTitle: 'Why choose us?',
                 feature1Title: 'Fast responses',
                 feature1Text: 'Get a professional answer from a certified doctor within 24-48 hours.',
@@ -3785,17 +3860,32 @@
             }
         }
 
+        function openAbout() {
+            document.getElementById('aboutModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            updateLegalContent('about');
+        }
+
+        function closeAbout(event) {
+            if (!event || event.target === event.currentTarget) {
+                document.getElementById('aboutModal').classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        }
+
         function updateLegalContent(type) {
             const titles = {
                 terms: { mk: 'Услови за користење', sq: 'Kushtet e përdorimit', en: 'Terms of Service' },
                 privacy: { mk: 'Политика за приватност', sq: 'Politika e privatësisë', en: 'Privacy Policy' },
-                doctorTerms: { mk: 'Услови за медицински стручњаци', sq: 'Kushtet për ekspertë mjekësorë', en: 'Terms for Medical Professionals' }
+                doctorTerms: { mk: 'Услови за медицински стручњаци', sq: 'Kushtet për ekspertë mjekësorë', en: 'Terms for Medical Professionals' },
+                about: { mk: 'За нас', sq: 'Rreth nesh', en: 'About Us' }
             };
             
             const modalIds = {
                 terms: 'termsModalTitle',
                 privacy: 'privacyModalTitle',
-                doctorTerms: 'doctorTermsModalTitle'
+                doctorTerms: 'doctorTermsModalTitle',
+                about: 'aboutModalTitle'
             };
             
             const titleEl = document.getElementById(modalIds[type]);
