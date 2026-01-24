@@ -56,6 +56,13 @@
             align-items: center;
         }
 
+        .nav-container-centered {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            gap: 24px;
+        }
+
         .logo {
             font-size: 24px;
             font-weight: 700;
@@ -69,21 +76,20 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
             transition: color 0.3s, transform 0.2s;
-            margin-right: 60px;
         }
 
         .logo-link:hover {
             color: var(--primary-dark);
-            transform: scale(1.05);
+            transform: scale(1.02);
         }
 
         .logo-icon {
-            font-size: 28px;
+            font-size: 24px;
             transition: transform 0.3s, color 0.3s;
         }
 
@@ -96,6 +102,46 @@
             display: flex;
             gap: 40px;
             align-items: center;
+        }
+
+        .nav-links-centered {
+            justify-content: center;
+            background: var(--bg-light);
+            padding: 8px 12px;
+            border-radius: 12px;
+            gap: 8px;
+        }
+
+        .nav-links-centered .nav-link {
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .nav-links-centered .nav-link:hover,
+        .nav-links-centered .nav-link.active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .language-switcher-horizontal {
+            flex-direction: row;
+            padding: 4px;
+            gap: 4px;
+        }
+
+        .language-switcher-horizontal .lang-btn {
+            padding: 6px 8px;
+            font-size: 16px;
         }
 
         .nav-link {
@@ -893,13 +939,18 @@
             max-width: 1200px;
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-template-columns: 2fr 1fr 1fr;
             gap: 60px;
             margin-bottom: 40px;
         }
 
+        .footer-container-4col {
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+        }
+
         .footer-about h3 {
-            font-size: 24px;
+            font-size: 22px;
             margin-bottom: 16px;
             color: var(--primary-light);
         }
@@ -907,12 +958,14 @@
         .footer-about p {
             color: #A0AEC0;
             line-height: 1.7;
+            font-size: 14px;
         }
 
         .footer-section h4 {
-            font-size: 18px;
+            font-size: 15px;
             margin-bottom: 16px;
             color: white;
+            font-weight: 600;
         }
 
         .footer-links {
@@ -920,13 +973,14 @@
         }
 
         .footer-links li {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .footer-links a {
             color: #A0AEC0;
             text-decoration: none;
             transition: color 0.3s;
+            font-size: 14px;
         }
 
         .footer-links a:hover {
@@ -1125,6 +1179,11 @@
 
         /* Responsive Design */
         @media (max-width: 968px) {
+            .nav-container-centered {
+                display: flex;
+                justify-content: space-between;
+            }
+
             .nav-links {
                 position: fixed;
                 top: 80px;
@@ -1140,6 +1199,18 @@
                 pointer-events: none;
             }
 
+            .nav-links-centered {
+                background: white;
+                border-radius: 0;
+                gap: 0;
+            }
+
+            .nav-links-centered .nav-link {
+                padding: 14px 20px;
+                border-radius: 0;
+                border-bottom: 1px solid #E2E8F0;
+            }
+
             .nav-links.open {
                 transform: translateY(0);
                 opacity: 1;
@@ -1148,6 +1219,15 @@
 
             .mobile-menu-btn {
                 display: block;
+            }
+
+            .nav-actions {
+                display: none;
+            }
+
+            .nav-links.open ~ .nav-actions,
+            .nav-links.open + .nav-actions {
+                display: flex;
             }
             
             .auth-buttons {
@@ -1430,7 +1510,7 @@
     <div id="landingPage">
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="nav-container">
+        <div class="nav-container nav-container-centered">
             <a href="#" class="logo-link">
                 <span class="logo-icon">⚕️</span>
                 <span data-i18n="siteName">Второ мислење</span>
@@ -1438,27 +1518,21 @@
             <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
                 ☰
             </button>
-            <div class="nav-links" id="navLinks">
+            <div class="nav-links nav-links-centered" id="navLinks">
                 <a href="#how-it-works" class="nav-link" data-i18n="navHow">Како функционира</a>
                 <a href="#pricing" class="nav-link" data-i18n="navPricing">Цени</a>
                 <a href="#faq" class="nav-link" data-i18n="navFaq">FAQ</a>
                 <a href="#contact" class="nav-link" data-i18n="navContact">Контакт</a>
                 <a href="#" class="nav-link" onclick="openAbout(); return false;" data-i18n="navAbout">За нас</a>
-                <div class="language-switcher">
+            </div>
+            <div class="nav-actions">
+                <div class="language-switcher language-switcher-horizontal">
                     <button class="lang-btn active" onclick="switchLanguage('mk')" title="Македонски">🇲🇰</button>
                     <button class="lang-btn" onclick="switchLanguage('sq')" title="Shqip">🇦🇱</button>
                     <button class="lang-btn" onclick="switchLanguage('en')" title="English">🇬🇧</button>
                 </div>
-                <div class="auth-buttons">
-                    <button class="btn-signin" onclick="openSignin('user')" data-i18n="navLogin">Најава</button>
-                    <button class="btn-register" onclick="openRegister('user')" data-i18n="navRegister">Регистрација</button>
-                    <div class="doctor-links">
-                        <span data-i18n="navDoctorPrompt">Сте лекар?</span>
-                        <a href="#" onclick="openSignin('doctor'); return false;" data-i18n="navDoctorLoginLink">Најава</a>
-                        <span class="divider">|</span>
-                        <a href="#" onclick="openRegister('doctor'); return false;" data-i18n="navDoctorRegisterLink">Регистрација</a>
-                    </div>
-                </div>
+                <button class="btn-signin" onclick="openSignin('user')" data-i18n="navLogin">Најава</button>
+                <button class="btn-register" onclick="openRegister('user')" data-i18n="navRegister">Регистрација</button>
             </div>
         </div>
     </nav>
@@ -1730,32 +1804,39 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
+        <div class="footer-container footer-container-4col">
             <div class="footer-about">
-                <h3>Второ мислење</h3>
+                <h3>⚕️ Второ мислење</h3>
                 <p>Професионални медицински консултации онлајн. Добијте стручно мислење од сертифицирани лекари, брзо, безбедно и доверливо.</p>
             </div>
             <div class="footer-section">
-                <h4>Линкови</h4>
+                <h4 data-i18n="footerPlatform">Платформа</h4>
                 <ul class="footer-links">
-                    <li><a href="#features">Карактеристики</a></li>
-                    <li><a href="#how-it-works">Како функционира</a></li>
-                    <li><a href="#pricing">Цени</a></li>
-                    <li><a href="#faq">FAQ</a></li>
+                    <li><a href="#how-it-works" data-i18n="navHow">Како функционира</a></li>
+                    <li><a href="#pricing" data-i18n="navPricing">Цени</a></li>
+                    <li><a href="#faq" data-i18n="navFaq">FAQ</a></li>
                     <li><a href="#" onclick="openAbout(); return false;" data-i18n="footerAbout">За нас</a></li>
                 </ul>
             </div>
             <div class="footer-section">
-                <h4>Правни</h4>
+                <h4 data-i18n="footerLegal">Правни</h4>
                 <ul class="footer-links">
                     <li><a href="#" onclick="openTerms(); return false;" data-i18n="footerTerms">Услови за користење</a></li>
                     <li><a href="#" onclick="openPrivacy(); return false;" data-i18n="footerPrivacy">Политика за приватност</a></li>
                     <li><a href="#" onclick="openDoctorTerms(); return false;" data-i18n="footerDoctorTerms">Услови за лекари</a></li>
                 </ul>
             </div>
+            <div class="footer-section">
+                <h4 data-i18n="footerForDoctors">👨‍⚕️ За лекари</h4>
+                <ul class="footer-links">
+                    <li><a href="#" onclick="openSignin('doctor'); return false;" data-i18n="footerDoctorLogin">Најава за лекари</a></li>
+                    <li><a href="#" onclick="openRegister('doctor'); return false;" data-i18n="footerDoctorRegister">Регистрација за лекари</a></li>
+                    <li><a href="#" onclick="openDoctorTerms(); return false;" data-i18n="footerDoctorTerms">Услови за лекари</a></li>
+                </ul>
+            </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2025 Второ мислење. Сите права задржани.</p>
+            <p>&copy; 2025 Второ мислење. <span data-i18n="footerRights">Сите права задржани.</span></p>
         </div>
     </footer>
     </div>
@@ -2996,12 +3077,16 @@
                 footerAbout: 'За нас',
                 footerDesc: 'Второ мислење е платформа за онлајн медицински консултации која ви овозможува да добиете професионално мислење од сертифицирани лекари.',
                 footerQuickLinks: 'Брзи линкови',
-                footerLegal: 'Правно',
+                footerLegal: 'Правни',
                 footerPrivacy: 'Политика за приватност',
                 footerTerms: 'Услови за користење',
                 footerDoctorTerms: 'Услови за лекари',
                 footerContact: 'Контакт',
-                footerRights: '© 2025 Второ мислење. Сите права задржани.',
+                footerRights: 'Сите права задржани.',
+                footerPlatform: 'Платформа',
+                footerForDoctors: '👨‍⚕️ За лекари',
+                footerDoctorLogin: 'Најава за лекари',
+                footerDoctorRegister: 'Регистрација за лекари',
                 // Dashboard translations
                 dashLogout: 'Одјави се',
                 dashWelcome: 'Добредојдовте назад!',
@@ -3171,7 +3256,11 @@
                 footerTerms: 'Kushtet e përdorimit',
                 footerDoctorTerms: 'Kushtet për mjekët',
                 footerContact: 'Kontakti',
-                footerRights: '© 2025 Mendimi i dytë. Të gjitha të drejtat e rezervuara.',
+                footerRights: 'Të gjitha të drejtat e rezervuara.',
+                footerPlatform: 'Platforma',
+                footerForDoctors: '👨‍⚕️ Për mjekët',
+                footerDoctorLogin: 'Hyrje për mjekët',
+                footerDoctorRegister: 'Regjistrim për mjekët',
                 // Dashboard translations
                 dashLogout: 'Dilni',
                 dashWelcome: 'Mirësevini përsëri!',
@@ -3341,7 +3430,11 @@
                 footerTerms: 'Terms of service',
                 footerDoctorTerms: 'Terms for doctors',
                 footerContact: 'Contact',
-                footerRights: '© 2025 Second Opinion. All rights reserved.',
+                footerRights: 'All rights reserved.',
+                footerPlatform: 'Platform',
+                footerForDoctors: '👨‍⚕️ For Doctors',
+                footerDoctorLogin: 'Doctor Login',
+                footerDoctorRegister: 'Doctor Registration',
                 // Dashboard translations
                 dashLogout: 'Log out',
                 dashWelcome: 'Welcome back!',
