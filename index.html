@@ -4170,7 +4170,20 @@
         async function loadDoctorsForSelection() {
             try {
                 const doctorSelect = document.getElementById('questionDoctor');
-                if (!doctorSelect) return;
+                if (!doctorSelect) {
+                    console.log('Doctor select element not found');
+                    return;
+                }
+
+                console.log('Loading doctors for selection...');
+
+                // First, let's see ALL doctors (for debugging)
+                const { data: allDoctors, error: allError } = await supabaseClient
+                    .from('users')
+                    .select('id, full_name, specialization, role, is_approved')
+                    .eq('role', 'expert');
+
+                console.log('All doctors (experts):', allDoctors, 'Error:', allError);
 
                 // Fetch approved doctors (role is 'expert' in the database)
                 const { data: doctors, error } = await supabaseClient
@@ -4180,7 +4193,12 @@
                     .eq('is_approved', true)
                     .order('full_name', { ascending: true });
 
-                if (error) throw error;
+                console.log('Approved doctors:', doctors, 'Error:', error);
+
+                if (error) {
+                    console.error('Error fetching doctors:', error);
+                    throw error;
+                }
 
                 // Clear existing options except "Any doctor"
                 const anyDoctorOption = doctorSelect.querySelector('option[value="any"]');
@@ -4203,9 +4221,11 @@
                         option.textContent = `👨‍⚕️ ${doctor.full_name}${doctor.specialization ? ' - ' + doctor.specialization : ''}`;
                         doctorSelect.appendChild(option);
                     });
+                    console.log(`Added ${doctors.length} doctors to dropdown`);
+                } else {
+                    console.log('No approved doctors found to add to dropdown');
                 }
 
-                console.log(`Loaded ${doctors?.length || 0} approved doctors for selection`);
             } catch (error) {
                 console.error('Error loading doctors for selection:', error);
             }
@@ -5848,19 +5868,44 @@
             if (!confirm('Дали сте сигурни дека сакате да го одобрите овој лекар?')) return;
 
             try {
-                const { error } = await supabaseClient
+                console.log('Approving doctor with ID:', doctorId);
+                
+                // First check if we can read the doctor
+                const { data: doctorData, error: readError } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', doctorId)
+                    .single();
+                
+                console.log('Doctor data before update:', doctorData, 'Read error:', readError);
+                
+                if (readError) {
+                    throw new Error('Не може да се прочита лекарот: ' + readError.message);
+                }
+
+                // Perform the update
+                const { data: updateData, error: updateError } = await supabaseClient
                     .from('users')
                     .update({ is_approved: true })
-                    .eq('id', doctorId);
+                    .eq('id', doctorId)
+                    .select();
 
-                if (error) throw error;
+                console.log('Update result:', updateData, 'Update error:', updateError);
+
+                if (updateError) {
+                    throw new Error('Грешка при ажурирање: ' + updateError.message);
+                }
+
+                if (!updateData || updateData.length === 0) {
+                    throw new Error('Ажурирањето не врати резултат. Можеби RLS политиката го блокира.');
+                }
 
                 showToast('success', 'Успешно!', 'Лекарот е одобрен.');
                 loadPendingDoctors();
                 loadApprovedDoctors();
             } catch (error) {
-                showToast('error', 'Грешка', 'Грешка при одобрување: ' + error.message);
-                console.error(error);
+                showToast('error', 'Грешка', error.message || 'Непозната грешка при одобрување');
+                console.error('Approve doctor error:', error);
             }
         }
 
@@ -6014,19 +6059,33 @@
             if (!confirm('Дали сте сигурни дека сакате да го одобрите овој лекар?')) return;
 
             try {
-                const { error } = await supabaseClient
+                console.log('SuperAdmin approving doctor with ID:', doctorId);
+                
+                // Perform the update with select to verify
+                const { data: updateData, error: updateError } = await supabaseClient
                     .from('users')
                     .update({ is_approved: true })
-                    .eq('id', doctorId);
+                    .eq('id', doctorId)
+                    .select();
 
-                if (error) throw error;
+                console.log('Update result:', updateData, 'Update error:', updateError);
+
+                if (updateError) {
+                    throw new Error('Грешка при ажурирање: ' + updateError.message);
+                }
+
+                if (!updateData || updateData.length === 0) {
+                    // Try alternative approach - maybe RLS is blocking
+                    console.log('No data returned, trying RPC or checking RLS...');
+                    throw new Error('Ажурирањето не врати резултат. Проверете ги RLS политиките во Supabase.');
+                }
 
                 showToast('success', 'Успешно!', 'Лекарот е одобрен.');
                 loadSuperAdminDoctorApprovals();
                 loadDoctorsList(); // Refresh doctors list too
             } catch (error) {
-                showToast('error', 'Грешка', 'Грешка при одобрување: ' + error.message);
-                console.error(error);
+                showToast('error', 'Грешка', error.message || 'Грешка при одобрување');
+                console.error('SuperAdmin approve error:', error);
             }
         }
 
