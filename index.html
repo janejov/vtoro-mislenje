@@ -5325,6 +5325,9 @@
                 console.log('Current user:', window.currentUser);
                 console.log('User ID:', window.currentUser.id);
                 
+                // Also load doctors for selection dropdown
+                loadDoctorsForSelection();
+                
                 const { data: questions, error } = await supabaseClient
                     .from('questions')
                     .select(`
