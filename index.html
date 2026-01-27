@@ -6333,6 +6333,40 @@
             }
         }
 
+        // Super Admin Delete Question Function
+        async function superAdminDeleteQuestion(questionId) {
+            if (!confirm('Дали сте сигурни дека сакате да го избришете ова прашање и сите поврзани одговори? Оваа акција не може да се врати!')) return;
+
+            try {
+                // First, delete all answers associated with this question
+                const { error: answersError } = await supabaseClient
+                    .from('answers')
+                    .delete()
+                    .eq('question_id', questionId);
+
+                if (answersError) {
+                    console.error('Error deleting answers:', answersError);
+                    // Continue anyway - answers might not exist
+                }
+
+                // Then delete the question
+                const { error: questionError } = await supabaseClient
+                    .from('questions')
+                    .delete()
+                    .eq('id', questionId);
+
+                if (questionError) throw questionError;
+
+                showToast('success', 'Избришано!', 'Прашањето и одговорите се успешно избришани.');
+                
+                // Refresh the dashboard
+                loadSuperAdminDashboard();
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при бришење: ' + error.message);
+                console.error('Delete question error:', error);
+            }
+        }
+
         // Real-time subscription functions - NEW
         // Subscribe to new questions for experts
         function subscribeToQuestions() {
@@ -6771,6 +6805,7 @@
                 actionButtons = `<button class="btn btn-primary" onclick="openReviewModal('${q.id}')" style="margin-top: 16px; background: #8B5CF6;">✓ Прегледај и одобри</button>`;
             } else if (type === 'completed') {
                 statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Завршено</span>';
+                actionButtons = `<button class="btn" onclick="superAdminDeleteQuestion('${escapeHtml(q.id)}')" style="margin-top: 16px; background: var(--danger); color: white;">🗑️ Избриши прашање</button>`;
             }
 
             const answerPreview = answer ? `
