@@ -3638,6 +3638,11 @@
                     el.placeholder = translations[lang][key];
                 }
             });
+
+            // Refresh doctor dropdown to update specialization translations
+            if (typeof loadDoctorsForSelection === 'function' && document.getElementById('questionDoctor')) {
+                loadDoctorsForSelection();
+            }
         }
         
         // Load saved language preference on page load
@@ -4166,6 +4171,116 @@
             }
         }
 
+        // Translate specialization based on current language
+        function translateSpecialization(specialization) {
+            if (!specialization) return '';
+            
+            // Mapping of specialization values to translation keys
+            const specTranslations = {
+                'general-practice': {
+                    mk: 'Општа пракса',
+                    sq: 'Praktikë e përgjithshme',
+                    en: 'General Practice'
+                },
+                'cardiology': {
+                    mk: 'Кардиологија',
+                    sq: 'Kardiologji',
+                    en: 'Cardiology'
+                },
+                'dermatology': {
+                    mk: 'Дерматологија',
+                    sq: 'Dermatologji',
+                    en: 'Dermatology'
+                },
+                'endocrinology': {
+                    mk: 'Ендокринологија',
+                    sq: 'Endokrinologji',
+                    en: 'Endocrinology'
+                },
+                'gastroenterology': {
+                    mk: 'Гастроентерологија',
+                    sq: 'Gastroenterologji',
+                    en: 'Gastroenterology'
+                },
+                'gynecology': {
+                    mk: 'Гинекологија',
+                    sq: 'Gjinekologji',
+                    en: 'Gynecology'
+                },
+                'neurology': {
+                    mk: 'Неврологија',
+                    sq: 'Neurologji',
+                    en: 'Neurology'
+                },
+                'oncology': {
+                    mk: 'Онкологија',
+                    sq: 'Onkologji',
+                    en: 'Oncology'
+                },
+                'orthopedics': {
+                    mk: 'Ортопедија',
+                    sq: 'Ortopedi',
+                    en: 'Orthopedics'
+                },
+                'pediatrics': {
+                    mk: 'Педијатрија',
+                    sq: 'Pediatri',
+                    en: 'Pediatrics'
+                },
+                'psychiatry': {
+                    mk: 'Психијатрија',
+                    sq: 'Psikiatri',
+                    en: 'Psychiatry'
+                },
+                'pulmonology': {
+                    mk: 'Пулмологија',
+                    sq: 'Pulmonologji',
+                    en: 'Pulmonology'
+                },
+                'urology': {
+                    mk: 'Урологија',
+                    sq: 'Urologji',
+                    en: 'Urology'
+                },
+                'ophthalmology': {
+                    mk: 'Офталмологија',
+                    sq: 'Oftalmologji',
+                    en: 'Ophthalmology'
+                },
+                'otorhinolaryngology': {
+                    mk: 'Оториноларингологија (УНГ)',
+                    sq: 'Otorinolaringologji (ORL)',
+                    en: 'Otorhinolaryngology (ENT)'
+                },
+                'rheumatology': {
+                    mk: 'Ревматологија',
+                    sq: 'Reumatologji',
+                    en: 'Rheumatology'
+                },
+                'nephrology': {
+                    mk: 'Нефрологија',
+                    sq: 'Nefrologji',
+                    en: 'Nephrology'
+                },
+                'infectious-diseases': {
+                    mk: 'Инфективни болести',
+                    sq: 'Sëmundjet infektive',
+                    en: 'Infectious Diseases'
+                }
+            };
+
+            // Normalize the specialization key (lowercase, replace spaces with dashes)
+            const normalizedSpec = specialization.toLowerCase().replace(/\s+/g, '-');
+            
+            // Check if we have a translation for this specialization
+            if (specTranslations[normalizedSpec]) {
+                return specTranslations[normalizedSpec][currentLanguage] || specTranslations[normalizedSpec]['en'];
+            }
+            
+            // If no translation found, return the original
+            return specialization;
+        }
+
         // Load approved doctors for selection dropdown
         async function loadDoctorsForSelection() {
             try {
@@ -4213,12 +4328,13 @@
                     doctorSelect.appendChild(newAnyOption);
                 }
 
-                // Add doctors to dropdown
+                // Add doctors to dropdown with translated specializations
                 if (doctors && doctors.length > 0) {
                     doctors.forEach(doctor => {
                         const option = document.createElement('option');
                         option.value = doctor.id;
-                        option.textContent = `👨‍⚕️ ${doctor.full_name}${doctor.specialization ? ' - ' + doctor.specialization : ''}`;
+                        const translatedSpec = translateSpecialization(doctor.specialization);
+                        option.textContent = `👨‍⚕️ ${doctor.full_name}${translatedSpec ? ' - ' + translatedSpec : ''}`;
                         doctorSelect.appendChild(option);
                     });
                     console.log(`Added ${doctors.length} doctors to dropdown`);
