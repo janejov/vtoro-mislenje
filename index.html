@@ -928,6 +928,55 @@
             margin-top: 4px;
         }
 
+        /* Consultation Selection Group */
+        .consultation-selection-group {
+            background: #F8FAFC;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 1px solid #E2E8F0;
+        }
+
+        .consultation-group-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0 0 16px 0;
+        }
+
+        .consultation-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .consultation-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .consultation-field .form-label {
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .consultation-field .form-input {
+            padding: 12px 14px;
+            font-size: 14px;
+        }
+
+        .consultation-hint {
+            font-size: 12px;
+            color: var(--text-light);
+            margin: 12px 0 0 0;
+        }
+
+        @media (max-width: 640px) {
+            .consultation-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+
         /* Footer */
         .footer {
             background: var(--text-dark);
@@ -1923,12 +1972,26 @@
                         <input type="text" class="form-input" id="questionTitle" placeholder="Внесете наслов на прашањето" data-i18n-placeholder="dashTitlePlaceholder">
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label" data-i18n="dashSpecialty">Медицинска област</label>
-                        <select class="form-input" id="questionSpecialty">
-                            <option value="" data-i18n="dashSelectSpecialty">Изберете медицинска област</option>
-                            <option value="general-practice" data-i18n="specGeneralPractice">Општ лекар</option>
-                        </select>
+                    <!-- Grouped: Medical Specialty + Doctor Selection -->
+                    <div class="consultation-selection-group">
+                        <h4 class="consultation-group-title" data-i18n="dashConsultationSection">🏥 Медицинска консултација</h4>
+                        <div class="consultation-fields">
+                            <div class="consultation-field">
+                                <label class="form-label" data-i18n="dashSpecialty">Медицинска област</label>
+                                <select class="form-input" id="questionSpecialty">
+                                    <option value="" data-i18n="dashSelectSpecialty">Изберете медицинска област</option>
+                                    <option value="general-practice" data-i18n="specGeneralPractice">Општ лекар</option>
+                                </select>
+                            </div>
+                            <div class="consultation-field">
+                                <label class="form-label" data-i18n="dashDoctorChoice">Избор на лекар</label>
+                                <select class="form-input" id="questionDoctor">
+                                    <option value="any" data-i18n="dashAnyDoctor">🔀 Било кој лекар</option>
+                                    <!-- Doctors will be populated dynamically -->
+                                </select>
+                            </div>
+                        </div>
+                        <p class="consultation-hint" data-i18n="dashDoctorHint">💡 "Било кој лекар" = прашањето се доделува на првиот достапен лекар</p>
                     </div>
 
                     <div class="form-group">
@@ -3117,8 +3180,14 @@
                 dashSuperAdminRole: 'Супер Админ',
                 dashTitle: 'Наслов',
                 dashTitlePlaceholder: 'Внесете наслов на прашањето',
+                dashConsultationSection: '🏥 Медицинска консултација',
                 dashSpecialty: 'Медицинска област',
                 dashSelectSpecialty: 'Изберете медицинска област',
+                dashDoctorChoice: 'Избор на лекар',
+                dashAnyDoctor: '🔀 Било кој лекар',
+                dashDoctorHint: '💡 "Било кој лекар" = прашањето се доделува на првиот достапен лекар',
+                dashSelectedDoctor: 'Избран лекар',
+                dashNoSpecificDoctor: 'Не е избран конкретен лекар (било кој)',
                 specGeneralPractice: 'Општ лекар',
                 specCardiology: 'Кардиологија',
                 specDermatology: 'Дерматологија',
@@ -3291,8 +3360,14 @@
                 dashSuperAdminRole: 'Super Admin',
                 dashTitle: 'Titulli',
                 dashTitlePlaceholder: 'Shkruani titullin e pyetjes',
+                dashConsultationSection: '🏥 Konsultim mjekësor',
                 dashSpecialty: 'Specialiteti mjekësor',
                 dashSelectSpecialty: 'Zgjidhni specialitetin mjekësor',
+                dashDoctorChoice: 'Zgjedhja e mjekut',
+                dashAnyDoctor: '🔀 Çdo mjek',
+                dashDoctorHint: '💡 "Çdo mjek" = pyetja i caktohet mjekut të parë të disponueshëm',
+                dashSelectedDoctor: 'Mjeku i zgjedhur',
+                dashNoSpecificDoctor: 'Nuk është zgjedhur mjek specifik (çdokush)',
                 specGeneralPractice: 'Mjek i përgjithshëm',
                 specCardiology: 'Kardiologji',
                 specDermatology: 'Dermatologji',
@@ -3465,8 +3540,14 @@
                 dashSuperAdminRole: 'Super Admin',
                 dashTitle: 'Title',
                 dashTitlePlaceholder: 'Enter question title',
+                dashConsultationSection: '🏥 Medical Consultation',
                 dashSpecialty: 'Medical specialty',
                 dashSelectSpecialty: 'Select medical specialty',
+                dashDoctorChoice: 'Choose a doctor',
+                dashAnyDoctor: '🔀 Any doctor',
+                dashDoctorHint: '💡 "Any doctor" = question will be assigned to the first available doctor',
+                dashSelectedDoctor: 'Selected doctor',
+                dashNoSpecificDoctor: 'No specific doctor selected (any)',
                 specGeneralPractice: 'General Practitioner',
                 specCardiology: 'Cardiology',
                 specDermatology: 'Dermatology',
@@ -4085,6 +4166,51 @@
             }
         }
 
+        // Load approved doctors for selection dropdown
+        async function loadDoctorsForSelection() {
+            try {
+                const doctorSelect = document.getElementById('questionDoctor');
+                if (!doctorSelect) return;
+
+                // Fetch approved doctors (role is 'expert' in the database)
+                const { data: doctors, error } = await supabaseClient
+                    .from('users')
+                    .select('id, full_name, specialization')
+                    .eq('role', 'expert')
+                    .eq('is_approved', true)
+                    .order('full_name', { ascending: true });
+
+                if (error) throw error;
+
+                // Clear existing options except "Any doctor"
+                const anyDoctorOption = doctorSelect.querySelector('option[value="any"]');
+                doctorSelect.innerHTML = '';
+                if (anyDoctorOption) {
+                    doctorSelect.appendChild(anyDoctorOption);
+                } else {
+                    const newAnyOption = document.createElement('option');
+                    newAnyOption.value = 'any';
+                    newAnyOption.textContent = translations[currentLanguage]?.dashAnyDoctor || '🔀 Било кој лекар';
+                    newAnyOption.setAttribute('data-i18n', 'dashAnyDoctor');
+                    doctorSelect.appendChild(newAnyOption);
+                }
+
+                // Add doctors to dropdown
+                if (doctors && doctors.length > 0) {
+                    doctors.forEach(doctor => {
+                        const option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.textContent = `👨‍⚕️ ${doctor.full_name}${doctor.specialization ? ' - ' + doctor.specialization : ''}`;
+                        doctorSelect.appendChild(option);
+                    });
+                }
+
+                console.log(`Loaded ${doctors?.length || 0} approved doctors for selection`);
+            } catch (error) {
+                console.error('Error loading doctors for selection:', error);
+            }
+        }
+
         // Update the credits display in UI
         function updateCreditsDisplay() {
             const creditsDisplay = document.getElementById('creditsDisplay');
@@ -4116,6 +4242,9 @@
             const title = document.getElementById('questionTitle').value.trim();
             const specialty = document.getElementById('questionSpecialty').value;
             const text = document.getElementById('questionText').value.trim();
+            const selectedDoctorId = document.getElementById('questionDoctor').value;
+            const selectedDoctorOption = document.getElementById('questionDoctor').selectedOptions[0];
+            const selectedDoctorName = selectedDoctorId === 'any' ? null : selectedDoctorOption.text;
 
             if (!title || !specialty || !text) {
                 showToast('error', 'Грешка', 'Ве молиме пополнете ги сите полиња.');
@@ -4141,18 +4270,22 @@
                 const selectedOption = document.getElementById('questionSpecialty').selectedOptions[0];
                 const specialtyName = selectedOption.text;
 
-                // Insert the question
+                // Insert the question with preferred doctor info
+                const questionInsertData = {
+                    title: title,
+                    specialty: specialty,
+                    specialty_name: specialtyName,
+                    question_text: text,
+                    user_id: window.currentUser.id,
+                    payment_status: 'paid',
+                    plan_type: 'credit',
+                    preferred_doctor_id: selectedDoctorId === 'any' ? null : selectedDoctorId,
+                    preferred_doctor_name: selectedDoctorName
+                };
+
                 const { data: questionData, error: questionError } = await supabaseClient
                     .from('questions')
-                    .insert([{
-                        title: title,
-                        specialty: specialty,
-                        specialty_name: specialtyName,
-                        question_text: text,
-                        user_id: window.currentUser.id,
-                        payment_status: 'paid',
-                        plan_type: 'credit'
-                    }])
+                    .insert([questionInsertData])
                     .select()
                     .single();
 
@@ -4288,6 +4421,11 @@
 
                 showToast('info', 'Пренасочување...', 'Се пренасочувате кон страницата за плаќање...');
 
+                // Get selected doctor info
+                const selectedDoctorId = document.getElementById('questionDoctor').value;
+                const selectedDoctorOption = document.getElementById('questionDoctor').selectedOptions[0];
+                const selectedDoctorName = selectedDoctorId === 'any' ? null : selectedDoctorOption.text;
+
                 // Store question data in sessionStorage for after payment
                 const questionData = {
                     title: title,
@@ -4298,7 +4436,9 @@
                     userId: window.currentUser.id,
                     userEmail: window.currentUser.email,
                     userName: window.currentUser.full_name,
-                    attachments: uploadedFiles // Store the uploaded file URLs
+                    attachments: uploadedFiles, // Store the uploaded file URLs
+                    preferredDoctorId: selectedDoctorId === 'any' ? null : selectedDoctorId,
+                    preferredDoctorName: selectedDoctorName
                 };
                 sessionStorage.setItem('pendingQuestion', JSON.stringify(questionData));
 
@@ -4380,7 +4520,7 @@
                 // Get pre-uploaded attachments from questionData
                 const attachments = questionData.attachments || [];
 
-                // Insert the question with attachments
+                // Insert the question with attachments and preferred doctor
                 const { data: newQuestion, error: questionError } = await supabaseClient
                     .from('questions')
                     .insert([{
@@ -4392,7 +4532,9 @@
                         payment_status: 'paid',
                         stripe_session_id: sessionId,
                         plan_type: questionData.plan,
-                        attachments: attachments.length > 0 ? attachments : null
+                        attachments: attachments.length > 0 ? attachments : null,
+                        preferred_doctor_id: questionData.preferredDoctorId || null,
+                        preferred_doctor_name: questionData.preferredDoctorName || null
                     }])
                     .select()
                     .single();
@@ -4522,6 +4664,7 @@
                     document.getElementById('userDashboard').classList.remove('hidden');
                     loadUserQuestions();
                     loadUserCredits();
+                    loadDoctorsForSelection();
                 } else if (userData.role === 'admin') {
                     document.getElementById('adminDashboard').classList.remove('hidden');
                     loadPendingDoctors();
@@ -6153,6 +6296,19 @@
                     </div>
                 ` : '';
 
+                // Preferred doctor info
+                const preferredDoctorHTML = questionData.preferred_doctor_name ? `
+                    <div style="margin-top: 15px; padding: 12px 15px; background: #EFF6FF; border-radius: 8px; border: 1px solid #BFDBFE;">
+                        <strong style="color: #1E40AF;">👨‍⚕️ Избран лекар:</strong> 
+                        <span style="color: #1E40AF;">${questionData.preferred_doctor_name}</span>
+                    </div>
+                ` : `
+                    <div style="margin-top: 15px; padding: 12px 15px; background: #F0FDF4; border-radius: 8px; border: 1px solid #BBF7D0;">
+                        <strong style="color: #166534;">🔀 Избор на лекар:</strong> 
+                        <span style="color: #166534;">Било кој лекар (по ваша дискреција)</span>
+                    </div>
+                `;
+
                 const emailData = {
                     to: SUPER_ADMIN_EMAIL,
                     subject: `[НОВО ПРАШАЊЕ] ${questionData.title}`,
@@ -6162,6 +6318,8 @@
                     specialty: questionData.specialty_name,
                     questionText: questionData.question_text,
                     attachmentsHTML: attachmentsHTML,
+                    preferredDoctorHTML: preferredDoctorHTML,
+                    preferredDoctorName: questionData.preferred_doctor_name || 'Било кој лекар',
                     questionId: questionData.id,
                     isSuperAdminNotification: true
                 };
@@ -6369,6 +6527,15 @@
                                 <span><strong>📂 Област:</strong> ${q.specialty_name || q.specialty}</span>
                                 <span><strong>📅</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
                             </div>
+                            ${q.preferred_doctor_name ? `
+                                <div style="margin-top: 8px; padding: 6px 12px; background: #EFF6FF; border-radius: 6px; display: inline-block;">
+                                    <span style="font-size: 13px; color: #1E40AF;"><strong>👨‍⚕️ Избран лекар:</strong> ${q.preferred_doctor_name}</span>
+                                </div>
+                            ` : `
+                                <div style="margin-top: 8px; padding: 6px 12px; background: #F0FDF4; border-radius: 6px; display: inline-block;">
+                                    <span style="font-size: 13px; color: #166534;"><strong>🔀 Избор:</strong> Било кој лекар</span>
+                                </div>
+                            `}
                         </div>
                         ${statusBadge}
                     </div>
