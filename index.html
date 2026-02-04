@@ -3692,76 +3692,7 @@
         // Call on page load
         document.addEventListener('DOMContentLoaded', loadSavedLanguage);
 
-        // ============================================
-        // SECURITY HELPER FUNCTIONS - Added for XSS protection
-        // ============================================
-
-        /**
-         * Escapes HTML to prevent XSS attacks
-         * ALWAYS use this when displaying user-provided data
-         */
-        function escapeHtml(unsafe) {
-            if (unsafe === null || unsafe === undefined) {
-                return '';
-            }
-            return String(unsafe)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        /**
-         * Validates and sanitizes a URL
-         * Prevents javascript: and data: URL attacks
-         */
-        function sanitizeUrl(url) {
-            if (!url) return '';
-            const trimmed = String(url).trim().toLowerCase();
-            if (trimmed.startsWith('javascript:') || 
-                trimmed.startsWith('data:') || 
-                trimmed.startsWith('vbscript:')) {
-                return '';
-            }
-            return escapeHtml(url);
-        }
-
-        /**
-         * Validates file uploads
-         * Returns { valid: true/false, error: "message" }
-         */
-        function validateFileUpload(file) {
-            const ALLOWED_TYPES = [
-                'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
-                'application/pdf',
-                'application/msword',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-            ];
-            const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-            const DANGEROUS_EXTENSIONS = [
-                'exe', 'bat', 'cmd', 'sh', 'php', 'js', 'html', 'htm',
-                'jar', 'msi', 'scr', 'vbs', 'ps1', 'py', 'rb', 'pl'
-            ];
-            
-            if (!ALLOWED_TYPES.includes(file.type)) {
-                return { valid: false, error: 'Недозволен тип на фајл. Дозволени се само слики и PDF документи.' };
-            }
-            if (file.size > MAX_SIZE) {
-                return { valid: false, error: 'Фајлот е преголем. Максимална големина е 10MB.' };
-            }
-            const extension = file.name.split('.').pop().toLowerCase();
-            if (DANGEROUS_EXTENSIONS.includes(extension)) {
-                return { valid: false, error: 'Овој тип на фајл не е дозволен од безбедносни причини.' };
-            }
-            return { valid: true };
-        }
-
-        // ============================================
-        // END SECURITY HELPER FUNCTIONS
-        // ============================================
-
-        // Toast Notification System - SECURED against XSS
+        // Toast Notification System
         function showToast(type, title, message) {
             // Remove existing toast if any
             const existingToast = document.querySelector('.toast');
@@ -3770,29 +3701,14 @@
             }
 
             const toast = document.createElement('div');
-            const safeType = ['success', 'error', 'warning', 'info'].includes(type) ? type : 'info';
-            toast.className = `toast toast-${safeType}`;
-            
-            // Create elements safely using DOM methods instead of innerHTML
-            const iconDiv = document.createElement('div');
-            iconDiv.className = 'toast-icon';
-            iconDiv.textContent = type === 'success' ? '✓' : (type === 'info' ? 'ℹ' : '✕');
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'toast-content';
-            
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'toast-title';
-            titleDiv.textContent = title;
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'toast-message';
-            messageDiv.textContent = message;
-            
-            contentDiv.appendChild(titleDiv);
-            contentDiv.appendChild(messageDiv);
-            toast.appendChild(iconDiv);
-            toast.appendChild(contentDiv);
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">${type === 'success' ? '✓' : '✕'}</div>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-message">${message}</div>
+                </div>
+            `;
             
             document.body.appendChild(toast);
             
@@ -4601,15 +4517,6 @@
                 // Upload files BEFORE payment redirect (if any files selected)
                 let uploadedFiles = [];
                 if (selectedFiles && selectedFiles.length > 0) {
-                    // SECURITY: Validate all files before uploading
-                    for (let file of selectedFiles) {
-                        const validation = validateFileUpload(file);
-                        if (!validation.valid) {
-                            showToast('error', 'Грешка', `${file.name}: ${validation.error}`);
-                            return;
-                        }
-                    }
-                    
                     showToast('info', 'Се прикачуваат фајлови...', 'Ве молиме почекајте...');
                     
                     // Create a temporary ID for the upload folder
@@ -4617,7 +4524,7 @@
                     
                     for (let file of selectedFiles) {
                         try {
-                            const fileExt = file.name.split('.').pop().toLowerCase();
+                            const fileExt = file.name.split('.').pop();
                             const fileName = `${tempUploadId}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
                             
                             const { data, error } = await supabaseClient.storage
@@ -4643,7 +4550,7 @@
                             });
                         } catch (error) {
                             console.error('Error uploading file:', file.name, error);
-                            showToast('warning', 'Предупредување', `Грешка при прикачување на "${escapeHtml(file.name)}"`);
+                            showToast('warning', 'Предупредување', `Грешка при прикачување на "${file.name}"`);
                         }
                     }
                 }
@@ -5594,18 +5501,18 @@
                         ? `<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ ${statusAnswered}</span>`
                         : `<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">⏳ ${statusPending}</span>`;
                     
-                    // Display attachments if any - SECURED
+                    // Display attachments if any
                     const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
                         <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
                             <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 ${attachedDocsLabel}:</p>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 ${q.attachments.map(file => `
-                                    <a href="${sanitizeUrl(file.url)}" target="_blank" rel="noopener noreferrer" 
+                                    <a href="${file.url}" target="_blank" rel="noopener noreferrer" 
                                        style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-light); border-radius: 6px; transition: all 0.2s;"
                                        onmouseover="this.style.background='var(--primary)'; this.style.color='white';"
                                        onmouseout="this.style.background='var(--bg-light)'; this.style.color='var(--primary)';">
                                         <span>${getFileIcon(file.type)}</span>
-                                        <span style="flex: 1;">${escapeHtml(file.name)}</span>
+                                        <span style="flex: 1;">${file.name}</span>
                                         <span style="font-size: 12px; opacity: 0.7;">(${formatFileSize(file.size)})</span>
                                     </a>
                                 `).join('')}
@@ -5634,11 +5541,11 @@
                                 <div>
                                     <p style="font-weight: 600; color: var(--success); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
                                         <span style="font-size: 20px;">✓</span>
-                                        <span>${t.answerFrom} ${escapeHtml(answer.expert?.full_name || t.medicalExpert)}</span>
+                                        <span>${t.answerFrom} ${answer.expert?.full_name || t.medicalExpert}</span>
                                     </p>
                                     ${answer.expert ? `
                                         <p style="font-size: 13px; color: var(--text-light);">
-                                            ${escapeHtml(answer.expert.specialization || t.specialist)} • ${escapeHtml(answer.expert.hospital || t.medicalInstitution)} • ${escapeHtml(answer.expert.experience || '?')} ${t.yearsExperience}
+                                            ${answer.expert.specialization || t.specialist} • ${answer.expert.hospital || t.medicalInstitution} • ${answer.expert.experience || '?'} ${t.yearsExperience}
                                         </p>
                                     ` : ''}
                                 </div>
@@ -5646,7 +5553,7 @@
                                     ${new Date(answer.created_at).toLocaleDateString(currentLanguage === 'en' ? 'en-GB' : (currentLanguage === 'sq' ? 'sq-AL' : 'mk-MK'), { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </span>
                             </div>
-                            <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${escapeHtml(answer.answer_text)}</p>
+                            <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
                         </div>
                     ` : `
                         <div style="margin-top: 16px; padding: 12px; background: #FEF3C7; border-radius: 8px; border-left: 4px solid var(--warning);">
@@ -5660,7 +5567,7 @@
                         <div class="question-card" style="position: relative;">
                             <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; align-items: center;">
                                 ${statusBadge}
-                                <button onclick="deleteQuestion('${escapeHtml(q.id)}')" 
+                                <button onclick="deleteQuestion('${q.id}')" 
                                         style="background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;"
                                         onmouseover="this.style.background='#DC2626'"
                                         onmouseout="this.style.background='var(--danger)'">
@@ -5668,14 +5575,14 @@
                                 </button>
                             </div>
                             <div style="padding-right: 260px;">
-                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${escapeHtml(q.title)}</h4>
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
                                 <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
-                                    <span><strong>📂 ${t.specialty}:</strong> ${escapeHtml(q.specialty_name || q.specialty)}</span>
+                                    <span><strong>📂 ${t.specialty}:</strong> ${q.specialty_name || q.specialty}</span>
                                     <span><strong>📅 ${t.date}:</strong> ${new Date(q.created_at).toLocaleDateString(currentLanguage === 'en' ? 'en-GB' : (currentLanguage === 'sq' ? 'sq-AL' : 'mk-MK'))}</span>
                                 </div>
                             </div>
                             <div style="padding: 12px; background: white; border-radius: 8px; margin-bottom: 12px;">
-                                <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${escapeHtml(q.question_text)}</p>
+                                <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${q.question_text}</p>
                             </div>
                             ${attachmentsSection}
                             ${answerSection}
@@ -5795,8 +5702,15 @@
             }
         }
 
-        // Helper function to render question card - SECURED against XSS
+        // Helper function to render question card - NEW (Fixed null handling)
         function renderQuestionCard(q, isAnswered) {
+            // Debug: Log question data to see if attachments are present
+            console.log('Rendering question:', q.id);
+            console.log('Question attachments:', q.attachments);
+            console.log('Attachments type:', typeof q.attachments);
+            console.log('Attachments length:', q.attachments?.length);
+            console.log('Admin note:', q.admin_note);
+            
             // Get user name with fallback for deleted/missing users
             const userName = q.user?.full_name || 'Непознат корисник (избришан профил)';
             
@@ -5805,29 +5719,29 @@
                 ? '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Одговорено</span>'
                 : '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">⏳ Се чека</span>';
             
-            // Display admin note if present - SECURED
+            // Display admin note if present
             const adminNoteSection = q.admin_note && q.admin_note.trim() ? `
                 <div style="margin-bottom: 16px; padding: 12px 16px; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 8px; border-left: 4px solid #6366F1;">
                     <p style="font-weight: 600; color: #4F46E5; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-size: 14px;">
                         <span>📋</span>
                         <span>Забелешка од администратор:</span>
                     </p>
-                    <p style="color: #3730A3; line-height: 1.5; font-size: 14px; white-space: pre-wrap;">${escapeHtml(q.admin_note)}</p>
+                    <p style="color: #3730A3; line-height: 1.5; font-size: 14px; white-space: pre-wrap;">${q.admin_note}</p>
                 </div>
             ` : '';
             
-            // Display attachments if any - SECURED
+            // Display attachments if any
             const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
                 <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
                     <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи:</p>
                     <div style="display: flex; flex-direction: column; gap: 8px;">
                         ${q.attachments.map(file => `
-                            <a href="${sanitizeUrl(file.url)}" target="_blank" rel="noopener noreferrer" 
+                            <a href="${file.url}" target="_blank" rel="noopener noreferrer" 
                                style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-light); border-radius: 6px; transition: all 0.2s;"
                                onmouseover="this.style.background='var(--primary)'; this.style.color='white';"
                                onmouseout="this.style.background='var(--bg-light)'; this.style.color='var(--primary)';">
                                 <span>${getFileIcon(file.type)}</span>
-                                <span style="flex: 1;">${escapeHtml(file.name)}</span>
+                                <span style="flex: 1;">${file.name}</span>
                                 <span style="font-size: 12px; opacity: 0.7;">(${formatFileSize(file.size)})</span>
                             </a>
                         `).join('')}
@@ -5841,15 +5755,15 @@
                         <span style="font-size: 20px;">✓</span>
                         <span>Вашиот одговор (${new Date(answer.created_at).toLocaleDateString('mk-MK', { day: 'numeric', month: 'long', year: 'numeric' })}):</span>
                     </p>
-                    <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${escapeHtml(answer.answer_text)}</p>
+                    <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
                 </div>
             ` : `
                 <div style="margin-top: 16px;">
-                    <textarea id="answer-${escapeHtml(q.id)}" placeholder="Внесете го вашиот професионален одговор..." 
+                    <textarea id="answer-${q.id}" placeholder="Внесете го вашиот професионален одговор..." 
                               style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 14px; resize: vertical; transition: border-color 0.3s;"
                               onfocus="this.style.borderColor='var(--primary)'"
                               onblur="this.style.borderColor='var(--border)'"></textarea>
-                    <button class="btn btn-primary" style="margin-top: 12px; width: 100%;" onclick="submitAnswer('${escapeHtml(q.id)}')">
+                    <button class="btn btn-primary" style="margin-top: 12px; width: 100%;" onclick="submitAnswer(${q.id})">
                         📤 Испрати одговор
                     </button>
                 </div>
@@ -5859,7 +5773,7 @@
                 <div class="question-card" style="position: relative;">
                     <div style="position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; align-items: center;">
                         ${statusBadge}
-                        <button onclick="deleteQuestionAsDoctor('${escapeHtml(q.id)}')" 
+                        <button onclick="deleteQuestionAsDoctor('${q.id}')" 
                                 style="background: var(--danger); color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.3s;"
                                 onmouseover="this.style.background='#DC2626'"
                                 onmouseout="this.style.background='var(--danger)'">
@@ -5867,15 +5781,15 @@
                         </button>
                     </div>
                     <div style="padding-right: 240px;">
-                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${escapeHtml(q.title)}</h4>
+                        <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
                         <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
-                            <span><strong>👤 Од:</strong> ${escapeHtml(userName)}</span>
+                            <span><strong>👤 Од:</strong> ${userName}</span>
                             <span><strong>📅 Датум:</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
                         </div>
                     </div>
                     ${adminNoteSection}
                     <div style="padding: 12px; background: white; border-radius: 8px; margin-bottom: 12px;">
-                        <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${escapeHtml(q.question_text)}</p>
+                        <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${q.question_text}</p>
                     </div>
                     ${attachmentsSection}
                     ${answerSection}
@@ -5989,29 +5903,29 @@
                     <div class="question-card" style="border-left: 4px solid var(--warning);">
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 16px;">
                             <div style="flex: 1;">
-                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${escapeHtml(doctor.full_name)}</h4>
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${doctor.full_name}</h4>
                                 <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
-                                    <span><strong>📧 Email:</strong> ${escapeHtml(doctor.email)}</span>
-                                    <span><strong>📱 Телефон:</strong> ${escapeHtml(doctor.phone || 'Не е внесен')}</span>
+                                    <span><strong>📧 Email:</strong> ${doctor.email}</span>
+                                    <span><strong>📱 Телефон:</strong> ${doctor.phone || 'Не е внесен'}</span>
                                 </div>
                                 <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
-                                    <span><strong>🏥 Специјализација:</strong> ${escapeHtml(doctor.specialization)}</span>
-                                    <span><strong>📅 Искуство:</strong> ${escapeHtml(doctor.experience)} години</span>
+                                    <span><strong>🏥 Специјализација:</strong> ${doctor.specialization}</span>
+                                    <span><strong>📅 Искуство:</strong> ${doctor.experience} години</span>
                                 </div>
                                 <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light); margin-top: 4px;">
-                                    <span><strong>🏥 Болница:</strong> ${escapeHtml(doctor.hospital)}</span>
-                                    <span><strong>📍 Град:</strong> ${escapeHtml(doctor.city)}</span>
+                                    <span><strong>🏥 Болница:</strong> ${doctor.hospital}</span>
+                                    <span><strong>📍 Град:</strong> ${doctor.city}</span>
                                 </div>
                                 <div style="font-size: 14px; color: var(--text-light); margin-top: 4px;">
-                                    <strong>🆔 Лиценца:</strong> ${escapeHtml(doctor.license_number)}
+                                    <strong>🆔 Лиценца:</strong> ${doctor.license_number}
                                 </div>
                             </div>
                         </div>
                         <div style="display: flex; gap: 12px;">
-                            <button class="btn btn-primary" onclick="approveDoctor('${escapeHtml(doctor.id)}')" style="background: var(--success); flex: 1;">
+                            <button class="btn btn-primary" onclick="approveDoctor('${doctor.id}')" style="background: var(--success); flex: 1;">
                                 ✓ Одобри
                             </button>
-                            <button class="btn" onclick="rejectDoctor('${escapeHtml(doctor.id)}')" style="background: var(--danger); color: white; flex: 1;">
+                            <button class="btn" onclick="rejectDoctor('${doctor.id}')" style="background: var(--danger); color: white; flex: 1;">
                                 ✗ Одбиј
                             </button>
                         </div>
@@ -6049,15 +5963,15 @@
                     <div class="question-card" style="border-left: 4px solid var(--success);">
                         <div style="display: flex; justify-content: space-between; align-items: start;">
                             <div style="flex: 1;">
-                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${escapeHtml(doctor.full_name)}</h4>
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${doctor.full_name}</h4>
                                 <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
-                                    <span><strong>📧</strong> ${escapeHtml(doctor.email)}</span>
-                                    <span><strong>🏥</strong> ${escapeHtml(doctor.specialization)}</span>
-                                    <span><strong>📅</strong> ${escapeHtml(doctor.experience)} год.</span>
-                                    <span><strong>🏥</strong> ${escapeHtml(doctor.hospital)}</span>
+                                    <span><strong>📧</strong> ${doctor.email}</span>
+                                    <span><strong>🏥</strong> ${doctor.specialization}</span>
+                                    <span><strong>📅</strong> ${doctor.experience} год.</span>
+                                    <span><strong>🏥</strong> ${doctor.hospital}</span>
                                 </div>
                             </div>
-                            <button class="btn" onclick="revokeApproval('${escapeHtml(doctor.id)}')" style="background: var(--warning); color: white;">
+                            <button class="btn" onclick="revokeApproval('${doctor.id}')" style="background: var(--warning); color: white;">
                                 Повлечи одобрување
                             </button>
                         </div>
@@ -6330,40 +6244,6 @@
             } catch (error) {
                 showToast('error', 'Грешка', 'Грешка при повлекување: ' + error.message);
                 console.error(error);
-            }
-        }
-
-        // Super Admin Delete Question Function
-        async function superAdminDeleteQuestion(questionId) {
-            if (!confirm('Дали сте сигурни дека сакате да го избришете ова прашање и сите поврзани одговори? Оваа акција не може да се врати!')) return;
-
-            try {
-                // First, delete all answers associated with this question
-                const { error: answersError } = await supabaseClient
-                    .from('answers')
-                    .delete()
-                    .eq('question_id', questionId);
-
-                if (answersError) {
-                    console.error('Error deleting answers:', answersError);
-                    // Continue anyway - answers might not exist
-                }
-
-                // Then delete the question
-                const { error: questionError } = await supabaseClient
-                    .from('questions')
-                    .delete()
-                    .eq('id', questionId);
-
-                if (questionError) throw questionError;
-
-                showToast('success', 'Избришано!', 'Прашањето и одговорите се успешно избришани.');
-                
-                // Refresh the dashboard
-                loadSuperAdminDashboard();
-            } catch (error) {
-                showToast('error', 'Грешка', 'Грешка при бришење: ' + error.message);
-                console.error('Delete question error:', error);
             }
         }
 
@@ -6805,7 +6685,6 @@
                 actionButtons = `<button class="btn btn-primary" onclick="openReviewModal('${q.id}')" style="margin-top: 16px; background: #8B5CF6;">✓ Прегледај и одобри</button>`;
             } else if (type === 'completed') {
                 statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Завршено</span>';
-                actionButtons = `<button class="btn" onclick="superAdminDeleteQuestion('${escapeHtml(q.id)}')" style="margin-top: 16px; background: var(--danger); color: white;">🗑️ Избриши прашање</button>`;
             }
 
             const answerPreview = answer ? `
@@ -7014,7 +6893,7 @@
             }
         }
 
-        // Open review answer modal - SECURED against XSS
+        // Open review answer modal
         async function openReviewModal(questionId) {
             try {
                 const { data: question, error } = await supabaseClient
@@ -7040,16 +6919,16 @@
                 document.getElementById('reviewAnswerId').value = answer.id;
                 
                 document.getElementById('reviewQuestionDetails').innerHTML = `
-                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">${escapeHtml(question.title)}</h4>
+                    <h4 style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">${question.title}</h4>
                     <p style="font-size: 14px; color: var(--text-light); margin-bottom: 8px;">
-                        <strong>Пациент:</strong> ${escapeHtml(question.user?.full_name || 'Непознат')} (${escapeHtml(question.user?.email || '')})
+                        <strong>Пациент:</strong> ${question.user?.full_name || 'Непознат'} (${question.user?.email || ''})
                     </p>
-                    <p style="font-size: 14px; color: var(--text-dark); line-height: 1.5; margin-top: 12px; padding: 12px; background: white; border-radius: 8px;">${escapeHtml(question.question_text)}</p>
+                    <p style="font-size: 14px; color: var(--text-dark); line-height: 1.5; margin-top: 12px; padding: 12px; background: white; border-radius: 8px;">${question.question_text}</p>
                 `;
 
                 document.getElementById('reviewDoctorAnswer').innerHTML = `
-                    <p style="font-size: 14px; margin-bottom: 8px;"><strong>Од:</strong> ${escapeHtml(answer.expert?.full_name || 'Лекар')} (${escapeHtml(answer.expert?.specialization || '')})</p>
-                    <p style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(answer.answer_text)}</p>
+                    <p style="font-size: 14px; margin-bottom: 8px;"><strong>Од:</strong> ${answer.expert?.full_name || 'Лекар'} (${answer.expert?.specialization || ''})</p>
+                    <p style="font-size: 14px; line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
                 `;
 
                 document.getElementById('reviewFinalAnswer').value = answer.answer_text;
@@ -7142,9 +7021,40 @@
             }
         }
 
+        // Cookie Banner Functions
+        function showCookieBanner() {
+            const cookieConsent = localStorage.getItem('cookieConsent');
+            if (!cookieConsent) {
+                document.getElementById('cookieBanner').classList.remove('hidden');
+            }
+        }
+
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            document.getElementById('cookieBanner').classList.add('hidden');
+        }
+
+        // Show cookie banner on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(showCookieBanner, 1000); // Show after 1 second
+        });
+
     </script>
 
     <!-- Cookie Banner -->
     <div id="cookieBanner" class="cookie-banner hidden">
         <div class="cookie-content">
-            <span class
+            <span class="cookie-icon">🍪</span>
+            <div class="cookie-text">
+                <h4 data-i18n="cookieTitle">Колачиња</h4>
+                <p>
+                    <span data-i18n="cookieText">Користиме колачиња за автентикација и безбедни плаќања. Со продолжување, ја прифаќате нашата</span>
+                    <a href="#" onclick="openPrivacyPolicy(); return false;" data-i18n="cookiePolicyLink">Политика за приватност</a>.
+                </p>
+            </div>
+            <button class="cookie-btn" onclick="acceptCookies()" data-i18n="cookieAccept">Прифати</button>
+        </div>
+    </div>
+
+</body>
+</html>
