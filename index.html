@@ -4373,8 +4373,11 @@
                     option.style.display = '';
                 } else {
                     const doctorSpecialty = option.getAttribute('data-specialty');
-                    // Show doctor if no specialty selected OR doctor matches selected specialty
-                    if (!selectedSpecialty || doctorSpecialty === selectedSpecialty) {
+                    // Show doctor if:
+                    // 1. No specialty selected by user, OR
+                    // 2. Doctor has no specialty set (empty/null), OR
+                    // 3. Doctor's specialty matches selected specialty
+                    if (!selectedSpecialty || !doctorSpecialty || doctorSpecialty === selectedSpecialty) {
                         option.style.display = '';
                     } else {
                         option.style.display = 'none';
@@ -4384,6 +4387,8 @@
             
             // Reset doctor selection to "Any doctor" when specialty changes
             doctorSelect.value = 'any';
+            
+            console.log('Filtered doctors by specialty:', selectedSpecialty);
         }
 
         // Update the credits display in UI
