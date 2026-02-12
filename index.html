@@ -1978,9 +1978,10 @@
                         <div class="consultation-fields">
                             <div class="consultation-field">
                                 <label class="form-label" data-i18n="dashSpecialty">Медицинска област</label>
-                                <select class="form-input" id="questionSpecialty">
+                                <select class="form-input" id="questionSpecialty" onchange="filterDoctorsBySpecialty()">
                                     <option value="" data-i18n="dashSelectSpecialty">Изберете медицинска област</option>
                                     <option value="general-practice" data-i18n="specGeneralPractice">Општ лекар</option>
+                                    <option value="dentistry" data-i18n="specDentistry">Стоматолог</option>
                                 </select>
                             </div>
                             <div class="consultation-field">
@@ -2239,6 +2240,7 @@
                         <select id="doctor-specialty" name="specialty" class="form-input">
                             <option value="">Изберете специјализација</option>
                             <option value="general-practice">Општ лекар</option>
+                            <option value="dentistry">Стоматологија</option>
                             <option value="cardiology">Кардиологија</option>
                             <option value="dermatology">Дерматологија</option>
                             <option value="endocrinology">Ендокринологија</option>
@@ -3189,6 +3191,7 @@
                 dashSelectedDoctor: 'Избран лекар',
                 dashNoSpecificDoctor: 'Не е избран конкретен лекар (било кој)',
                 specGeneralPractice: 'Општ лекар',
+                specDentistry: 'Стоматолог',
                 specCardiology: 'Кардиологија',
                 specDermatology: 'Дерматологија',
                 specEndocrinology: 'Ендокринологија',
@@ -3369,6 +3372,7 @@
                 dashSelectedDoctor: 'Mjeku i zgjedhur',
                 dashNoSpecificDoctor: 'Nuk është zgjedhur mjek specifik (çdokush)',
                 specGeneralPractice: 'Mjek i përgjithshëm',
+                specDentistry: 'Stomatolog',
                 specCardiology: 'Kardiologji',
                 specDermatology: 'Dermatologji',
                 specEndocrinology: 'Endokrinologji',
@@ -3549,6 +3553,7 @@
                 dashSelectedDoctor: 'Selected doctor',
                 dashNoSpecificDoctor: 'No specific doctor selected (any)',
                 specGeneralPractice: 'General Practitioner',
+                specDentistry: 'Dentist',
                 specCardiology: 'Cardiology',
                 specDermatology: 'Dermatology',
                 specEndocrinology: 'Endocrinology',
@@ -4182,6 +4187,11 @@
                     sq: 'Praktikë e përgjithshme',
                     en: 'General Practice'
                 },
+                'dentistry': {
+                    mk: 'Стоматологија',
+                    sq: 'Stomatologji',
+                    en: 'Dentistry'
+                },
                 'cardiology': {
                     mk: 'Кардиологија',
                     sq: 'Kardiologji',
@@ -4333,6 +4343,7 @@
                     doctors.forEach(doctor => {
                         const option = document.createElement('option');
                         option.value = doctor.id;
+                        option.setAttribute('data-specialty', doctor.specialization || '');
                         const translatedSpec = translateSpecialization(doctor.specialization);
                         option.textContent = `👨‍⚕️ ${doctor.full_name}${translatedSpec ? ' - ' + translatedSpec : ''}`;
                         doctorSelect.appendChild(option);
@@ -4345,6 +4356,34 @@
             } catch (error) {
                 console.error('Error loading doctors for selection:', error);
             }
+        }
+
+        // Filter doctors dropdown based on selected specialty
+        function filterDoctorsBySpecialty() {
+            const selectedSpecialty = document.getElementById('questionSpecialty').value;
+            const doctorSelect = document.getElementById('questionDoctor');
+            
+            if (!doctorSelect) return;
+            
+            const options = doctorSelect.querySelectorAll('option');
+            
+            options.forEach(option => {
+                if (option.value === 'any') {
+                    // Always show "Any doctor" option
+                    option.style.display = '';
+                } else {
+                    const doctorSpecialty = option.getAttribute('data-specialty');
+                    // Show doctor if no specialty selected OR doctor matches selected specialty
+                    if (!selectedSpecialty || doctorSpecialty === selectedSpecialty) {
+                        option.style.display = '';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Reset doctor selection to "Any doctor" when specialty changes
+            doctorSelect.value = 'any';
         }
 
         // Update the credits display in UI
@@ -4472,6 +4511,48 @@
             } catch (error) {
                 showToast('error', 'Грешка', 'Грешка при испраќање: ' + error.message);
                 console.error(error);
+            }
+        }
+
+        // Filter doctors by selected specialty
+        async function filterDoctorsBySpecialty() {
+            const specialty = document.getElementById('questionSpecialty').value;
+            const doctorSelect = document.getElementById('questionDoctor');
+            
+            if (!doctorSelect) return;
+            
+            // Reset dropdown
+            doctorSelect.innerHTML = '<option value="any">🔀 Било кој лекар</option>';
+            
+            if (!specialty) return;
+            
+            try {
+                // Fetch approved doctors with the selected specialty
+                const { data: doctors, error } = await supabaseClient
+                    .from('users')
+                    .select('id, full_name, specialty, hospital')
+                    .eq('role', 'expert')
+                    .eq('is_approved', true)
+                    .eq('specialty', specialty);
+                
+                if (error) {
+                    console.error('Error fetching doctors:', error);
+                    return;
+                }
+                
+                console.log('Doctors for specialty ' + specialty + ':', doctors?.length || 0);
+                
+                // Add doctors to dropdown
+                if (doctors && doctors.length > 0) {
+                    doctors.forEach(doctor => {
+                        const option = document.createElement('option');
+                        option.value = doctor.id;
+                        option.textContent = `👨‍⚕️ ${doctor.full_name}${doctor.hospital ? ' - ' + doctor.hospital : ''}`;
+                        doctorSelect.appendChild(option);
+                    });
+                }
+            } catch (err) {
+                console.error('Error filtering doctors:', err);
             }
         }
 
