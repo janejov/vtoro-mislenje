@@ -6,6 +6,7 @@
     <title>Второ мислење - Медицински консултации онлајн</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -4117,6 +4118,32 @@
             navLinks.classList.toggle('open');
         });
 
+        // ============================================
+        // SECURITY: Disable console.log in production
+        // ============================================
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            console.log = function() {};
+            console.debug = function() {};
+            console.info = function() {};
+            // Keep console.error and console.warn for debugging critical issues
+        }
+
+        // ============================================
+        // SECURITY: HTML Sanitization function
+        // ============================================
+        function sanitizeHTML(dirty) {
+            if (typeof DOMPurify !== 'undefined') {
+                return DOMPurify.sanitize(dirty, {
+                    ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'br', 'p', 'span', 'div', 'ul', 'ol', 'li'],
+                    ALLOWED_ATTR: ['class', 'style']
+                });
+            }
+            // Fallback if DOMPurify not loaded
+            const temp = document.createElement('div');
+            temp.textContent = dirty;
+            return temp.innerHTML;
+        }
+
         // Initialize Supabase
         const SUPABASE_URL = 'https://goplfstrsnnssxmunqkx.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdvcGxmc3Ryc25uc3N4bXVucWt4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NDIyMzIsImV4cCI6MjA3NjIxODIzMn0.ai4OED2Y7F9rrqoiBTyV6nka-2O80gxAinFZNrOuupA';
@@ -5579,18 +5606,18 @@
                         ? `<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ ${statusAnswered}</span>`
                         : `<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #FEF3C7; color: #D97706;">⏳ ${statusPending}</span>`;
                     
-                    // Display attachments if any
+                    // Display attachments if any - sanitize file names
                     const attachmentsSection = q.attachments && q.attachments.length > 0 ? `
                         <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
                             <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 ${attachedDocsLabel}:</p>
                             <div style="display: flex; flex-direction: column; gap: 8px;">
                                 ${q.attachments.map(file => `
-                                    <a href="${file.url}" target="_blank" rel="noopener noreferrer" 
+                                    <a href="${encodeURI(file.url)}" target="_blank" rel="noopener noreferrer" 
                                        style="color: var(--primary); text-decoration: none; font-size: 14px; display: flex; align-items: center; gap: 8px; padding: 8px; background: var(--bg-light); border-radius: 6px; transition: all 0.2s;"
                                        onmouseover="this.style.background='var(--primary)'; this.style.color='white';"
                                        onmouseout="this.style.background='var(--bg-light)'; this.style.color='var(--primary)';">
                                         <span>${getFileIcon(file.type)}</span>
-                                        <span style="flex: 1;">${file.name}</span>
+                                        <span style="flex: 1;">${sanitizeHTML(file.name)}</span>
                                         <span style="font-size: 12px; opacity: 0.7;">(${formatFileSize(file.size)})</span>
                                     </a>
                                 `).join('')}
@@ -5613,17 +5640,26 @@
                         attachedDocs: translations[currentLanguage]?.dashAttachedDocs || 'Прикачени документи'
                     };
                     
+                    // Sanitize user-generated content
+                    const safeTitle = sanitizeHTML(q.title || '');
+                    const safeQuestionText = sanitizeHTML(q.question_text || '');
+                    const safeSpecialty = sanitizeHTML(q.specialty_name || q.specialty || '');
+                    const safeAnswerText = answer ? sanitizeHTML(answer.answer_text || '') : '';
+                    const safeExpertName = answer?.expert ? sanitizeHTML(answer.expert.full_name || t.medicalExpert) : t.medicalExpert;
+                    const safeExpertSpec = answer?.expert ? sanitizeHTML(answer.expert.specialization || t.specialist) : t.specialist;
+                    const safeExpertHospital = answer?.expert ? sanitizeHTML(answer.expert.hospital || t.medicalInstitution) : t.medicalInstitution;
+                    
                     const answerSection = answer ? `
                         <div style="margin-top: 16px; padding: 16px; background: #D1FAE5; border-radius: 8px; border-left: 4px solid var(--success);">
                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
                                 <div>
                                     <p style="font-weight: 600; color: var(--success); margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
                                         <span style="font-size: 20px;">✓</span>
-                                        <span>${t.answerFrom} ${answer.expert?.full_name || t.medicalExpert}</span>
+                                        <span>${t.answerFrom} ${safeExpertName}</span>
                                     </p>
                                     ${answer.expert ? `
                                         <p style="font-size: 13px; color: var(--text-light);">
-                                            ${answer.expert.specialization || t.specialist} • ${answer.expert.hospital || t.medicalInstitution} • ${answer.expert.experience || '?'} ${t.yearsExperience}
+                                            ${safeExpertSpec} • ${safeExpertHospital} • ${answer.expert.experience || '?'} ${t.yearsExperience}
                                         </p>
                                     ` : ''}
                                 </div>
@@ -5631,7 +5667,7 @@
                                     ${new Date(answer.created_at).toLocaleDateString(currentLanguage === 'en' ? 'en-GB' : (currentLanguage === 'sq' ? 'sq-AL' : 'mk-MK'), { day: 'numeric', month: 'short', year: 'numeric' })}
                                 </span>
                             </div>
-                            <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${answer.answer_text}</p>
+                            <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${safeAnswerText}</p>
                         </div>
                     ` : `
                         <div style="margin-top: 16px; padding: 12px; background: #FEF3C7; border-radius: 8px; border-left: 4px solid var(--warning);">
@@ -5653,14 +5689,14 @@
                                 </button>
                             </div>
                             <div style="padding-right: 260px;">
-                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${q.title}</h4>
+                                <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-dark);">${safeTitle}</h4>
                                 <div style="display: flex; gap: 16px; margin-bottom: 12px; font-size: 14px; color: var(--text-light);">
-                                    <span><strong>📂 ${t.specialty}:</strong> ${q.specialty_name || q.specialty}</span>
+                                    <span><strong>📂 ${t.specialty}:</strong> ${safeSpecialty}</span>
                                     <span><strong>📅 ${t.date}:</strong> ${new Date(q.created_at).toLocaleDateString(currentLanguage === 'en' ? 'en-GB' : (currentLanguage === 'sq' ? 'sq-AL' : 'mk-MK'))}</span>
                                 </div>
                             </div>
                             <div style="padding: 12px; background: white; border-radius: 8px; margin-bottom: 12px;">
-                                <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${q.question_text}</p>
+                                <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${safeQuestionText}</p>
                             </div>
                             ${attachmentsSection}
                             ${answerSection}
@@ -6728,18 +6764,24 @@
         // Render question card for Super Admin
         function renderSuperAdminQuestionCard(q, type) {
             // Get user info - show user_id as fallback if user object is missing
-            const userName = q.user?.full_name || (q.user_id ? `ID: ${q.user_id.substring(0, 8)}...` : 'Непознат корисник');
-            const userEmail = q.user?.email || '';
-            const doctorName = q.assigned_doctor?.full_name || 'Не е доделен';
+            const userName = sanitizeHTML(q.user?.full_name || (q.user_id ? `ID: ${q.user_id.substring(0, 8)}...` : 'Непознат корисник'));
+            const userEmail = sanitizeHTML(q.user?.email || '');
+            const doctorName = sanitizeHTML(q.assigned_doctor?.full_name || 'Не е доделен');
             const answer = q.answers && q.answers.length > 0 ? q.answers[0] : null;
+            
+            // Sanitize user-provided content
+            const safeTitle = sanitizeHTML(q.title || '');
+            const safeQuestionText = sanitizeHTML(q.question_text || '');
+            const safeSpecialty = sanitizeHTML(q.specialty_name || q.specialty || '');
+            const safePreferredDoctor = sanitizeHTML(q.preferred_doctor_name || '');
             
             const attachmentsHTML = q.attachments && q.attachments.length > 0 ? `
                 <div style="margin-top: 12px; padding: 12px; background: white; border-radius: 8px; border: 1px solid var(--border);">
                     <p style="font-weight: 600; margin-bottom: 8px; font-size: 14px;">📎 Прикачени документи (${q.attachments.length}):</p>
                     <div style="display: flex; flex-wrap: wrap; gap: 8px;">
                         ${q.attachments.map(file => `
-                            <a href="${file.url}" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 13px; padding: 6px 10px; background: var(--bg-light); border-radius: 6px;">
-                                ${getFileIcon(file.type)} ${file.name}
+                            <a href="${encodeURI(file.url)}" target="_blank" style="color: var(--primary); text-decoration: none; font-size: 13px; padding: 6px 10px; background: var(--bg-light); border-radius: 6px;">
+                                ${getFileIcon(file.type)} ${sanitizeHTML(file.name)}
                             </a>
                         `).join('')}
                     </div>
@@ -6765,10 +6807,13 @@
                 statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Завршено</span>';
             }
 
+            const safeAnswerText = answer ? sanitizeHTML(answer.answer_text || '') : '';
+            const safeAnswerExpert = answer ? sanitizeHTML(answer.expert?.full_name || 'Лекар') : '';
+            
             const answerPreview = answer ? `
                 <div style="margin-top: 12px; padding: 12px; background: ${type === 'completed' ? '#D1FAE5' : '#E0F2FE'}; border-radius: 8px; border-left: 4px solid ${type === 'completed' ? 'var(--success)' : 'var(--primary)'};">
-                    <p style="font-weight: 600; font-size: 14px; margin-bottom: 8px;">Одговор од ${answer.expert?.full_name || 'Лекар'}:</p>
-                    <p style="font-size: 14px; color: var(--text-dark); line-height: 1.5;">${answer.answer_text.substring(0, 200)}${answer.answer_text.length > 200 ? '...' : ''}</p>
+                    <p style="font-weight: 600; font-size: 14px; margin-bottom: 8px;">Одговор од ${safeAnswerExpert}:</p>
+                    <p style="font-size: 14px; color: var(--text-dark); line-height: 1.5;">${safeAnswerText.substring(0, 200)}${safeAnswerText.length > 200 ? '...' : ''}</p>
                 </div>
             ` : '';
 
@@ -6776,16 +6821,16 @@
                 <div class="question-card" style="border-left: 4px solid ${type === 'pending' ? 'var(--warning)' : type === 'assigned' ? 'var(--primary)' : type === 'pending_approval' ? '#8B5CF6' : 'var(--success)'};">
                     <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
                         <div style="flex: 1;">
-                            <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${q.title}</h4>
+                            <h4 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">${safeTitle}</h4>
                             <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 14px; color: var(--text-light);">
                                 <span><strong>👤 Пациент:</strong> ${userName}</span>
                                 <span><strong>📧</strong> ${userEmail}</span>
-                                <span><strong>📂 Област:</strong> ${q.specialty_name || q.specialty}</span>
+                                <span><strong>📂 Област:</strong> ${safeSpecialty}</span>
                                 <span><strong>📅</strong> ${new Date(q.created_at).toLocaleDateString('mk-MK')}</span>
                             </div>
-                            ${q.preferred_doctor_name ? `
+                            ${safePreferredDoctor ? `
                                 <div style="margin-top: 8px; padding: 6px 12px; background: #EFF6FF; border-radius: 6px; display: inline-block;">
-                                    <span style="font-size: 13px; color: #1E40AF;"><strong>👨‍⚕️ Избран лекар:</strong> ${q.preferred_doctor_name}</span>
+                                    <span style="font-size: 13px; color: #1E40AF;"><strong>👨‍⚕️ Избран лекар:</strong> ${safePreferredDoctor}</span>
                                 </div>
                             ` : `
                                 <div style="margin-top: 8px; padding: 6px 12px; background: #F0FDF4; border-radius: 6px; display: inline-block;">
@@ -6796,7 +6841,7 @@
                         ${statusBadge}
                     </div>
                     <div style="padding: 12px; background: white; border-radius: 8px;">
-                        <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${q.question_text}</p>
+                        <p style="color: var(--text-dark); line-height: 1.6; white-space: pre-wrap;">${safeQuestionText}</p>
                     </div>
                     ${attachmentsHTML}
                     ${answerPreview}
