@@ -5539,6 +5539,64 @@
             }
         }
 
+        // Delete Question Function (for SuperAdmin - can delete any question)
+        async function deleteQuestionSuperAdmin(questionId) {
+            if (!confirm('Дали сте сигурни дека сакате да го избришете ова прашање?\n\nОва ќе го избрише прашањето, сите одговори и прикачени документи.\n\nОва дејство НЕ МОЖЕ да се врати!')) {
+                return;
+            }
+
+            try {
+                // First, delete any attachments from storage
+                const { data: question } = await supabaseClient
+                    .from('questions')
+                    .select('attachments')
+                    .eq('id', questionId)
+                    .single();
+
+                if (question && question.attachments && question.attachments.length > 0) {
+                    // Delete files from storage
+                    for (const file of question.attachments) {
+                        try {
+                            const urlParts = file.url.split('/');
+                            const fileName = urlParts[urlParts.length - 1];
+                            const folder = urlParts[urlParts.length - 2];
+                            const filePath = `${folder}/${fileName}`;
+                            
+                            await supabaseClient.storage
+                                .from('question-attachments')
+                                .remove([filePath]);
+                        } catch (storageError) {
+                            console.error('Error deleting file:', storageError);
+                        }
+                    }
+                }
+
+                // Delete any answers associated with this question
+                const { error: answersError } = await supabaseClient
+                    .from('answers')
+                    .delete()
+                    .eq('question_id', questionId);
+
+                if (answersError) {
+                    console.error('Error deleting answers:', answersError);
+                }
+
+                // Delete the question (SuperAdmin can delete any question)
+                const { error } = await supabaseClient
+                    .from('questions')
+                    .delete()
+                    .eq('id', questionId);
+
+                if (error) throw error;
+
+                showToast('success', 'Избришано!', 'Прашањето е успешно избришано.');
+                loadSuperAdminDashboard(); // Reload the SuperAdmin dashboard
+            } catch (error) {
+                showToast('error', 'Грешка', 'Грешка при бришење: ' + error.message);
+                console.error(error);
+            }
+        }
+
         // Load User Questions Function - UPDATED
         async function loadUserQuestions() {
             try {
@@ -6805,6 +6863,11 @@
                 actionButtons = `<button class="btn btn-primary" onclick="openReviewModal('${q.id}')" style="margin-top: 16px; background: #8B5CF6;">✓ Прегледај и одобри</button>`;
             } else if (type === 'completed') {
                 statusBadge = '<span style="padding: 4px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; background: #D1FAE5; color: #059669;">✓ Завршено</span>';
+                actionButtons = `
+                    <button class="btn" onclick="deleteQuestionSuperAdmin('${q.id}')" 
+                            style="margin-top: 16px; background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
+                        🗑️ Избриши прашање
+                    </button>`;
             }
 
             const safeAnswerText = answer ? sanitizeHTML(answer.answer_text || '') : '';
