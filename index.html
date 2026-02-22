@@ -5027,53 +5027,49 @@
                     throw new Error('No user data returned from registration');
                 }
 
-                // Insert user data into users table
-                const userData = {
-                    id: authData.user.id,
-                    email: email,
-                    full_name: name,
-                    phone: phone,
-                    role: currentModalType === 'doctor' ? 'expert' : 'user'
-                };
+                // Trigger 'handle_new_user' automatically creates the user in public.users
+                // We just need to wait a moment and verify it was created
+                console.log('User created in auth.users, trigger should create public.users entry');
                 
-                // Add doctor-specific fields if registering as doctor
-                if (currentModalType === 'doctor') {
-                    userData.specialization = formData.get('specialty');
-                    userData.experience = parseInt(formData.get('experience'));
-                    userData.hospital = formData.get('hospital');
-                    userData.city = formData.get('city');
-                    userData.license_number = formData.get('license');
-                    userData.is_approved = false; // Pending admin approval
-                }
-
-                console.log('Inserting user data:', userData);
-
-                const { error: userError } = await supabaseClient
+                // Small delay to ensure trigger has executed
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Verify user was created by trigger
+                const { data: createdUser, error: verifyError } = await supabaseClient
                     .from('users')
-                    .insert([userData]);
-
-                console.log('User insert response:', { userError });
-
-                if (userError) {
-                    // If user already exists in users table, update instead
-                    if (userError.code === '23505' && userError.message.includes('users_email_key')) {
-                        console.log('User already exists, attempting to update...');
-                        
-                        const { error: updateError } = await supabaseClient
-                            .from('users')
-                            .update(userData)
-                            .eq('id', authData.user.id);
-                        
-                        if (updateError) {
-                            console.error('Update error:', updateError);
-                            showToast('error', 'Грешка', 'Email веќе е регистриран. Ве молиме најавете се.');
-                            closeRegister();
-                            setTimeout(() => openSignin(), 500);
-                            return;
-                        }
-                    } else {
-                        console.error('User insert error details:', userError);
-                        throw userError;
+                    .select('id, role, is_approved')
+                    .eq('id', authData.user.id)
+                    .single();
+                
+                console.log('Verify user created:', { createdUser, verifyError });
+                
+                if (verifyError || !createdUser) {
+                    console.error('User not created by trigger, manual insert needed');
+                    // Fallback: manually insert if trigger failed
+                    const userData = {
+                        id: authData.user.id,
+                        email: email,
+                        full_name: name,
+                        phone: phone,
+                        role: currentModalType === 'doctor' ? 'expert' : 'user',
+                        is_approved: currentModalType === 'doctor' ? false : true
+                    };
+                    
+                    if (currentModalType === 'doctor') {
+                        userData.specialization = formData.get('specialty');
+                        userData.experience = parseInt(formData.get('experience')) || null;
+                        userData.hospital = formData.get('hospital');
+                        userData.city = formData.get('city');
+                        userData.license_number = formData.get('license');
+                    }
+                    
+                    const { error: insertError } = await supabaseClient
+                        .from('users')
+                        .insert([userData]);
+                    
+                    if (insertError && insertError.code !== '23505') {
+                        console.error('Manual insert error:', insertError);
+                        throw insertError;
                     }
                 }
 
@@ -5082,7 +5078,17 @@
                     
                     // Send email notification to Super Admin about new doctor registration
                     try {
-                        await sendDoctorRegistrationNotification(userData);
+                        const notificationData = {
+                            full_name: name,
+                            email: email,
+                            phone: phone,
+                            specialization: formData.get('specialty'),
+                            experience: formData.get('experience'),
+                            hospital: formData.get('hospital'),
+                            city: formData.get('city'),
+                            license_number: formData.get('license')
+                        };
+                        await sendDoctorRegistrationNotification(notificationData);
                     } catch (emailError) {
                         console.error('Error sending doctor registration notification:', emailError);
                     }
