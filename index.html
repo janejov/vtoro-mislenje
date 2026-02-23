@@ -6355,15 +6355,11 @@
                         }]);
                 }
 
-                // Send email notification to patient about new answer
-                try {
-                    await sendPatientNotification(questionId, answerData, question);
-                } catch (emailError) {
-                    console.error('Error sending patient email notification:', emailError);
-                    // Don't block the answer submission if email fails
-                }
+                // NOTE: Email notification to patient is NOT sent here
+                // It will be sent ONLY after SuperAdmin approves the answer
+                // See approveAndSendAnswer() function
 
-                showToast('success', 'Успешно!', 'Одговорот е успешно испратен!');
+                showToast('success', 'Успешно!', 'Одговорот е успешно испратен и чека одобрување од администраторот.');
                 loadExpertQuestions(); // Reload questions
             } catch (error) {
                 showToast('error', 'Грешка', 'Грешка при испраќање на одговорот: ' + error.message);
