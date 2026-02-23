@@ -1915,10 +1915,40 @@
         
         <div class="dashboard-container">
             <div class="glass-card">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div>
                         <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;" data-i18n="dashWelcome">Добредојдовте назад!</h2>
                         <p id="userDisplay" style="color: var(--text-light);"></p>
+                    </div>
+                    <button onclick="toggleProfileSettings()" style="background: none; border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; color: var(--text-dark); font-size: 14px; transition: all 0.2s;" onmouseover="this.style.background='var(--bg-light)'" onmouseout="this.style.background='none'">
+                        <span>⚙️</span> <span data-i18n="dashSettings">Поставки</span>
+                    </button>
+                </div>
+                
+                <!-- Profile Settings Section (Hidden by default) -->
+                <div id="profileSettingsSection" class="hidden" style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border);">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <span>👤</span> <span data-i18n="dashProfileSettings">Поставки на профил</span>
+                    </h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px;">
+                        <div style="background: var(--bg-light); padding: 16px; border-radius: 8px;">
+                            <p style="font-size: 13px; color: var(--text-light); margin-bottom: 4px;" data-i18n="dashProfileEmail">📧 Email</p>
+                            <p id="profileEmail" style="font-weight: 600; color: var(--text-dark);"></p>
+                        </div>
+                        <div style="background: var(--bg-light); padding: 16px; border-radius: 8px;">
+                            <p style="font-size: 13px; color: var(--text-light); margin-bottom: 4px;" data-i18n="dashProfileMemberSince">📅 Член од</p>
+                            <p id="profileMemberSince" style="font-weight: 600; color: var(--text-dark);"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- Danger Zone -->
+                    <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 16px;">
+                        <h4 style="font-size: 14px; font-weight: 600; color: #991B1B; margin-bottom: 12px;" data-i18n="dashDangerZone">⚠️ Опасна зона</h4>
+                        <p style="font-size: 13px; color: #7F1D1D; margin-bottom: 12px;" data-i18n="dashDeleteWarning">Бришењето на профилот е неповратно. Сите ваши податоци, прашања и одговори ќе бидат трајно избришани.</p>
+                        <button onclick="openDeleteAccountModal()" style="background: #EF4444; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;" onmouseover="this.style.background='#DC2626'" onmouseout="this.style.background='#EF4444'">
+                            <span>🗑️</span> <span data-i18n="dashDeleteProfileButton">Избриши го мојот профил</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -3227,6 +3257,13 @@
                 deleteAccountCheckboxLabel: 'Разбирам дека ова дејство е неповратно',
                 deleteAccountButton: '🗑️ Избриши го мојот профил',
                 deleteAccountCancel: 'Откажи',
+                dashSettings: 'Поставки',
+                dashProfileSettings: 'Поставки на профил',
+                dashProfileEmail: '📧 Email',
+                dashProfileMemberSince: '📅 Член од',
+                dashDangerZone: '⚠️ Опасна зона',
+                dashDeleteWarning: 'Бришењето на профилот е неповратно. Сите ваши податоци, прашања и одговори ќе бидат трајно избришани.',
+                dashDeleteProfileButton: 'Избриши го мојот профил',
                 dashWelcome: 'Добредојдовте назад!',
                 dashCreditsTitle: '🎟️ Имате достапни прашања!',
                 dashCreditsRemaining: 'Преостанати прашања:',
@@ -3421,6 +3458,13 @@
                 deleteAccountCheckboxLabel: 'Kuptoj që ky veprim është i pakthyeshëm',
                 deleteAccountButton: '🗑️ Fshi profilin tim',
                 deleteAccountCancel: 'Anulo',
+                dashSettings: 'Cilësimet',
+                dashProfileSettings: 'Cilësimet e profilit',
+                dashProfileEmail: '📧 Email',
+                dashProfileMemberSince: '📅 Anëtar që nga',
+                dashDangerZone: '⚠️ Zonë e rrezikshme',
+                dashDeleteWarning: 'Fshirja e profilit është e pakthyeshme. Të gjitha të dhënat, pyetjet dhe përgjigjet tuaja do të fshihen përgjithmonë.',
+                dashDeleteProfileButton: 'Fshi profilin tim',
                 dashWelcome: 'Mirësevini përsëri!',
                 dashCreditsTitle: '🎟️ Keni pyetje të disponueshme!',
                 dashCreditsRemaining: 'Pyetje të mbetura:',
@@ -3615,6 +3659,13 @@
                 deleteAccountCheckboxLabel: 'I understand that this action is irreversible',
                 deleteAccountButton: '🗑️ Delete my account',
                 deleteAccountCancel: 'Cancel',
+                dashSettings: 'Settings',
+                dashProfileSettings: 'Profile settings',
+                dashProfileEmail: '📧 Email',
+                dashProfileMemberSince: '📅 Member since',
+                dashDangerZone: '⚠️ Danger zone',
+                dashDeleteWarning: 'Deleting your profile is irreversible. All your data, questions and answers will be permanently deleted.',
+                dashDeleteProfileButton: 'Delete my profile',
                 dashWelcome: 'Welcome back!',
                 dashCreditsTitle: '🎟️ You have available questions!',
                 dashCreditsRemaining: 'Remaining questions:',
@@ -5341,6 +5392,24 @@
             }
             
             showToast('success', 'Одјава', 'Успешно се одјавивте.');
+        }
+
+        // Toggle Profile Settings Section
+        function toggleProfileSettings() {
+            const section = document.getElementById('profileSettingsSection');
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                // Populate profile data
+                if (window.currentUser) {
+                    document.getElementById('profileEmail').textContent = window.currentUser.email || '-';
+                    const createdAt = window.currentUser.created_at 
+                        ? new Date(window.currentUser.created_at).toLocaleDateString('mk-MK', { day: 'numeric', month: 'long', year: 'numeric' })
+                        : '-';
+                    document.getElementById('profileMemberSince').textContent = createdAt;
+                }
+            } else {
+                section.classList.add('hidden');
+            }
         }
 
         // Delete Account Functions
