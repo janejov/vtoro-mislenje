@@ -1874,6 +1874,7 @@
                     <li><a href="#" onclick="openTerms(); return false;" data-i18n="footerTerms">Услови за користење</a></li>
                     <li><a href="#" onclick="openPrivacy(); return false;" data-i18n="footerPrivacy">Политика за приватност</a></li>
                     <li><a href="#" onclick="openDoctorTerms(); return false;" data-i18n="footerDoctorTerms">Услови за лекари</a></li>
+                    <li id="footerDeleteProfile" class="hidden"><a href="#" onclick="openDeleteAccountModal(); return false;" style="color: #EF4444;" data-i18n="footerDeleteProfile">🗑️ Избриши профил</a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -2421,6 +2422,49 @@
                         ✓ Одобри и испрати до пациент
                     </button>
                     <button class="btn btn-outline" style="flex: 1;" onclick="closeReviewModal()">
+                        Откажи
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div id="deleteAccountModal" class="modal-overlay hidden" onclick="closeDeleteAccountModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 500px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%); color: white;">
+                <h2 data-i18n="deleteAccountTitle">⚠️ Бришење на профил</h2>
+                <button class="modal-close" onclick="closeDeleteAccountModal()" style="color: white;">×</button>
+            </div>
+            <div style="padding: 24px;">
+                <div style="background: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                    <p style="color: #991B1B; font-weight: 600; margin-bottom: 8px;" data-i18n="deleteAccountWarning">⚠️ Ова дејство е неповратно!</p>
+                    <p style="color: #7F1D1D; font-size: 14px;" data-i18n="deleteAccountInfo">Со бришење на вашиот профил, трајно ќе бидат избришани:</p>
+                    <ul style="color: #7F1D1D; font-size: 14px; margin-top: 8px; margin-left: 20px;">
+                        <li data-i18n="deleteAccountItem1">Вашиот кориснички профил</li>
+                        <li data-i18n="deleteAccountItem2">Сите ваши прашања</li>
+                        <li data-i18n="deleteAccountItem3">Сите одговори што сте ги добиле</li>
+                        <li data-i18n="deleteAccountItem4">Сите прикачени документи</li>
+                    </ul>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" data-i18n="deleteAccountConfirmLabel">За потврда, внесете го вашиот email:</label>
+                    <input type="email" id="deleteAccountEmailConfirm" class="form-input" placeholder="vashiot@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="deleteAccountCheckbox" style="width: 18px; height: 18px;">
+                        <span style="font-size: 14px;" data-i18n="deleteAccountCheckboxLabel">Разбирам дека ова дејство е неповратно</span>
+                    </label>
+                </div>
+                
+                <div style="display: flex; gap: 12px; margin-top: 24px;">
+                    <button class="btn" onclick="confirmDeleteAccount()" style="flex: 1; background: var(--danger); color: white;" data-i18n="deleteAccountButton">
+                        🗑️ Избриши го мојот профил
+                    </button>
+                    <button class="btn btn-outline" style="flex: 1;" onclick="closeDeleteAccountModal()" data-i18n="deleteAccountCancel">
                         Откажи
                     </button>
                 </div>
@@ -3162,6 +3206,7 @@
                 footerPrivacy: 'Политика за приватност',
                 footerTerms: 'Услови за користење',
                 footerDoctorTerms: 'Услови за лекари',
+                footerDeleteProfile: '🗑️ Избриши профил',
                 footerContact: 'Контакт',
                 footerRights: 'Сите права задржани.',
                 footerPlatform: 'Платформа',
@@ -3170,6 +3215,18 @@
                 footerDoctorRegister: 'Регистрација за лекари',
                 // Dashboard translations
                 dashLogout: 'Одјави се',
+                dashDeleteAccount: 'Избриши профил',
+                deleteAccountTitle: '⚠️ Бришење на профил',
+                deleteAccountWarning: '⚠️ Ова дејство е неповратно!',
+                deleteAccountInfo: 'Со бришење на вашиот профил, трајно ќе бидат избришани:',
+                deleteAccountItem1: 'Вашиот кориснички профил',
+                deleteAccountItem2: 'Сите ваши прашања',
+                deleteAccountItem3: 'Сите одговори што сте ги добиле',
+                deleteAccountItem4: 'Сите прикачени документи',
+                deleteAccountConfirmLabel: 'За потврда, внесете го вашиот email:',
+                deleteAccountCheckboxLabel: 'Разбирам дека ова дејство е неповратно',
+                deleteAccountButton: '🗑️ Избриши го мојот профил',
+                deleteAccountCancel: 'Откажи',
                 dashWelcome: 'Добредојдовте назад!',
                 dashCreditsTitle: '🎟️ Имате достапни прашања!',
                 dashCreditsRemaining: 'Преостанати прашања:',
@@ -3343,6 +3400,7 @@
                 footerPrivacy: 'Politika e privatësisë',
                 footerTerms: 'Kushtet e përdorimit',
                 footerDoctorTerms: 'Kushtet për mjekët',
+                footerDeleteProfile: '🗑️ Fshi profilin',
                 footerContact: 'Kontakti',
                 footerRights: 'Të gjitha të drejtat e rezervuara.',
                 footerPlatform: 'Platforma',
@@ -3351,6 +3409,18 @@
                 footerDoctorRegister: 'Regjistrim për mjekët',
                 // Dashboard translations
                 dashLogout: 'Dilni',
+                dashDeleteAccount: 'Fshi profilin',
+                deleteAccountTitle: '⚠️ Fshirja e profilit',
+                deleteAccountWarning: '⚠️ Ky veprim është i pakthyeshëm!',
+                deleteAccountInfo: 'Me fshirjen e profilit tuaj, do të fshihen përgjithmonë:',
+                deleteAccountItem1: 'Profili juaj i përdoruesit',
+                deleteAccountItem2: 'Të gjitha pyetjet tuaja',
+                deleteAccountItem3: 'Të gjitha përgjigjet që keni marrë',
+                deleteAccountItem4: 'Të gjitha dokumentet e bashkëngjitura',
+                deleteAccountConfirmLabel: 'Për konfirmim, shkruani email-in tuaj:',
+                deleteAccountCheckboxLabel: 'Kuptoj që ky veprim është i pakthyeshëm',
+                deleteAccountButton: '🗑️ Fshi profilin tim',
+                deleteAccountCancel: 'Anulo',
                 dashWelcome: 'Mirësevini përsëri!',
                 dashCreditsTitle: '🎟️ Keni pyetje të disponueshme!',
                 dashCreditsRemaining: 'Pyetje të mbetura:',
@@ -3524,6 +3594,7 @@
                 footerPrivacy: 'Privacy policy',
                 footerTerms: 'Terms of service',
                 footerDoctorTerms: 'Terms for doctors',
+                footerDeleteProfile: '🗑️ Delete profile',
                 footerContact: 'Contact',
                 footerRights: 'All rights reserved.',
                 footerPlatform: 'Platform',
@@ -3532,6 +3603,18 @@
                 footerDoctorRegister: 'Doctor Registration',
                 // Dashboard translations
                 dashLogout: 'Log out',
+                dashDeleteAccount: 'Delete account',
+                deleteAccountTitle: '⚠️ Delete Account',
+                deleteAccountWarning: '⚠️ This action is irreversible!',
+                deleteAccountInfo: 'By deleting your account, the following will be permanently deleted:',
+                deleteAccountItem1: 'Your user profile',
+                deleteAccountItem2: 'All your questions',
+                deleteAccountItem3: 'All answers you have received',
+                deleteAccountItem4: 'All attached documents',
+                deleteAccountConfirmLabel: 'To confirm, enter your email:',
+                deleteAccountCheckboxLabel: 'I understand that this action is irreversible',
+                deleteAccountButton: '🗑️ Delete my account',
+                deleteAccountCancel: 'Cancel',
                 dashWelcome: 'Welcome back!',
                 dashCreditsTitle: '🎟️ You have available questions!',
                 dashCreditsRemaining: 'Remaining questions:',
@@ -5250,7 +5333,141 @@
             document.getElementById('expertDashboard').classList.add('hidden');
             document.getElementById('adminDashboard').classList.add('hidden');
             document.getElementById('superAdminDashboard').classList.add('hidden');
+            
+            // Hide delete profile link in footer
+            const footerDeleteProfile = document.getElementById('footerDeleteProfile');
+            if (footerDeleteProfile) {
+                footerDeleteProfile.classList.add('hidden');
+            }
+            
             showToast('success', 'Одјава', 'Успешно се одјавивте.');
+        }
+
+        // Delete Account Functions
+        function openDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').classList.remove('hidden');
+            document.getElementById('deleteAccountEmailConfirm').value = '';
+            document.getElementById('deleteAccountCheckbox').checked = false;
+        }
+
+        function closeDeleteAccountModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('deleteAccountModal').classList.add('hidden');
+        }
+
+        async function confirmDeleteAccount() {
+            const emailConfirm = document.getElementById('deleteAccountEmailConfirm').value.trim();
+            const checkbox = document.getElementById('deleteAccountCheckbox').checked;
+            
+            // Validate email matches current user
+            if (!window.currentUser || emailConfirm !== window.currentUser.email) {
+                showToast('error', 'Грешка', 'Email адресата не се совпаѓа со вашиот профил.');
+                return;
+            }
+            
+            // Validate checkbox is checked
+            if (!checkbox) {
+                showToast('error', 'Грешка', 'Мора да потврдите дека разбирате дека дејството е неповратно.');
+                return;
+            }
+            
+            // Final confirmation
+            if (!confirm('Дали сте АПСОЛУТНО сигурни дека сакате да го избришете вашиот профил? Ова дејство НЕ МОЖЕ да се врати!')) {
+                return;
+            }
+            
+            try {
+                showToast('info', 'Процесирање', 'Се брише вашиот профил...');
+                
+                const userId = window.currentUser.id;
+                
+                // 1. Delete all answers by this user (if doctor)
+                const { error: answersError } = await supabaseClient
+                    .from('answers')
+                    .delete()
+                    .eq('expert_id', userId);
+                
+                if (answersError) {
+                    console.error('Error deleting answers:', answersError);
+                }
+                
+                // 2. Get all questions by this user to delete attachments
+                const { data: userQuestions } = await supabaseClient
+                    .from('questions')
+                    .select('id, attachments')
+                    .eq('user_id', userId);
+                
+                // 3. Delete attachments from storage
+                if (userQuestions && userQuestions.length > 0) {
+                    for (const question of userQuestions) {
+                        if (question.attachments && question.attachments.length > 0) {
+                            for (const file of question.attachments) {
+                                try {
+                                    const urlParts = file.url.split('/');
+                                    const fileName = urlParts[urlParts.length - 1];
+                                    const folder = urlParts[urlParts.length - 2];
+                                    const filePath = `${folder}/${fileName}`;
+                                    
+                                    await supabaseClient.storage
+                                        .from('question-attachments')
+                                        .remove([filePath]);
+                                } catch (storageError) {
+                                    console.error('Error deleting file:', storageError);
+                                }
+                            }
+                        }
+                        
+                        // Delete answers for this question
+                        await supabaseClient
+                            .from('answers')
+                            .delete()
+                            .eq('question_id', question.id);
+                    }
+                    
+                    // 4. Delete all questions by this user
+                    const { error: questionsError } = await supabaseClient
+                        .from('questions')
+                        .delete()
+                        .eq('user_id', userId);
+                    
+                    if (questionsError) {
+                        console.error('Error deleting questions:', questionsError);
+                    }
+                }
+                
+                // 5. Delete user from public.users
+                const { error: userError } = await supabaseClient
+                    .from('users')
+                    .delete()
+                    .eq('id', userId);
+                
+                if (userError) {
+                    console.error('Error deleting user profile:', userError);
+                    throw userError;
+                }
+                
+                // 6. Sign out and redirect
+                await supabaseClient.auth.signOut();
+                
+                // Clear local state
+                window.currentUser = null;
+                
+                // Show landing page
+                document.getElementById('landingPage').classList.remove('hidden');
+                document.getElementById('dashboardPage').classList.add('hidden');
+                document.getElementById('userDashboard').classList.add('hidden');
+                document.getElementById('expertDashboard').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.add('hidden');
+                document.getElementById('superAdminDashboard').classList.add('hidden');
+                
+                closeDeleteAccountModal();
+                
+                showToast('success', 'Профилот е избришан', 'Вашиот профил и сите поврзани податоци се успешно избришани.');
+                
+            } catch (error) {
+                console.error('Error deleting account:', error);
+                showToast('error', 'Грешка', 'Грешка при бришење на профилот: ' + error.message);
+            }
         }
 
         // Send email notification to doctors with attachment information
@@ -6591,6 +6808,12 @@
                     
                     document.getElementById('landingPage').classList.add('hidden');
                     document.getElementById('dashboardPage').classList.remove('hidden');
+                    
+                    // Show delete profile link in footer for logged in users
+                    const footerDeleteProfile = document.getElementById('footerDeleteProfile');
+                    if (footerDeleteProfile) {
+                        footerDeleteProfile.classList.remove('hidden');
+                    }
                     
                     // Use translated role text
                     const roleTranslations2 = {
