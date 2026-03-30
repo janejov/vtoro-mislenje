@@ -2013,8 +2013,7 @@
                                 <label class="form-label" data-i18n="dashSpecialty">Медицинска област</label>
                                 <select class="form-input" id="questionSpecialty" onchange="filterDoctorsBySpecialty()">
                                     <option value="" data-i18n="dashSelectSpecialty">Изберете медицинска област</option>
-                                    <option value="general-practice" data-i18n="specGeneralPractice">Општ лекар</option>
-                                    <option value="dentistry" data-i18n="specDentistry">Стоматолог</option>
+                                    <!-- Specialties will be populated dynamically based on available doctors -->
                                 </select>
                             </div>
                             <div class="consultation-field">
@@ -2289,6 +2288,7 @@
                         <select id="doctor-specialty" name="specialty" class="form-input">
                             <option value="">Изберете специјализација</option>
                             <option value="general-practice">Општ лекар</option>
+                            <option value="family-medicine">Семејна медицина</option>
                             <option value="dentistry">Стоматологија</option>
                             <option value="cardiology">Кардиологија</option>
                             <option value="dermatology">Дерматологија</option>
@@ -3304,6 +3304,7 @@
                 dashSelectedDoctor: 'Избран лекар',
                 dashNoSpecificDoctor: 'Не е избран конкретен лекар (било кој)',
                 specGeneralPractice: 'Општ лекар',
+                specFamilyMedicine: 'Семејна медицина',
                 specDentistry: 'Стоматолог',
                 specCardiology: 'Кардиологија',
                 specDermatology: 'Дерматологија',
@@ -3506,6 +3507,7 @@
                 dashSelectedDoctor: 'Mjeku i zgjedhur',
                 dashNoSpecificDoctor: 'Nuk është zgjedhur mjek specifik (çdokush)',
                 specGeneralPractice: 'Mjek i përgjithshëm',
+                specFamilyMedicine: 'Mjekësi familjare',
                 specDentistry: 'Stomatolog',
                 specCardiology: 'Kardiologji',
                 specDermatology: 'Dermatologji',
@@ -3708,6 +3710,7 @@
                 dashSelectedDoctor: 'Selected doctor',
                 dashNoSpecificDoctor: 'No specific doctor selected (any)',
                 specGeneralPractice: 'General Practitioner',
+                specFamilyMedicine: 'Family Medicine',
                 specDentistry: 'Dentist',
                 specCardiology: 'Cardiology',
                 specDermatology: 'Dermatology',
@@ -4368,6 +4371,11 @@
                     sq: 'Praktikë e përgjithshme',
                     en: 'General Practice'
                 },
+                'family-medicine': {
+                    mk: 'Семејна медицина',
+                    sq: 'Mjekësi familjare',
+                    en: 'Family Medicine'
+                },
                 'dentistry': {
                     mk: 'Стоматологија',
                     sq: 'Stomatologji',
@@ -4476,20 +4484,14 @@
         async function loadDoctorsForSelection() {
             try {
                 const doctorSelect = document.getElementById('questionDoctor');
+                const specialtySelect = document.getElementById('questionSpecialty');
+                
                 if (!doctorSelect) {
                     console.log('Doctor select element not found');
                     return;
                 }
 
                 console.log('Loading doctors for selection...');
-
-                // First, let's see ALL doctors (for debugging)
-                const { data: allDoctors, error: allError } = await supabaseClient
-                    .from('users')
-                    .select('id, full_name, specialization, role, is_approved')
-                    .eq('role', 'expert');
-
-                console.log('All doctors (experts):', allDoctors, 'Error:', allError);
 
                 // Fetch approved doctors (role is 'expert' in the database)
                 const { data: doctors, error } = await supabaseClient
@@ -4506,7 +4508,54 @@
                     throw error;
                 }
 
-                // Clear existing options except "Any doctor"
+                // Populate specialties dropdown based on available doctors
+                if (specialtySelect && doctors && doctors.length > 0) {
+                    // Get unique specializations from approved doctors
+                    const availableSpecialties = [...new Set(doctors
+                        .map(d => d.specialization)
+                        .filter(s => s && s.trim() !== '')
+                    )];
+                    
+                    console.log('Available specialties:', availableSpecialties);
+                    
+                    // Clear and repopulate specialty dropdown
+                    specialtySelect.innerHTML = '';
+                    
+                    // Add default option
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.textContent = translations[currentLanguage]?.dashSelectSpecialty || 'Изберете медицинска област';
+                    defaultOption.setAttribute('data-i18n', 'dashSelectSpecialty');
+                    specialtySelect.appendChild(defaultOption);
+                    
+                    // Define specialty display order and translations
+                    const specialtyOrder = [
+                        'general-practice',
+                        'family-medicine', 
+                        'dentistry'
+                    ];
+                    
+                    // Sort available specialties by defined order
+                    availableSpecialties.sort((a, b) => {
+                        const indexA = specialtyOrder.indexOf(a);
+                        const indexB = specialtyOrder.indexOf(b);
+                        if (indexA === -1 && indexB === -1) return 0;
+                        if (indexA === -1) return 1;
+                        if (indexB === -1) return -1;
+                        return indexA - indexB;
+                    });
+                    
+                    // Add available specialties
+                    availableSpecialties.forEach(specialty => {
+                        const option = document.createElement('option');
+                        option.value = specialty;
+                        option.textContent = translateSpecialization(specialty);
+                        specialtySelect.appendChild(option);
+                        console.log(`Added specialty: ${specialty} -> ${translateSpecialization(specialty)}`);
+                    });
+                }
+
+                // Clear existing doctor options except "Any doctor"
                 const anyDoctorOption = doctorSelect.querySelector('option[value="any"]');
                 doctorSelect.innerHTML = '';
                 if (anyDoctorOption) {
