@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Počítadlo návštěvníků – kamera</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.3/dist/coco-ssd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --primary: #0066CC;
+            --primary-dark: #0052A3;
+            --success: #10B981;
+            --danger: #EF4444;
+            --text-dark: #1A202C;
+            --text-light: #718096;
+            --bg-light: #F7FAFC;
+            --border: #E2E8F0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.5;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        h1 { font-size: 1.6rem; margin-bottom: 4px; }
+        .subtitle { color: var(--text-light); margin-bottom: 20px; }
+        .layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+        .card {
+            background: #fff; border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .video-wrap { position: relative; width: 100%; background: #000; border-radius: 8px; overflow: hidden; }
+        video { display: block; width: 100%; }
+        #overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+        .stat { text-align: center; padding: 14px 8px; border-radius: 10px; background: var(--bg-light); }
+        .stat .num { font-size: 2rem; font-weight: 700; }
+        .stat .label { font-size: 0.8rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.03em; }
+        .stat.in .num { color: var(--success); }
+        .stat.out .num { color: var(--danger); }
+        .stat.inside .num { color: var(--primary); }
+        .controls { display: flex; flex-direction: column; gap: 12px; }
+        label { font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 4px; }
+        select, input[type="range"], button {
+            width: 100%; padding: 8px 10px; border: 1px solid var(--border);
+            border-radius: 8px; font-size: 0.95rem; background: #fff;
+        }
+        input[type="range"] { padding: 0; }
+        button { cursor: pointer; font-weight: 600; transition: background 0.15s; }
+        button.primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+        button.primary:hover { background: var(--primary-dark); }
+        button.secondary { background: #fff; color: var(--text-dark); }
+        button.secondary:hover { background: var(--bg-light); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .checkbox-row { display: flex; align-items: center; gap: 8px; }
+        .checkbox-row input { width: auto; }
+        .checkbox-row label { margin: 0; font-weight: 400; }
+        #status { font-size: 0.85rem; color: var(--text-light); min-height: 1.2em; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 8px; }
+        th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { color: var(--text-light); font-size: 0.78rem; text-transform: uppercase; }
+        td.n { text-align: right; font-variant-numeric: tabular-nums; }
+        th.n { text-align: right; }
+        .hint { font-size: 0.8rem; color: var(--text-light); margin-top: 12px; }
+        h2 { font-size: 1.05rem; margin-bottom: 8px; }
+        .mt { margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>📷 Počítadlo návštěvníků</h1>
+    <p class="subtitle">Kamera sleduje vchod a počítá, kolik lidí přišlo a odešlo. Vše běží jen ve vašem prohlížeči – video se nikam neodesílá.</p>
+
+    <div class="layout">
+        <div class="card">
+            <div class="video-wrap">
+                <video id="video" autoplay muted playsinline></video>
+                <canvas id="overlay"></canvas>
+            </div>
+            <p id="status">Načítám detekční model…</p>
+        </div>
+
+        <div>
+            <div class="card">
+                <div class="stats">
+                    <div class="stat in"><div class="num" id="countIn">0</div><div class="label">Přišlo</div></div>
+                    <div class="stat out"><div class="num" id="countOut">0</div><div class="label">Odešlo</div></div>
+                    <div class="stat inside"><div class="num" id="countInside">0</div><div class="label">V krámu</div></div>
+                </div>
+                <div class="controls">
+                    <div>
+                        <label for="cameraSelect">Kamera</label>
+                        <select id="cameraSelect"></select>
+                    </div>
+                    <button id="startBtn" class="primary" disabled>▶ Spustit počítání</button>
+                    <button id="stopBtn" class="secondary" disabled>⏸ Zastavit</button>
+                    <div>
+                        <label for="lineOrientation">Směr počítací čáry</label>
+                        <select id="lineOrientation">
+                            <option value="h">Vodorovná (lidé jdou nahoru/dolů)</option>
+                            <option value="v">Svislá (lidé jdou doleva/doprava)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="linePos">Poloha čáry: <span id="linePosVal">50</span>&nbsp;%</label>
+                        <input type="range" id="linePos" min="10" max="90" value="50">
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="invertDir">
+                        <label for="invertDir">Prohodit směr „přišlo“ / „odešlo“</label>
+                    </div>
+                    <button id="resetBtn" class="secondary">↺ Vynulovat dnešní počty</button>
+                </div>
+                <p class="hint">Nastavte čáru tak, aby ji každý při vstupu do krámu musel překročit (ideálně kolmo na směr chůze u dveří). Kamera by měla vidět vchod shora nebo z boku.</p>
+            </div>
+
+            <div class="card mt">
+                <h2>Historie po dnech</h2>
+                <table>
+                    <thead><tr><th>Den</th><th class="n">Přišlo</th><th class="n">Odešlo</th></tr></thead>
+                    <tbody id="historyBody"></tbody>
+                </table>
+                <button id="exportBtn" class="secondary" style="margin-top:12px">⬇ Stáhnout CSV</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    const STORAGE_KEY = 'peopleCounterHistory';
+    const DETECT_INTERVAL_MS = 120;   // jak často pouštět detekci
+    const MATCH_MAX_DIST = 0.22;      // max. vzdálenost (podíl šířky obrazu) pro spárování osoby mezi snímky
+    const TRACK_TTL_MS = 1200;        // po jaké době beze stopy osobu zapomenout
+    const MIN_SCORE = 0.45;
+
+    const video = document.getElementById('video');
+    const overlay = document.getElementById('overlay');
+    const ctx = overlay.getContext('2d');
+    const statusEl = document.getElementById('status');
+    const cameraSelect = document.getElementById('cameraSelect');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const lineOrientation = document.getElementById('lineOrientation');
+    const linePos = document.getElementById('linePos');
+    const linePosVal = document.getElementById('linePosVal');
+    const invertDir = document.getElementById('invertDir');
+
+    let model = null;
+    let stream = null;
+    let running = false;
+    let lastDetect = 0;
+    let tracks = [];
+    let nextTrackId = 1;
+
+    // ---------- ukládání počtů ----------
+    function todayKey() {
+        const d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+    function loadHistory() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+    }
+    function saveHistory(h) { localStorage.setItem(STORAGE_KEY, JSON.stringify(h)); }
+    function addCount(type) {
+        const h = loadHistory();
+        const k = todayKey();
+        if (!h[k]) h[k] = { in: 0, out: 0 };
+        h[k][type]++;
+        saveHistory(h);
+        renderStats();
+    }
+    function renderStats() {
+        const h = loadHistory();
+        const t = h[todayKey()] || { in: 0, out: 0 };
+        document.getElementById('countIn').textContent = t.in;
+        document.getElementById('countOut').textContent = t.out;
+        document.getElementById('countInside').textContent = Math.max(0, t.in - t.out);
+        const body = document.getElementById('historyBody');
+        body.innerHTML = '';
+        Object.keys(h).sort().reverse().slice(0, 14).forEach(day => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = '<td>' + day + '</td><td class="n">' + h[day].in + '</td><td class="n">' + h[day].out + '</td>';
+            body.appendChild(tr);
+        });
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+        if (!confirm('Opravdu vynulovat dnešní počty?')) return;
+        const h = loadHistory();
+        h[todayKey()] = { in: 0, out: 0 };
+        saveHistory(h);
+        renderStats();
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+        const h = loadHistory();
+        let csv = 'den;prislo;odeslo\n';
+        Object.keys(h).sort().forEach(day => { csv += day + ';' + h[day].in + ';' + h[day].out + '\n'; });
+        const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'navstevnost.csv';
+        a.click();
+        URL.revokeObjectURL(a.href);
+    });
+
+    linePos.addEventListener('input', () => { linePosVal.textContent = linePos.value; });
+
+    // ---------- kamera ----------
+    async function listCameras() {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const cams = devices.filter(d => d.kind === 'videoinput');
+        cameraSelect.innerHTML = '';
+        cams.forEach((c, i) => {
+            const opt = document.createElement('option');
+            opt.value = c.deviceId;
+            opt.textContent = c.label || ('Kamera ' + (i + 1));
+            cameraSelect.appendChild(opt);
+        });
+    }
+
+    async function startCamera() {
+        stopCamera();
+        const constraints = {
+            video: {
+                deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined,
+                width: { ideal: 960 }, height: { ideal: 540 },
+            },
+            audio: false,
+        };
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        await new Promise(res => { video.onloadedmetadata = res; });
+        overlay.width = video.videoWidth;
+        overlay.height = video.videoHeight;
+        await listCameras(); // po povolení už mají kamery jména
+    }
+
+    function stopCamera() {
+        if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    }
+
+    // ---------- počítací čára ----------
+    function lineCoord() {
+        const p = Number(linePos.value) / 100;
+        return lineOrientation.value === 'h' ? p * overlay.height : p * overlay.width;
+    }
+    function sideOf(cx, cy) {
+        const c = lineCoord();
+        const v = lineOrientation.value === 'h' ? cy : cx;
+        return v < c ? -1 : 1;
+    }
+
+    // ---------- sledování osob ----------
+    function updateTracks(detections, now) {
+        const persons = detections
+            .filter(d => d.class === 'person' && d.score >= MIN_SCORE)
+            .map(d => ({
+                cx: d.bbox[0] + d.bbox[2] / 2,
+                cy: d.bbox[1] + d.bbox[3] / 2,
+                bbox: d.bbox,
+            }));
+
+        const maxDist = overlay.width * MATCH_MAX_DIST;
+        const used = new Set();
+
+        // spáruj detekce s existujícími stopami podle vzdálenosti
+        for (const t of tracks) {
+            let best = null, bestDist = Infinity;
+            persons.forEach((p, i) => {
+                if (used.has(i)) return;
+                const d = Math.hypot(p.cx - t.cx, p.cy - t.cy);
+                if (d < bestDist) { bestDist = d; best = i; }
+            });
+            if (best !== null && bestDist <= maxDist) {
+                const p = persons[best];
+                used.add(best);
+                const prevSide = t.side;
+                const newSide = sideOf(p.cx, p.cy);
+                if (prevSide !== 0 && newSide !== 0 && prevSide !== newSide) {
+                    // překročení čáry
+                    const entering = (newSide === 1) !== invertDir.checked;
+                    addCount(entering ? 'in' : 'out');
+                }
+                t.cx = p.cx; t.cy = p.cy; t.bbox = p.bbox;
+                t.side = newSide; t.lastSeen = now;
+            }
+        }
+
+        // nové osoby
+        persons.forEach((p, i) => {
+            if (used.has(i)) return;
+            tracks.push({
+                id: nextTrackId++,
+                cx: p.cx, cy: p.cy, bbox: p.bbox,
+                side: sideOf(p.cx, p.cy),
+                lastSeen: now,
+            });
+        });
+
+        // zapomeň staré stopy
+        tracks = tracks.filter(t => now - t.lastSeen < TRACK_TTL_MS);
+    }
+
+    // ---------- vykreslení ----------
+    function draw() {
+        ctx.clearRect(0, 0, overlay.width, overlay.height);
+
+        // čára
+        const c = lineCoord();
+        ctx.strokeStyle = '#F59E0B';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([12, 8]);
+        ctx.beginPath();
+        if (lineOrientation.value === 'h') { ctx.moveTo(0, c); ctx.lineTo(overlay.width, c); }
+        else { ctx.moveTo(c, 0); ctx.lineTo(c, overlay.height); }
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // rámečky kolem lidí
+        for (const t of tracks) {
+            const [x, y, w, h] = t.bbox;
+            ctx.strokeStyle = '#10B981';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, w, h);
+            ctx.fillStyle = '#10B981';
+            ctx.beginPath();
+            ctx.arc(t.cx, t.cy, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    async function loop(now) {
+        if (!running) return;
+        if (now - lastDetect >= DETECT_INTERVAL_MS && video.readyState >= 2) {
+            lastDetect = now;
+            try {
+                const detections = await model.detect(video);
+                updateTracks(detections, now);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        draw();
+        requestAnimationFrame(loop);
+    }
+
+    // ---------- ovládání ----------
+    startBtn.addEventListener('click', async () => {
+        startBtn.disabled = true;
+        try {
+            statusEl.textContent = 'Spouštím kameru…';
+            await startCamera();
+            running = true;
+            tracks = [];
+            stopBtn.disabled = false;
+            statusEl.textContent = 'Počítání běží. Zelené rámečky = detekovaní lidé, oranžová čára = počítací čára.';
+            requestAnimationFrame(loop);
+        } catch (e) {
+            console.error(e);
+            statusEl.textContent = 'Nepodařilo se spustit kameru: ' + e.message + ' (stránka musí běžet přes HTTPS a musíte povolit přístup ke kameře)';
+            startBtn.disabled = false;
+        }
+    });
+
+    stopBtn.addEventListener('click', () => {
+        running = false;
+        stopCamera();
+        ctx.clearRect(0, 0, overlay.width, overlay.height);
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        statusEl.textContent = 'Počítání zastaveno.';
+    });
+
+    cameraSelect.addEventListener('change', async () => {
+        if (running) { await startCamera(); }
+    });
+
+    // ---------- start ----------
+    renderStats();
+    (async () => {
+        try {
+            await listCameras();
+        } catch (e) { /* seznam kamer doplníme po povolení */ }
+        try {
+            model = await cocoSsd.load({ base: 'lite_mobilenet_v2' });
+            statusEl.textContent = 'Model načten. Vyberte kameru a klikněte na „Spustit počítání“.';
+            startBtn.disabled = false;
+        } catch (e) {
+            console.error(e);
+            statusEl.textContent = 'Nepodařilo se načíst detekční model – zkontrolujte připojení k internetu a obnovte stránku.';
+        }
+    })();
+})();
+</script>
+</body>
+</html>
